@@ -366,8 +366,8 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
       bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
-      videoUrl: "https://www.youtube.com/watch?v=nny2ojTqW3A",
-      imageUrl: "https://i.ytimg.com/vi/nny2ojTqW3A/hqdefault.jpg"
+      videoUrl: "https://www.youtube.com/watch?v=bWg2bnAqW6k",
+      imageUrl: "https://i.ytimg.com/vi/bWg2bnAqW6k/hqdefault.jpg"
     },
     {
       id: "evt-leaked-email-video",
@@ -398,8 +398,8 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
       bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
-      videoUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
-      imageUrl: "https://i.ytimg.com/vi/IcVmSQpIPRY/hqdefault.jpg"
+      videoUrl: "https://www.youtube.com/watch?v=NAh9eh3KjrU&t=22s",
+      imageUrl: "https://i.ytimg.com/vi/NAh9eh3KjrU/hqdefault.jpg"
     },
     {
       id: "evt-bam-statement-may28",
@@ -445,8 +445,8 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "Ben argues law enforcement treated his crew as the emergency while the original property dispute remained unresolved.",
       bamPerspective: "BAM and police-side documents frame the encounters around trespass, stalking, harassment, residential picketing, and safety concerns.",
-      videoUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY&t=150s",
-      imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
+      videoUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+      imageUrl: "https://i.ytimg.com/vi/IcVmSQpIPRY/hqdefault.jpg"
     },
     {
       id: "evt-recklessben-police-response-jun1",
@@ -461,8 +461,8 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
       bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
-      videoUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY&t=600s",
-      imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
+      videoUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=122s",
+      imageUrl: "https://i.ytimg.com/vi/2YEzhDn0jY8/hqdefault.jpg"
     },
     {
       id: "evt-utah-civil-case-260402353",

@@ -453,6 +453,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
       <nav className="view-mode-nav" aria-label="View mode navigation">
         <div className="nav-inner">
           <button
+            aria-label="Watch Story Recap"
             className={`nav-tab-btn ${viewMode === "play" ? "active" : ""}`}
             onClick={() => setViewMode("play")}
           >
@@ -461,6 +462,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             <span className="tab-text-short">Recap</span>
           </button>
           <button
+            aria-label="Continuous Case Spine"
             className={`nav-tab-btn ${viewMode === "spine" ? "active" : ""}`}
             onClick={() => setViewMode("spine")}
           >
