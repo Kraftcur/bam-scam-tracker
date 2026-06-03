@@ -898,6 +898,10 @@ tr:last-child td {
   pointer-events: none;
 }
 
+.spine-node.open .spine-burst {
+  display: none;
+}
+
 .spine-burst span {
   position: absolute;
   min-height: 27px;
@@ -951,44 +955,37 @@ tr:last-child td {
 }
 
 .spine-node-trigger:hover .spine-burst span,
-.spine-node-trigger:focus-visible .spine-burst span,
-.spine-node.open .spine-burst span {
+.spine-node-trigger:focus-visible .spine-burst span {
   opacity: 1;
 }
 
 .spine-node.left .spine-node-trigger:hover .spine-burst span:nth-child(1),
-.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(1),
-.spine-node.left.open .spine-burst span:nth-child(1) {
+.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(1) {
   transform: translate(-10px, -14px) scale(1);
 }
 
 .spine-node.left .spine-node-trigger:hover .spine-burst span:nth-child(2),
-.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(2),
-.spine-node.left.open .spine-burst span:nth-child(2) {
+.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(2) {
   transform: translate(-16px, 12px) scale(1);
 }
 
 .spine-node.left .spine-node-trigger:hover .spine-burst span:nth-child(3),
-.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(3),
-.spine-node.left.open .spine-burst span:nth-child(3) {
+.spine-node.left .spine-node-trigger:focus-visible .spine-burst span:nth-child(3) {
   transform: translate(22px, 0) scale(1);
 }
 
 .spine-node.right .spine-node-trigger:hover .spine-burst span:nth-child(1),
-.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(1),
-.spine-node.right.open .spine-burst span:nth-child(1) {
+.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(1) {
   transform: translate(10px, -14px) scale(1);
 }
 
 .spine-node.right .spine-node-trigger:hover .spine-burst span:nth-child(2),
-.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(2),
-.spine-node.right.open .spine-burst span:nth-child(2) {
+.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(2) {
   transform: translate(16px, 12px) scale(1);
 }
 
 .spine-node.right .spine-node-trigger:hover .spine-burst span:nth-child(3),
-.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(3),
-.spine-node.right.open .spine-burst span:nth-child(3) {
+.spine-node.right .spine-node-trigger:focus-visible .spine-burst span:nth-child(3) {
   transform: translate(-22px, 0) scale(1);
 }
 
@@ -1034,10 +1031,22 @@ tr:last-child td {
 .spine-detail strong {
   display: block;
   margin-bottom: 4px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
 }
 
 .spine-detail p {
   color: var(--muted);
+}
+
+.spine-talk-track {
+  border-left: 3px solid var(--spine-accent);
+  padding-left: 10px;
+}
+
+.spine-talk-track p {
+  color: var(--ink);
+  font-weight: 650;
 }
 
 .spine-tags,

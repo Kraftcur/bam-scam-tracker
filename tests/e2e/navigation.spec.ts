@@ -24,8 +24,9 @@ test("homepage spine nodes expand and collapse", async ({ page }) => {
   await expect(socialPanel).toBeHidden();
   await socialNode.click();
   await expect(socialPanel).toBeVisible();
-  await expect(socialPanel).toContainText("What remains disputed");
+  await expect(socialPanel).toContainText("Open question");
   await expect(socialPanel).toContainText("Social posts are not treated as verified facts");
+  await expect(socialNode.locator(".spine-burst")).toHaveCSS("display", "none");
   await socialNode.click();
   await expect(socialPanel).toBeHidden();
 });
@@ -44,9 +45,11 @@ test("expanded spine nodes show compact video snippets", async ({ page }) => {
 test("floating people drawers show story roles", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
-  await page.getByRole("button", { name: "People" }).click();
-  await expect(page.getByLabel("People").getByRole("heading", { name: "Benjamin Schneider / RecklessBen" })).toBeVisible();
-  await expect(page.getByLabel("People").getByText("Creator-investigator and main lawsuit defendant")).toBeVisible();
+  await page.getByRole("button", { name: "People + owners" }).click();
+  await expect(page.getByLabel("People + owners").getByRole("heading", { name: "Benjamin Schneider / RecklessBen" })).toBeVisible();
+  await expect(page.getByLabel("People + owners").getByText("Creator-investigator and main lawsuit defendant")).toBeVisible();
+  await expect(page.getByLabel("People + owners").getByRole("heading", { name: "Baker Bricks / Josh Johnson / Brandon Best" })).toBeVisible();
+  await expect(page.getByLabel("People + owners").getByRole("heading", { name: "Chrystal Law/Gorman and Benjamin Gorman" })).toBeVisible();
   await page.getByRole("button", { name: "Organizations" }).click();
   await expect(page.getByLabel("Organizations").getByRole("heading", { name: "BAM Franchising / Bricks & Minifigs leadership" })).toBeVisible();
   await expect(page.getByLabel("Organizations").getByText("Franchisor, official speaker, plaintiff")).toBeVisible();

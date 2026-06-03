@@ -283,14 +283,17 @@ function StorySpineItem({
       <div aria-hidden={!isOpen} className="spine-detail" id={panelId}>
         <div className="spine-detail-inner">
           <div>
-            <strong>What the record says</strong>
+            <strong>Known</strong>
             <p>{node.known}</p>
           </div>
           <div>
-            <strong>What remains disputed</strong>
+            <strong>Open question</strong>
             <p>{node.disputed}</p>
           </div>
-          <p>{node.detail}</p>
+          <div className="spine-talk-track">
+            <strong>Talk track</strong>
+            <p>{node.detail}</p>
+          </div>
           <div className="spine-tags" aria-label={`Tags for ${node.headline}`}>
             {node.tags.map((tag) => (
               <span key={tag}>{tag}</span>
@@ -375,7 +378,7 @@ function FloatingPeopleDrawer({
                   <span className="person-lane">{player.lane.replaceAll("-", " ")}</span>
                   <h3>{player.name}</h3>
                   <strong>{player.role}</strong>
-                  <p>{player.tagline} {player.whyTheyMatter}</p>
+                  <p>{player.tagline}</p>
                   <a href={player.sourceUrl} rel="noreferrer" target="_blank" tabIndex={active ? 0 : -1}>
                     {player.sourceLabel}
                     <ExternalLink size={13} aria-hidden="true" />
@@ -413,8 +416,8 @@ function TimelineSpine({
   const [openPeopleDock, setOpenPeopleDock] = useState<"public" | "institutions" | null>(null);
   const [openNodeIds, setOpenNodeIds] = useState<string[]>([nodes[0]?.id, nodes.find((node) => node.id === "spine-lawsuit")?.id]
     .filter((id): id is string => Boolean(id)));
-  const publicPlayers = players.filter((player) => ["ben-side", "community"].includes(player.lane));
-  const institutionPlayers = players.filter((player) => !["ben-side", "community"].includes(player.lane));
+  const publicPlayers = players.filter((player) => ["ben-side", "operators"].includes(player.lane));
+  const institutionPlayers = players.filter((player) => !["ben-side", "operators"].includes(player.lane));
 
   useEffect(() => {
     setIsHydrated(true);
@@ -519,7 +522,7 @@ function TimelineSpine({
         onToggle={() => setOpenPeopleDock((current) => (current === "public" ? null : "public"))}
         players={publicPlayers}
         side="left"
-        title="People"
+        title="People + owners"
       />
       <FloatingPeopleDrawer
         active={openPeopleDock === "institutions"}
