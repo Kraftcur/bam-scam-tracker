@@ -10,7 +10,8 @@ import {
   PlayCircle,
   Search,
   ShieldAlert,
-  Sparkles
+  Sparkles,
+  Users
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type {
@@ -279,42 +280,104 @@ function StorySpineItem({
           <span>{node.tags[0]}</span>
         </span>
       </button>
-      <div className="spine-detail" hidden={!isOpen} id={panelId}>
-        <div>
-          <strong>What the record says</strong>
-          <p>{node.known}</p>
-        </div>
-        <div>
-          <strong>What remains disputed</strong>
-          <p>{node.disputed}</p>
-        </div>
-        <p>{node.detail}</p>
-        <div className="spine-tags" aria-label={`Tags for ${node.headline}`}>
-          {node.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </div>
-        <div className="spine-sources" aria-label={`Sources for ${node.headline}`}>
-          {node.sources.map((source) => (
-            <a
-              href={source.href}
-              key={`${node.id}-${source.label}`}
-              rel={isExternalUrl(source.href) ? "noreferrer" : undefined}
-              target={isExternalUrl(source.href) ? "_blank" : undefined}
-            >
-              <Badge value={source.kind} />
-              <span>{source.label}</span>
-              {isExternalUrl(source.href) && <ExternalLink size={13} aria-hidden="true" />}
-            </a>
-          ))}
+      <div aria-hidden={!isOpen} className="spine-detail" id={panelId}>
+        <div className="spine-detail-inner">
+          <div>
+            <strong>What the record says</strong>
+            <p>{node.known}</p>
+          </div>
+          <div>
+            <strong>What remains disputed</strong>
+            <p>{node.disputed}</p>
+          </div>
+          <p>{node.detail}</p>
+          <div className="spine-tags" aria-label={`Tags for ${node.headline}`}>
+            {node.tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </div>
+          <div className="spine-sources" aria-label={`Sources for ${node.headline}`}>
+            {node.sources.map((source) => (
+              <a
+                href={source.href}
+                key={`${node.id}-${source.label}`}
+                rel={isExternalUrl(source.href) ? "noreferrer" : undefined}
+                target={isExternalUrl(source.href) ? "_blank" : undefined}
+                tabIndex={isOpen ? 0 : -1}
+              >
+                <Badge value={source.kind} />
+                <span>{source.label}</span>
+                {isExternalUrl(source.href) && <ExternalLink size={13} aria-hidden="true" />}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
+function playerInitials(player: StoryPlayer) {
+  return player.shortName.slice(0, 3).toUpperCase();
+}
+
+function FloatingPeopleDrawer({
+  id,
+  title,
+  eyebrow,
+  side,
+  players,
+  active,
+  onToggle
+}: {
+  id: string;
+  title: string;
+  eyebrow: string;
+  side: "left" | "right";
+  players: StoryPlayer[];
+  active: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <aside className={`people-dock ${side} ${active ? "open" : ""}`} aria-label={title}>
+      <button aria-controls={`${id}-panel`} aria-expanded={active} className="people-dock-toggle" onClick={onToggle} type="button">
+        <Users size={17} aria-hidden="true" />
+        <span>{title}</span>
+      </button>
+      <div aria-hidden={!active} className="people-dock-panel" id={`${id}-panel`}>
+        <div className="people-dock-inner">
+          <div>
+            <span className="eyebrow">{eyebrow}</span>
+            <h2>{title}</h2>
+          </div>
+          <div className="people-list">
+            {players.map((player) => (
+              <article className={`person-card ${player.lane}`} key={player.id}>
+                <div className="person-image" aria-hidden="true">
+                  <span>{playerInitials(player)}</span>
+                </div>
+                <div>
+                  <span className="person-lane">{player.lane.replaceAll("-", " ")}</span>
+                  <h3>{player.name}</h3>
+                  <strong>{player.role}</strong>
+                  <p>{player.tagline} {player.whyTheyMatter}</p>
+                  <a href={player.sourceUrl} rel="noreferrer" target="_blank" tabIndex={active ? 0 : -1}>
+                    {player.sourceLabel}
+                    <ExternalLink size={13} aria-hidden="true" />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 function TimelineSpine({
   nodes,
+  players,
   courtRecordCount,
   policeRecordCount,
   sourceChecks,
@@ -323,6 +386,7 @@ function TimelineSpine({
   supportUrl
 }: {
   nodes: StorySpineNode[];
+  players: StoryPlayer[];
   courtRecordCount: number;
   policeRecordCount: number;
   sourceChecks: SourceCheck[];
@@ -331,8 +395,11 @@ function TimelineSpine({
   supportUrl: string;
 }) {
   const [isHydrated, setIsHydrated] = useState(false);
+  const [openPeopleDock, setOpenPeopleDock] = useState<"public" | "institutions" | null>(null);
   const [openNodeIds, setOpenNodeIds] = useState<string[]>([nodes[0]?.id, nodes.find((node) => node.id === "spine-lawsuit")?.id]
     .filter((id): id is string => Boolean(id)));
+  const publicPlayers = players.filter((player) => ["ben-side", "community"].includes(player.lane));
+  const institutionPlayers = players.filter((player) => !["ben-side", "community"].includes(player.lane));
 
   useEffect(() => {
     setIsHydrated(true);
@@ -429,6 +496,25 @@ function TimelineSpine({
           Last source check: {latestRun ? formatDateTime(latestRun.finishedAt ?? latestRun.startedAt) : "pending"}
         </span>
       </div>
+
+      <FloatingPeopleDrawer
+        active={openPeopleDock === "public"}
+        eyebrow="People"
+        id="public-players"
+        onToggle={() => setOpenPeopleDock((current) => (current === "public" ? null : "public"))}
+        players={publicPlayers}
+        side="left"
+        title="People"
+      />
+      <FloatingPeopleDrawer
+        active={openPeopleDock === "institutions"}
+        eyebrow="Organizations"
+        id="institution-players"
+        onToggle={() => setOpenPeopleDock((current) => (current === "institutions" ? null : "institutions"))}
+        players={institutionPlayers}
+        side="right"
+        title="Organizations"
+      />
     </div>
   );
 }
@@ -811,7 +897,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
       ]
     };
 
-    return [liveNode, ...storySpineNodes];
+    return [liveNode, ...[...storySpineNodes].reverse()];
   }, [currentSignal]);
 
   if (spineNodes.length >= 0) {
@@ -821,6 +907,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
         courtRecordCount={courtRecordCount}
         latestRun={latestRun}
         nodes={spineNodes}
+        players={storyPlayers}
         policeRecordCount={policeRecordCount}
         sourceChecks={sourceChecks}
         supportUrl={supportUrl}
