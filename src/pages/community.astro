@@ -7,7 +7,15 @@ import { getEnv } from "../lib/runtime";
 const env = getEnv(Astro.locals);
 const data = await getTrackerData(env);
 const donationUrl = getDonationUrl(env);
-const communityEvents = data.events.filter(e => e.status === "community");
+// Show every community-sourced lead: ones still on the feed (status "community")
+// plus ones the system auto-promoted to the main timeline (still linked to their
+// submission via communityEventId), so promoted leads don't vanish from the feed.
+const promotedEventIds = new Set(
+  data.submissions.map((submission) => submission.communityEventId).filter(Boolean)
+);
+const communityEvents = data.events.filter(
+  (e) => e.status === "community" || promotedEventIds.has(e.id)
+);
 ---
 
 <BaseLayout

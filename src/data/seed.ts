@@ -599,7 +599,7 @@ export const seedData: TrackerData = {
       involvedParties: [],
       sourceIds: ["src-sub-bodycam-johnson-amfork"],
       confidence: "medium",
-      status: "community",
+      status: "needs-review",
       publicationRisk: "high",
       videoUrl: "https://youtu.be/QfmWZ0Bkduw"
     }

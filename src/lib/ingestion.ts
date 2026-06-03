@@ -367,6 +367,17 @@ export async function processCommunitySubmission(env: AppEnv | undefined, submis
     }
   }
 
+  // Auto-promotion: a strong lead (score >= 72 -> "timeline-review") graduates
+  // itself onto the main timeline as "needs-review" — no human in the loop.
+  // Guardrail: leads that tripped the private-info or high-risk-allegation flags
+  // stay on the community feed ("community") and wait for a human, because
+  // auto-publishing unverified allegations about named people is a legal risk.
+  const hasRiskFlags =
+    intel.scoreReasons.includes("private-info-risk") ||
+    intel.scoreReasons.includes("high-risk-allegation");
+  const autoPromoted = intel.suggestedAction === "timeline-review" && !hasRiskFlags;
+  const eventStatus = autoPromoted ? "needs-review" : "community";
+
   const sourceId = await upsertCommunitySource(env, submission);
   const eventId = `evt-community-${submission.id}`;
   await env.DB.prepare(
@@ -384,7 +395,7 @@ export async function processCommunitySubmission(env: AppEnv | undefined, submis
       JSON.stringify([]),
       JSON.stringify([sourceId]),
       candidate.confidence,
-      "community",
+      eventStatus,
       "high",
       candidate.imageUrl,
       candidate.videoUrl,
