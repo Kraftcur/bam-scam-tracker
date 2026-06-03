@@ -8,5 +8,5 @@ export default defineConfig({
     imageService: "passthrough"
   }),
   integrations: [react()],
-  site: "https://example.com"
+  site: "https://bam-scam-tracker.tomcurrie.workers.dev"
 });

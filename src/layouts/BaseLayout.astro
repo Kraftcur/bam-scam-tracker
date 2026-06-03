@@ -35,6 +35,7 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="BAM Scam Tracker Updates" href="/feed.xml" />
     <title>{title}</title>
   </head>
   <body>
@@ -63,7 +64,10 @@ const navItems = [
       <footer class="footer">
         <div class="footer-inner">
           <span>Neutral tracker. Allegations are labeled. Court filings are not findings.</span>
-          <a href="/about">Editorial policy and corrections</a>
+          <span class="footer-links">
+            <a href="/feed.xml">RSS feed</a>
+            <a href="/about">Editorial policy and corrections</a>
+          </span>
         </div>
       </footer>
     </div>

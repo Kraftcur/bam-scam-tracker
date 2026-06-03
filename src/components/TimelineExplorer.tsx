@@ -92,7 +92,7 @@ export default function TimelineExplorer({ events, sources }: Props) {
 
       <div className="list" aria-live="polite">
         {filtered.map((event) => (
-          <article className="row-card" key={event.id}>
+          <article className="row-card" id={event.id} key={event.id}>
             <div className="row-top">
               <div className="stack">
                 <div className="meta">
