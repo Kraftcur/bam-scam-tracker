@@ -14,6 +14,7 @@ binding = "SESSION"
 id = "85389f063f71431fb54d3d7197af362a"
 
 [vars]
+ENABLE_AI_INGESTION = "false"
 OPENAI_MODEL = "gpt-4.1-mini"
 
 [triggers]

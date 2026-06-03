@@ -967,6 +967,61 @@ tr:last-child td {
   line-height: 1;
 }
 
+.lead-queue-band {
+  background:
+    linear-gradient(180deg, rgb(255 253 248 / 0.96), rgb(238 245 242 / 0.98)),
+    repeating-linear-gradient(135deg, rgb(200 77 60 / 0.06) 0 1px, transparent 1px 18px);
+}
+
+.lead-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lead-card {
+  min-height: 380px;
+  border: 1px dashed #c7bba8;
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: 15px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+.lead-card p {
+  color: var(--muted);
+}
+
+.lead-proof {
+  border-radius: 8px;
+  background: #fff1e7;
+  padding: 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.lead-card ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: #384244;
+}
+
+.lead-card li + li {
+  margin-top: 5px;
+}
+
+.lead-card a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  width: fit-content;
+  align-self: end;
+  font-weight: 850;
+}
+
 .showdown-band {
   background:
     radial-gradient(circle at 18% 16%, rgb(243 198 79 / 0.22), transparent 30%),
@@ -1627,6 +1682,7 @@ tr:last-child td {
 
   .stat-strip,
   .receipt-grid,
+  .lead-grid,
   .receipt-belt > div,
   .side-grid,
   .watchdog-grid,
@@ -1673,6 +1729,7 @@ tr:last-child td {
 
   .stat-strip,
   .receipt-grid,
+  .lead-grid,
   .receipt-belt > div,
   .side-grid,
   .watchdog-grid,

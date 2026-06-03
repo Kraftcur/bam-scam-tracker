@@ -12,8 +12,17 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceThread, StoryAct, TimelineBeat, VideoNode, VisualExhibit } from "../data/story";
-import { decoderCards, evidenceThreads, storyActs, storyStats, timelineBeats, videoNodes, visualExhibits } from "../data/story";
+import type { EvidenceThread, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
+import {
+  decoderCards,
+  evidenceThreads,
+  storyActs,
+  storyStats,
+  timelineBeats,
+  verificationLeads,
+  videoNodes,
+  visualExhibits
+} from "../data/story";
 import { formatDateTime } from "../lib/format";
 import type { DocumentRecord, IngestionRun, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
@@ -153,6 +162,37 @@ function InternalLink({ href, children }: { href: string; children: string }) {
   );
 }
 
+function LeadCard({ lead }: { lead: VerificationLead }) {
+  return (
+    <article className="lead-card">
+      <div className="row-top">
+        <div>
+          <span className="thread-tag">{lead.status.replaceAll("-", " ")}</span>
+          <h3>{lead.title}</h3>
+        </div>
+        <Badge value="unverified-lead" />
+      </div>
+      <p>{lead.whyItMatters}</p>
+      <div className="lead-proof">
+        <strong>Current proof level</strong>
+        <p>{lead.currentEvidence}</p>
+      </div>
+      <div>
+        <strong>Promote only when we get</strong>
+        <ul>
+          {lead.upgradeNeeds.map((need) => (
+            <li key={need}>{need}</li>
+          ))}
+        </ul>
+      </div>
+      <a href={lead.sourceUrl} rel="noreferrer" target="_blank">
+        {lead.sourceLabel}
+        <ExternalLink size={14} aria-hidden="true" />
+      </a>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
@@ -289,6 +329,22 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
               <p>Primary records beat hot takes. Always.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section-band lead-queue-band" id="lead-queue">
+        <div className="section-heading">
+          <span className="eyebrow">Verification Queue</span>
+          <h2>Fast leads go here before they become timeline facts.</h2>
+          <p>
+            The story is moving faster than clean records. This queue keeps hot social leads visible
+            without pretending Reddit chatter, private uploads, or platform rumors are court findings.
+          </p>
+        </div>
+        <div className="lead-grid">
+          {verificationLeads.map((lead) => (
+            <LeadCard lead={lead} key={lead.id} />
+          ))}
         </div>
       </section>
 

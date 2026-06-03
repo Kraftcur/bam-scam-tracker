@@ -3,6 +3,10 @@ import type { AppEnv } from "./data";
 import { extractCandidatesWithAi } from "./ai";
 import { canAutoPublish } from "./policy";
 
+export function isAiIngestionEnabled(env: Pick<AppEnv, "ENABLE_AI_INGESTION" | "OPENAI_API_KEY"> | undefined) {
+  return Boolean(env?.OPENAI_API_KEY && env.ENABLE_AI_INGESTION === "true");
+}
+
 function stripHtml(html: string) {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
@@ -232,13 +236,19 @@ export async function runScheduledIngestion(env: AppEnv) {
         needsReview += 1;
       }
 
-      const extraction = await extractCandidatesWithAi({
-        apiKey: env.OPENAI_API_KEY,
-        model: env.OPENAI_MODEL,
-        sourceTitle: source.title,
-        sourceUrl: source.url,
-        sourceText
-      });
+      const extraction = isAiIngestionEnabled(env)
+        ? await extractCandidatesWithAi({
+            apiKey: env.OPENAI_API_KEY,
+            model: env.OPENAI_MODEL,
+            sourceTitle: source.title,
+            sourceUrl: source.url,
+            sourceText
+          })
+        : {
+            timelineCandidates: [],
+            documentCandidates: [],
+            claimCandidates: []
+          };
 
       const sourceCandidates =
         extraction.timelineCandidates.length +
@@ -315,7 +325,8 @@ export async function runScheduledIngestion(env: AppEnv) {
       status: "completed",
       candidatesFound,
       autoPublished,
-      needsReview
+      needsReview,
+      error: isAiIngestionEnabled(env) ? undefined : "AI extraction skipped; ENABLE_AI_INGESTION is not true."
     });
 
     return { candidatesFound, autoPublished, needsReview };

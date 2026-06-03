@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_DONATION_URL?: string;
   readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
   readonly ADMIN_TOKEN?: string;
+  readonly ENABLE_AI_INGESTION?: string;
   readonly OPENAI_API_KEY?: string;
   readonly OPENAI_MODEL?: string;
   readonly TURNSTILE_SECRET_KEY?: string;

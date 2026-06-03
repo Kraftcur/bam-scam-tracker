@@ -48,6 +48,17 @@ export type TimelineBeat = {
   }>;
 };
 
+export type VerificationLead = {
+  id: string;
+  title: string;
+  status: "watching" | "needs-primary-source" | "ready-to-review";
+  whyItMatters: string;
+  currentEvidence: string;
+  upgradeNeeds: string[];
+  sourceUrl: string;
+  sourceLabel: string;
+};
+
 export type VisualExhibit = {
   id: string;
   title: string;
@@ -264,6 +275,60 @@ export const evidenceThreads: EvidenceThread[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public court archive",
     heat: 4
+  }
+];
+
+export const verificationLeads: VerificationLead[] = [
+  {
+    id: "lead-patreon-takedown",
+    title: "Patreon takedown attempt chatter",
+    status: "needs-primary-source",
+    whyItMatters:
+      "If a plaintiff-side request tried to pressure Patreon into removing Ben's creator page or related posts, the dispute expands from a court fight into platform pressure.",
+    currentEvidence:
+      "Multiple Reddit threads on June 3 describe a Patreon CEO response video and a takedown demand, but the tracker needs the primary Patreon/CEO video, the request itself, or a court filing before treating it as verified.",
+    upgradeNeeds: [
+      "primary Patreon or CEO statement URL",
+      "copy of the takedown notice or legal request",
+      "court order language, if one exists",
+      "date and target of the requested removal"
+    ],
+    sourceUrl: "https://www.reddit.com/r/videos/comments/1tv6wwv/patron_ceo_take_down_notification_reckless_bens/",
+    sourceLabel: "Reddit lead thread"
+  },
+  {
+    id: "lead-bodycam-full-cut",
+    title: "Bodycam/full-cut video claims",
+    status: "watching",
+    whyItMatters:
+      "Police video could upgrade or undercut the strongest claims about stops, searches, arrest force, and whether enforcement looked one-sided.",
+    currentEvidence:
+      "Community posts reference bodycam compilations and missing footage, while the tracker already has police reports, probable-cause records, and public response links.",
+    upgradeNeeds: [
+      "official bodycam or dashcam release",
+      "complete timestamps and incident numbers",
+      "redaction notes or withheld-footage explanation",
+      "matchup against probable-cause and warrant records"
+    ],
+    sourceUrl: "https://www.reddit.com/r/bodycambase/comments/1tt9ac6/afpd_reckless_ben_vs_bricks_minifigs_full_cut/",
+    sourceLabel: "Community bodycam lead"
+  },
+  {
+    id: "lead-reopened-store",
+    title: "Reopened store / second-channel upload",
+    status: "watching",
+    whyItMatters:
+      "If store operations or ownership posture changed after the lawsuit, that could affect public pressure, customer response, and future evidence gathering.",
+    currentEvidence:
+      "A Reddit post reports a short-lived or private second-channel upload titled around the store reopening. That is a lead, not a source-backed tracker event.",
+    upgradeNeeds: [
+      "public video URL or archived copy",
+      "store page or official reopening statement",
+      "date, location, and ownership/operator details",
+      "connection to any active court order"
+    ],
+    sourceUrl: "https://www.reddit.com/r/RecklessBen/comments/1tv6ljr/did_anyone_see_the_second_channel_upload_that_got/",
+    sourceLabel: "Reddit upload lead"
   }
 ];
 

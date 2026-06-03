@@ -28,6 +28,7 @@ export type AppEnv = {
   DB?: D1Database;
   ARCHIVE_BUCKET?: R2Bucket;
   ADMIN_TOKEN?: string;
+  ENABLE_AI_INGESTION?: string;
   OPENAI_API_KEY?: string;
   OPENAI_MODEL?: string;
   PUBLIC_DONATION_URL?: string;
