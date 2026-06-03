@@ -25,6 +25,30 @@ async function verifyTurnstile(
   return Boolean(payload.success);
 }
 
+function fallbackSpamCheck(input: {
+  website?: string;
+  formStartedAt?: string;
+  summary: string;
+  title: string;
+}) {
+  if (input.website) {
+    return "Submission rejected.";
+  }
+
+  const started = input.formStartedAt ? Date.parse(input.formStartedAt) : Number.NaN;
+  if (!Number.isFinite(started) || Date.now() - started < 3500) {
+    return "Please take a moment to review the source details before submitting.";
+  }
+
+  const combined = `${input.title}\n${input.summary}`;
+  const linkCount = combined.match(/https?:\/\//gi)?.length ?? 0;
+  if (linkCount > 4) {
+    return "Please submit one source or tightly related source bundle at a time.";
+  }
+
+  return "";
+}
+
 export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
   const env = getEnv(locals);
   const raw = await request.json().catch(() => null);
@@ -36,9 +60,16 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     return json({ error: "Submission is missing required fields.", details: parsed.error.flatten() }, { status: 400 });
   }
 
+  const hasTurnstile = Boolean(env?.TURNSTILE_SECRET_KEY);
   const turnstileOk = await verifyTurnstile(env?.TURNSTILE_SECRET_KEY, parsed.data.turnstileToken, clientAddress ?? null);
   if (!turnstileOk) {
     return json({ error: "Verification failed. Please refresh and try again." }, { status: 403 });
+  }
+  if (!hasTurnstile) {
+    const spamError = fallbackSpamCheck(parsed.data);
+    if (spamError) {
+      return json({ error: spamError }, { status: 403 });
+    }
   }
 
   const submission: SubmissionRecord = {

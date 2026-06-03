@@ -6,6 +6,7 @@ type FormState = "idle" | "submitting" | "success" | "error";
 export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?: string }) {
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
+  const [formStartedAt] = useState(() => new Date().toISOString());
 
   async function onSubmit(event: { preventDefault: () => void; currentTarget: HTMLFormElement }) {
     event.preventDefault();
@@ -42,6 +43,11 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
           <span>Title</span>
           <input className="input" name="title" required minLength={4} maxLength={180} />
         </label>
+        <label className="visually-hidden" aria-hidden="true">
+          <span>Website</span>
+          <input tabIndex={-1} autoComplete="off" name="website" />
+        </label>
+        <input type="hidden" name="formStartedAt" value={formStartedAt} />
         <label className="field">
           <span>Source URL</span>
           <input className="input" name="url" type="url" />

@@ -177,6 +177,8 @@ export const publicSubmissionInputSchema = z.object({
   title: z.string().trim().min(4).max(180),
   summary: z.string().trim().min(20).max(4000),
   suggestedCategory: z.string().trim().min(2).max(80),
+  website: z.string().trim().max(500).optional(),
+  formStartedAt: z.string().trim().optional(),
   turnstileToken: z.string().trim().optional()
 });
 

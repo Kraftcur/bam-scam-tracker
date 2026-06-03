@@ -7,7 +7,9 @@ describe("public submissions", () => {
       title: "Correct case date",
       url: "https://example.com/source",
       summary: "This source lists a different date for the hearing and should be checked against the docket.",
-      suggestedCategory: "correction"
+      suggestedCategory: "correction",
+      formStartedAt: new Date(Date.now() - 5000).toISOString(),
+      website: ""
     });
     expect(result.success).toBe(true);
   });
