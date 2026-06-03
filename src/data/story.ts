@@ -41,6 +41,11 @@ export type TimelineBeat = {
   sourceLabel: string;
   tone: "origin" | "pressure" | "police" | "court";
   isCurrent?: boolean;
+  receipts: Array<{
+    label: string;
+    href: string;
+    kind: "video" | "document" | "statement" | "coverage" | "archive";
+  }>;
 };
 
 export type VisualExhibit = {
@@ -280,7 +285,24 @@ export const timelineBeats: TimelineBeat[] = [
       "Signed intake paperwork, tag photos, POS exports, storage records, and a chain-of-custody map.",
     sourceUrl: "https://salembricktrials.com/bam-timeline",
     sourceLabel: "Salem Brick Trials timeline",
-    tone: "origin"
+    tone: "origin",
+    receipts: [
+      {
+        label: "Salem timeline",
+        href: "https://salembricktrials.com/bam-timeline",
+        kind: "archive"
+      },
+      {
+        label: "Dexerto explainer",
+        href: "https://www.dexerto.com/youtube/dispute-over-200k-lego-star-wars-collection-triggers-lawsuits-and-viral-investigation-3367546/",
+        kind: "coverage"
+      },
+      {
+        label: "Brick Fanatics coverage",
+        href: "https://www.brickfanatics.com/bricks-and-minifigs-dispute-200k-lego-collection",
+        kind: "coverage"
+      }
+    ]
   },
   {
     id: "beat-takeover",
@@ -299,7 +321,24 @@ export const timelineBeats: TimelineBeat[] = [
       "Termination records, store inventory snapshots, security footage, employee statements, and any set-aside item logs.",
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public document archive",
-    tone: "origin"
+    tone: "origin",
+    receipts: [
+      {
+        label: "Law/Gorman complaint",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf",
+        kind: "document"
+      },
+      {
+        label: "Termination letter exhibit",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Exhibit-D-Termination-Letter.pdf",
+        kind: "document"
+      },
+      {
+        label: "BAM May 28 statement",
+        href: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+        kind: "statement"
+      }
+    ]
   },
   {
     id: "beat-ben-videos",
@@ -318,7 +357,24 @@ export const timelineBeats: TimelineBeat[] = [
       "Timestamped clip index, exact alleged false statements, and side-by-side source records for each major claim.",
     sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
     sourceLabel: "RecklessBen origin episode",
-    tone: "pressure"
+    tone: "pressure",
+    receipts: [
+      {
+        label: "Origin episode",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+        kind: "video"
+      },
+      {
+        label: "BAM response breakdown",
+        href: "https://www.youtube.com/watch?v=bWg2bnAqW6k",
+        kind: "video"
+      },
+      {
+        label: "Leaked email episode",
+        href: "https://youtu.be/nny2ojTqW3A",
+        kind: "video"
+      }
+    ]
   },
   {
     id: "beat-police",
@@ -337,7 +393,29 @@ export const timelineBeats: TimelineBeat[] = [
       "Bodycam, dashcam, dispatch logs, full warrant affidavits, and redaction explanations.",
     sourceUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
     sourceLabel: "American Fork police response",
-    tone: "police"
+    tone: "police",
+    receipts: [
+      {
+        label: "Police response video",
+        href: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+        kind: "video"
+      },
+      {
+        label: "Probable cause statement",
+        href: "https://bamsucks.com/American-Fork-Police-26AF02033-Probable-Cause-Statement.pdf",
+        kind: "document"
+      },
+      {
+        label: "Search warrant",
+        href: "https://bamsucks.com/American-Fork-Police-Warrant-3352981-Search-Warrant.pdf",
+        kind: "document"
+      },
+      {
+        label: "Arrest episode",
+        href: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+        kind: "video"
+      }
+    ]
   },
   {
     id: "beat-lawsuit",
@@ -357,7 +435,29 @@ export const timelineBeats: TimelineBeat[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Utah case archive",
     tone: "court",
-    isCurrent: true
+    isCurrent: true,
+    receipts: [
+      {
+        label: "Verified complaint",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+        kind: "document"
+      },
+      {
+        label: "Temporary restraining order",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf",
+        kind: "document"
+      },
+      {
+        label: "Docket events image",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png",
+        kind: "document"
+      },
+      {
+        label: "Dexerto lawsuit coverage",
+        href: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
+        kind: "coverage"
+      }
+    ]
   }
 ];
 

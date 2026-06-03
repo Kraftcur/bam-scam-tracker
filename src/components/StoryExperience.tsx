@@ -103,6 +103,18 @@ function TimelineBeatPanel({ beat }: { beat: TimelineBeat }) {
         <strong>What would actually settle this</strong>
         <p>{beat.settleIt}</p>
       </div>
+      <div className="receipt-belt" aria-label={`Receipts for ${beat.title}`}>
+        <span>Receipts loaded</span>
+        <div>
+          {beat.receipts.map((receipt) => (
+            <a className="mini-receipt" href={receipt.href} rel="noreferrer" target="_blank" key={`${beat.id}-${receipt.label}`}>
+              <Badge value={receipt.kind} />
+              <strong>{receipt.label}</strong>
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
+          ))}
+        </div>
+      </div>
       <div className="row-top">
         <p>{beat.whyItMatters}</p>
         <a href={beat.sourceUrl} rel="noreferrer" target="_blank">
