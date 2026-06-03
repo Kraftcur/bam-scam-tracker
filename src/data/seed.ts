@@ -826,6 +826,50 @@ export const seedData: TrackerData = {
       confidence: "medium",
       publicationRisk: "moderate",
       editorNote: "Complaint allegations must be described as allegations unless adjudicated."
+    },
+    {
+      id: "claim-defamation-publications",
+      claimant: "BAM Franchising and related plaintiffs",
+      claimText: "The plaintiffs allege that Ben and co-defendants published false statements and images accusing BAM-side parties of theft, criminal conduct, corruption, and cover-up.",
+      relatedEvidenceIds: ["doc-bam-verified-complaint"],
+      relatedSourceIds: ["src-bamsucks-archive", "src-dexerto-jun2"],
+      status: "alleged",
+      confidence: "medium",
+      publicationRisk: "moderate",
+      editorNote: "Track exact statements, source clips, truth/falsehood, opinion/rhetoric, and any court ruling separately."
+    },
+    {
+      id: "claim-tro-publication-takedown",
+      claimant: "Utah Fourth District Court TRO / plaintiffs' requested relief",
+      claimText: "The TRO restrains threats, doxxing, contact, impersonation, deceptive materials, evidence destruction, and also requires takedown of publications related to the dispute.",
+      relatedEvidenceIds: ["doc-tro-260402353"],
+      relatedSourceIds: ["src-bamsucks-archive"],
+      status: "court-record",
+      confidence: "high",
+      publicationRisk: "low",
+      editorNote: "Describe the TRO's operative terms carefully. It is temporary relief, not a final judgment on all facts."
+    },
+    {
+      id: "claim-creator-revenue-disgorgement",
+      claimant: "BAM Franchising and related plaintiffs",
+      claimText: "The complaint seeks an accounting and disgorgement of revenue allegedly tied to BAM-related content, including platform revenue, subscriptions, merchandise, crowdfunding, sponsorship, and similar income.",
+      relatedEvidenceIds: ["doc-bam-verified-complaint"],
+      relatedSourceIds: ["src-bamsucks-archive"],
+      status: "alleged",
+      confidence: "medium",
+      publicationRisk: "moderate",
+      editorNote: "A disgorgement request is not a finding that creator income belongs to plaintiffs."
+    },
+    {
+      id: "claim-no-consignment-duty",
+      claimant: "BAM Franchising and related plaintiffs",
+      claimText: "The plaintiffs ask the court to declare that BAM and Salem Baker lawfully acquired Salem LLC assets and were not parties to, or contractually responsible for, the alleged Mansell consignment agreement.",
+      relatedEvidenceIds: ["doc-bam-verified-complaint", "doc-bam-docket-events-260402353"],
+      relatedSourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
+      status: "alleged",
+      confidence: "medium",
+      publicationRisk: "moderate",
+      editorNote: "This is the core inventory/legal-duty fight. Treat it as unsettled unless the court issues a declaratory ruling."
     }
   ],
   submissions: [],

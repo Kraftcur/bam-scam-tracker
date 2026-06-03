@@ -1219,6 +1219,176 @@ tr:last-child td {
   border-color: var(--teal);
 }
 
+.lawsuit-band {
+  background:
+    linear-gradient(180deg, #fffdf8, #f7efe2),
+    repeating-linear-gradient(135deg, rgb(50 108 138 / 0.08) 0 1px, transparent 1px 18px);
+}
+
+.lawsuit-shell {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.36fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.lawsuit-lens-list {
+  display: grid;
+  gap: 8px;
+  max-height: 640px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.lawsuit-lens-button {
+  min-height: 92px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 10px;
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.lawsuit-lens-button:hover {
+  transform: translateX(2px);
+  box-shadow: var(--shadow);
+}
+
+.lawsuit-lens-button.active {
+  border-color: var(--brick-red);
+  box-shadow: inset 4px 0 0 var(--brick-red), var(--shadow);
+}
+
+.lawsuit-lens-button > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--charcoal);
+  color: var(--lego-yellow);
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.lawsuit-lens-button strong {
+  min-width: 0;
+  color: var(--brick-red);
+  line-height: 1.12;
+}
+
+.lawsuit-lens-button small {
+  grid-column: 2;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.lawsuit-lens-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: clamp(16px, 3vw, 24px);
+  display: grid;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  animation: pop-panel 220ms ease both;
+}
+
+.lawsuit-lens-panel.money {
+  box-shadow: inset 6px 0 0 var(--amber), var(--shadow);
+}
+
+.lawsuit-lens-panel.speech {
+  box-shadow: inset 6px 0 0 var(--purple), var(--shadow);
+}
+
+.lawsuit-lens-panel.conduct {
+  box-shadow: inset 6px 0 0 var(--blue), var(--shadow);
+}
+
+.lawsuit-lens-panel.platform {
+  box-shadow: inset 6px 0 0 var(--brick-red), var(--shadow);
+}
+
+.lawsuit-lens-panel.inventory {
+  box-shadow: inset 6px 0 0 var(--teal), var(--shadow);
+}
+
+.lawsuit-lens-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lawsuit-lens-head h3 {
+  margin-top: 6px;
+  font-size: clamp(1.6rem, 3.6vw, 3rem);
+  line-height: 1.02;
+}
+
+.lawsuit-plain {
+  color: var(--muted);
+  max-width: 880px;
+  font-size: 1.05rem;
+}
+
+.lawsuit-lens-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lawsuit-lens-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf0;
+  padding: 12px;
+  display: grid;
+  gap: 7px;
+}
+
+.lawsuit-lens-grid > div:nth-child(1) {
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+.lawsuit-lens-grid > div:nth-child(2) {
+  box-shadow: inset 4px 0 0 var(--teal);
+}
+
+.lawsuit-lens-grid > div:nth-child(3) {
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+
+.lawsuit-lens-grid > div:nth-child(4) {
+  background: #fff1e7;
+  box-shadow: inset 4px 0 0 var(--brick-red);
+}
+
+.lawsuit-lens-grid p {
+  color: var(--muted);
+}
+
+.lawsuit-source-link {
+  width: fit-content;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--charcoal);
+  color: var(--lego-yellow);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  font-weight: 850;
+}
+
 .proof-band {
   background:
     linear-gradient(180deg, #fffdf8, #fbf7ed),
@@ -2234,6 +2404,7 @@ tr:last-child td {
   .exhibit-grid,
   .exhibit-preview,
   .scene-panel,
+  .lawsuit-shell,
   .clip-lab-grid,
   .clip-moment-panel,
   .act-grid,
@@ -2258,6 +2429,7 @@ tr:last-child td {
 
   .now-grid,
   .scene-lanes,
+  .lawsuit-lens-grid,
   .side-grid {
     grid-template-columns: 1fr;
   }
@@ -2286,6 +2458,20 @@ tr:last-child td {
   }
 
   .clip-moment-button {
+    scroll-snap-align: start;
+  }
+
+  .lawsuit-lens-list {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(230px, 0.42fr);
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: none;
+    padding: 0 0 8px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .lawsuit-lens-button {
     scroll-snap-align: start;
   }
 
@@ -2357,6 +2543,10 @@ tr:last-child td {
   }
 
   .clip-moment-rail {
+    grid-auto-columns: minmax(210px, 0.82fr);
+  }
+
+  .lawsuit-lens-list {
     grid-auto-columns: minmax(210px, 0.82fr);
   }
 

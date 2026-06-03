@@ -16,6 +16,7 @@ import type {
   ClipMoment,
   EvidenceScene,
   EvidenceThread,
+  LawsuitLens,
   ProofLevel,
   StoryAct,
   TimelineBeat,
@@ -28,6 +29,7 @@ import {
   decoderCards,
   evidenceScenes,
   evidenceThreads,
+  lawsuitLenses,
   proofLevels,
   storyActs,
   storyStats,
@@ -353,6 +355,61 @@ function ClipMomentPanel({ clip }: { clip: ClipMoment }) {
   );
 }
 
+function LawsuitLensButton({
+  active,
+  lens,
+  onSelect
+}: {
+  active: boolean;
+  lens: LawsuitLens;
+  onSelect: () => void;
+}) {
+  return (
+    <button className={active ? "lawsuit-lens-button active" : "lawsuit-lens-button"} onClick={onSelect} type="button">
+      <span>{lens.label}</span>
+      <strong>{lens.legalBucket}</strong>
+      <small>{lens.title}</small>
+    </button>
+  );
+}
+
+function LawsuitLensPanel({ lens }: { lens: LawsuitLens }) {
+  return (
+    <article className={`lawsuit-lens-panel ${lens.tone}`}>
+      <div className="lawsuit-lens-head">
+        <div>
+          <span className="eyebrow">{lens.legalBucket}</span>
+          <h3>{lens.title}</h3>
+        </div>
+        <Badge value="allegation-map" />
+      </div>
+      <p className="lawsuit-plain">{lens.plainEnglish}</p>
+      <div className="lawsuit-lens-grid">
+        <div>
+          <strong>BAM says</strong>
+          <p>{lens.bamTheory}</p>
+        </div>
+        <div>
+          <strong>Ben-side pressure test</strong>
+          <p>{lens.benSidePressureTest}</p>
+        </div>
+        <div>
+          <strong>Court has to decide</strong>
+          <p>{lens.whatCourtMustDecide}</p>
+        </div>
+        <div>
+          <strong>Do not overread it</strong>
+          <p>{lens.notAFinding}</p>
+        </div>
+      </div>
+      <a className="lawsuit-source-link" href={lens.sourceUrl} rel="noreferrer" target="_blank">
+        {lens.sourceLabel}
+        <ExternalLink size={14} aria-hidden="true" />
+      </a>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
@@ -360,6 +417,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const [activeExhibit, setActiveExhibit] = useState<VisualExhibit>(visualExhibits[0]);
   const [activeSceneId, setActiveSceneId] = useState(evidenceScenes[0].id);
   const [activeClipId, setActiveClipId] = useState(clipMoments[0].id);
+  const [activeLensId, setActiveLensId] = useState(lawsuitLenses[0].id);
   const [activeBeatId, setActiveBeatId] = useState(timelineBeats.find((beat) => beat.isCurrent)?.id ?? timelineBeats[0].id);
 
   const filteredThreads = useMemo(() => {
@@ -398,6 +456,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const currentSignal = latestEvents[0];
   const activeScene = evidenceScenes.find((scene) => scene.id === activeSceneId) ?? evidenceScenes[0];
   const activeClip = clipMoments.find((clip) => clip.id === activeClipId) ?? clipMoments[0];
+  const activeLens = lawsuitLenses.find((lens) => lens.id === activeLensId) ?? lawsuitLenses[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
 
   return (
@@ -532,6 +591,30 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
           ))}
         </div>
         <EvidenceScenePanel scene={activeScene} />
+      </section>
+
+      <section className="section-band lawsuit-band" id="lawsuit-translator">
+        <div className="section-heading">
+          <span className="eyebrow">Lawsuit Translator</span>
+          <h2>The filing, translated into what BAM has to prove.</h2>
+          <p>
+            The complaint is not one accusation; it is a stack of legal buckets. This panel keeps
+            the claims readable while separating allegations, temporary orders, and final findings.
+          </p>
+        </div>
+        <div className="lawsuit-shell">
+          <div className="lawsuit-lens-list" aria-label="Lawsuit issue lenses">
+            {lawsuitLenses.map((lens) => (
+              <LawsuitLensButton
+                active={activeLens.id === lens.id}
+                key={lens.id}
+                lens={lens}
+                onSelect={() => setActiveLensId(lens.id)}
+              />
+            ))}
+          </div>
+          <LawsuitLensPanel lens={activeLens} />
+        </div>
       </section>
 
       <section className="section-band lead-queue-band" id="lead-queue">

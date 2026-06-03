@@ -131,6 +131,21 @@ export type ClipMoment = {
   carefulRead: string;
 };
 
+export type LawsuitLens = {
+  id: string;
+  label: string;
+  legalBucket: string;
+  title: string;
+  plainEnglish: string;
+  bamTheory: string;
+  benSidePressureTest: string;
+  whatCourtMustDecide: string;
+  notAFinding: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  tone: "money" | "speech" | "conduct" | "platform" | "inventory";
+};
+
 export type DecoderCard = {
   phrase: string;
   translation: string;
@@ -1115,6 +1130,149 @@ export const clipMoments: ClipMoment[] = [
       "The public narrative around 'they lost' or 'we won' needs exact docket outcomes, service facts, dismissals, and defendant names.",
     carefulRead:
       "A default-style clip is not the same thing as a final, collectible, fact-finding judgment. The docket has to carry that weight."
+  }
+];
+
+export const lawsuitLenses: LawsuitLens[] = [
+  {
+    id: "lens-enterprise",
+    label: "01",
+    legalBucket: "RICO / conspiracy",
+    title: "BAM is not just saying 'bad videos.' It is saying organized scheme.",
+    plainEnglish:
+      "The complaint tries to turn Ben's videos, store visits, stunts, filings, posts, and collaborators into one coordinated enterprise instead of isolated creator antics.",
+    bamTheory:
+      "BAM frames the campaign as racketeering, conspiracy, extortion, threats, and coordinated unlawful activity designed to injure the company and people connected to it.",
+    benSidePressureTest:
+      "The pro-Ben read is that public pressure was the only tool that got anyone to inspect the missing-inventory story. The hard question is where activism stops and unlawful pressure starts.",
+    whatCourtMustDecide:
+      "Whether the facts satisfy the legal elements of an enterprise/pattern, or whether the complaint is stacking dramatic labels onto speech and protest conduct.",
+    notAFinding:
+      "Complaint language is accusation language. Treat the court's TRO findings separately from final liability.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    tone: "money"
+  },
+  {
+    id: "lens-defamation",
+    label: "02",
+    legalBucket: "Defamation / false light",
+    title: "The lawsuit lives or dies on exact statements, not vibes.",
+    plainEnglish:
+      "BAM says Ben and others falsely told a huge audience that BAM, franchisees, and people around them stole, covered up, or committed crimes.",
+    bamTheory:
+      "The complaint targets allegedly false video statements, signs, posts, and republication that BAM says harmed reputation, customer trust, franchise relationships, and safety.",
+    benSidePressureTest:
+      "Ben's strongest lane is receipts: if a statement is true, opinion, fair commentary, or tied to visible records, it is harder for BAM to turn outrage into defamation liability.",
+    whatCourtMustDecide:
+      "Which statements are factual assertions, which are opinion or rhetoric, which are false, and whether the required fault standard is met.",
+    notAFinding:
+      "A viral accusation is not proof. A defamation count is also not proof.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    tone: "speech"
+  },
+  {
+    id: "lens-trespass",
+    label: "03",
+    legalBucket: "Trespass / stalking / nuisance",
+    title: "The camera cuts are now being judged as physical-world conduct.",
+    plainEnglish:
+      "The filing and TRO focus heavily on where Ben's group went, who they approached, whether they blocked customers, and whether homes/stores became targets.",
+    bamTheory:
+      "BAM argues the campaign crossed into trespass, residential picketing, stalking, nuisance, impersonation, and intimidation at stores, homes, offices, and franchise locations.",
+    benSidePressureTest:
+      "Supporters see awkward in-person pressure as accountability journalism. The legal pressure test is whether people were warned off, deceived, blocked, harassed, or targeted at private locations.",
+    whatCourtMustDecide:
+      "Which visits and filming were lawful, which were after notice or deceptive, and whether the pattern justifies ongoing restrictions.",
+    notAFinding:
+      "Footage can show contact happened; it does not automatically answer trespass, stalking, or harassment elements.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf",
+    sourceLabel: "Temporary restraining order",
+    tone: "conduct"
+  },
+  {
+    id: "lens-business",
+    label: "04",
+    legalBucket: "Business interference",
+    title: "BAM says the campaign hit customers, franchisees, staff, and stores.",
+    plainEnglish:
+      "This bucket is about disruption: customers allegedly diverted, employees solicited, stores interrupted, franchise goodwill damaged, and business relationships chilled.",
+    bamTheory:
+      "BAM claims the campaign interfered with existing and future economic relationships through videos, stunts, signs, calls, in-person confrontations, and online amplification.",
+    benSidePressureTest:
+      "The counter-read is that reputational pain can be the consequence of scrutiny. The key is whether the disruption came from protected criticism or unlawful tactics.",
+    whatCourtMustDecide:
+      "Whether the alleged interference used improper means and whether BAM can prove causation and damages rather than just public backlash.",
+    notAFinding:
+      "Public anger, customer loss, and brand damage still have to be connected to legally actionable conduct.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    tone: "conduct"
+  },
+  {
+    id: "lens-money",
+    label: "05",
+    legalBucket: "Money / disgorgement",
+    title: "BAM wants more than damages. It wants the campaign money traced.",
+    plainEnglish:
+      "The complaint seeks damages and also asks for accounting/disgorgement of money allegedly earned from the BAM-related content: platforms, subscriptions, merch, donations, sponsors, and related revenue.",
+    bamTheory:
+      "BAM says defendants should not profit from allegedly wrongful content and pressure tactics built around the dispute.",
+    benSidePressureTest:
+      "The pro-Ben response is that creators can earn money from reporting and commentary; the question is whether the underlying content or conduct is legally wrongful.",
+    whatCourtMustDecide:
+      "Whether any revenue is tied to unlawful conduct, and if so, whether the remedy should reach creator income, donations, merch, or platform revenue.",
+    notAFinding:
+      "A request for disgorgement is not a ruling that Ben's money belongs to BAM.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    tone: "money"
+  },
+  {
+    id: "lens-takedown",
+    label: "06",
+    legalBucket: "TRO / takedown",
+    title: "The scary part for viewers: the order reaches the videos themselves.",
+    plainEnglish:
+      "The TRO restrains threats, doxxing, contact, impersonation, signage, customer interference, evidence destruction, and also requires removal of publications tied to the dispute.",
+    bamTheory:
+      "BAM argues immediate restrictions are needed because money alone cannot repair safety risk, copycat harassment, business disruption, and reputational harm.",
+    benSidePressureTest:
+      "This is why supporters see a speech fight: stopping harassment is one thing; forcing takedown of creator publications is the part that demands close scrutiny.",
+    whatCourtMustDecide:
+      "How far temporary relief can go while respecting safety, evidence preservation, defamation law, prior-restraint concerns, and future hearing evidence.",
+    notAFinding:
+      "A TRO is temporary relief entered early. It is not the same thing as a final trial judgment.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf",
+    sourceLabel: "Temporary restraining order",
+    tone: "platform"
+  },
+  {
+    id: "lens-declaratory",
+    label: "07",
+    legalBucket: "Inventory / declaration",
+    title: "BAM also wants the judge to bless its inventory story.",
+    plainEnglish:
+      "The complaint asks for declarations that BAM/Sale Baker lawfully acquired Salem LLC assets and had no contract duty under the alleged Mansell consignment agreement.",
+    bamTheory:
+      "BAM wants the court to say the franchisor and replacement operators were not parties to the private consignment and did not inherit Bryan's alleged contract rights.",
+    benSidePressureTest:
+      "This is the heart of why viewers side with Ben: even if BAM has a contract defense, the public still wants the full item-by-item inventory trail.",
+    whatCourtMustDecide:
+      "Whether BAM's repossession rights beat the consignment theory, and whether any missing customer property can be traced to BAM, Baker, the former operators, or someone else.",
+    notAFinding:
+      "A declaration request is BAM asking the scoreboard to change. It has not changed until the court says so.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    tone: "inventory"
   }
 ];
 
