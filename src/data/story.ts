@@ -59,6 +59,16 @@ export type VerificationLead = {
   sourceLabel: string;
 };
 
+export type ProofLevel = {
+  id: string;
+  level: string;
+  label: string;
+  shortRule: string;
+  example: string;
+  action: string;
+  tone: "lead" | "creator" | "record" | "official" | "finding";
+};
+
 export type VisualExhibit = {
   id: string;
   title: string;
@@ -275,6 +285,54 @@ export const evidenceThreads: EvidenceThread[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public court archive",
     heat: 4
+  }
+];
+
+export const proofLevels: ProofLevel[] = [
+  {
+    id: "proof-lead",
+    level: "01",
+    label: "Hot lead",
+    shortRule: "Interesting, not public fact yet.",
+    example: "Reddit posts, private-upload chatter, screenshots without a primary source.",
+    action: "Keep visible in the verification queue until a primary source appears.",
+    tone: "lead"
+  },
+  {
+    id: "proof-creator",
+    level: "02",
+    label: "Creator evidence",
+    shortRule: "Video/audio proves what was shown or said.",
+    example: "RecklessBen episodes, police-response video, timestamped clips.",
+    action: "Use timestamps and separate narration from what the camera/audio directly shows.",
+    tone: "creator"
+  },
+  {
+    id: "proof-record",
+    level: "03",
+    label: "Public record",
+    shortRule: "A filed or archived document exists.",
+    example: "Complaints, exhibits, police reports, warrants, docket screenshots.",
+    action: "Quote the record's status; do not treat accusations inside it as true.",
+    tone: "record"
+  },
+  {
+    id: "proof-official",
+    level: "04",
+    label: "Official statement",
+    shortRule: "A party or agency owns the claim.",
+    example: "BAM statements, police public response, GlobeNewswire release.",
+    action: "Label it as that side's position unless independent records support it.",
+    tone: "official"
+  },
+  {
+    id: "proof-finding",
+    level: "05",
+    label: "Court finding",
+    shortRule: "The scoreboard actually changed.",
+    example: "Orders, hearing results, dismissals, injunction terms, factual findings.",
+    action: "Promote to verified only when the docket/order says so.",
+    tone: "finding"
   }
 ];
 

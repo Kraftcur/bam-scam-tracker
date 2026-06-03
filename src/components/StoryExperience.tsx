@@ -12,10 +12,11 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceThread, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
+import type { EvidenceThread, ProofLevel, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
 import {
   decoderCards,
   evidenceThreads,
+  proofLevels,
   storyActs,
   storyStats,
   timelineBeats,
@@ -193,6 +194,21 @@ function LeadCard({ lead }: { lead: VerificationLead }) {
   );
 }
 
+function ProofLevelCard({ proof }: { proof: ProofLevel }) {
+  return (
+    <article className={`proof-card ${proof.tone}`}>
+      <span>{proof.level}</span>
+      <h3>{proof.label}</h3>
+      <strong>{proof.shortRule}</strong>
+      <p>{proof.example}</p>
+      <div>
+        <small>Tracker move</small>
+        <p>{proof.action}</p>
+      </div>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
@@ -286,6 +302,22 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             <p>{stat.note}</p>
           </div>
         ))}
+      </section>
+
+      <section className="section-band proof-band" id="proof-ladder">
+        <div className="section-heading">
+          <span className="eyebrow">Proof Ladder</span>
+          <h2>How this site decides what gets promoted.</h2>
+          <p>
+            The scandal moves through screenshots, clips, filings, statements, and court orders.
+            This ladder keeps the tracker spicy without letting vibes cosplay as verdicts.
+          </p>
+        </div>
+        <div className="proof-rail" aria-label="Proof levels">
+          {proofLevels.map((proof) => (
+            <ProofLevelCard proof={proof} key={proof.id} />
+          ))}
+        </div>
       </section>
 
       <section className="section-band now-band" id="now">

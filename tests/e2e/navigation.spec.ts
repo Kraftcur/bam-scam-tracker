@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 test("dashboard loads source-first tracker", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /The LEGO case got weird/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /How this site decides/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /BAM's lawsuit is the live center/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Fast leads go here/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Move through what happened/i })).toBeVisible();
