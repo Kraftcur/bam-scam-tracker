@@ -14,5 +14,5 @@ const donationUrl = getDonationUrl(env);
   description="An evidence-first, plain-English guide to the Bricks & Minifigs / RecklessBen controversy."
   donationUrl={donationUrl}
 >
-  <StoryExperience client:load events={data.events} donationUrl={donationUrl} />
+  <StoryExperience client:load documents={data.documents} events={data.events} donationUrl={donationUrl} />
 </BaseLayout>

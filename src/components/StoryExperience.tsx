@@ -4,6 +4,7 @@ import {
   ExternalLink,
   Filter,
   Flame,
+  FileSearch,
   Gavel,
   PlayCircle,
   Search,
@@ -13,15 +14,30 @@ import {
 import { useMemo, useState } from "react";
 import type { EvidenceThread, StoryAct, VideoNode } from "../data/story";
 import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes } from "../data/story";
-import type { TimelineEvent } from "../types";
+import type { DocumentRecord, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
 
 type Props = {
+  documents: DocumentRecord[];
   events: TimelineEvent[];
   donationUrl?: string;
 };
 
 const heatLabels = ["cold", "warm", "hot", "red-hot", "critical"];
+const receiptIds = [
+  "doc-bam-verified-complaint",
+  "doc-tro-260402353",
+  "doc-afp-26af02033-probable-cause",
+  "doc-afp-search-warrant-3352981",
+  "doc-bam-docket-events-260402353",
+  "doc-law-gorman-complaint",
+  "doc-law-gorman-exhibit-d-termination-letter",
+  "doc-bam-may28-statement"
+];
+
+function formatDocKind(doc: DocumentRecord) {
+  return `${doc.documentType} • ${doc.fileType.toUpperCase()}`;
+}
 
 function HeatMeter({ heat }: { heat: EvidenceThread["heat"] }) {
   return (
@@ -55,7 +71,7 @@ function VideoCard({ video }: { video: VideoNode }) {
   );
 }
 
-export default function StoryExperience({ events, donationUrl }: Props) {
+export default function StoryExperience({ documents, events, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
@@ -82,6 +98,10 @@ export default function StoryExperience({ events, donationUrl }: Props) {
   }, [threadMode, threadQuery]);
 
   const latestEvents = events.slice(0, 5);
+  const homepageReceipts = useMemo(() => {
+    const byId = new Map(documents.map((doc) => [doc.id, doc]));
+    return receiptIds.map((id) => byId.get(id)).filter((doc): doc is DocumentRecord => Boolean(doc));
+  }, [documents]);
 
   return (
     <div className="story-page">
@@ -253,6 +273,35 @@ export default function StoryExperience({ events, donationUrl }: Props) {
         <div className="video-grid">
           {videoNodes.map((video) => (
             <VideoCard video={video} key={video.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section-band receipts-band" id="receipts">
+        <div className="section-heading">
+          <span className="eyebrow">Receipt Vault</span>
+          <h2>The records people keep arguing about.</h2>
+          <p>
+            These are the fast-lane sources: complaint, TRO, police probable cause,
+            search warrant, docket image, franchise dispute filings, and BAM's own statement.
+          </p>
+        </div>
+        <div className="receipt-grid">
+          {homepageReceipts.map((doc) => (
+            <a className="receipt-card" href={doc.externalUrl} rel="noreferrer" target="_blank" key={doc.id}>
+              <span className="receipt-icon">
+                <FileSearch size={21} aria-hidden="true" />
+              </span>
+              <span className="receipt-copy">
+                <span>{formatDocKind(doc)}</span>
+                <strong>{doc.title}</strong>
+                <span className="meta">
+                  <Badge value={doc.status} />
+                  <Badge value={doc.redactionStatus} />
+                </span>
+              </span>
+              <ExternalLink size={16} aria-hidden="true" />
+            </a>
           ))}
         </div>
       </section>

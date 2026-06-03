@@ -1,6 +1,7 @@
 import type { TrackerData } from "../types";
 
 const now = "2026-06-03T00:00:00.000Z";
+const archiveRoot = "https://bamsucks.com";
 
 export const seedData: TrackerData = {
   sources: [
@@ -439,7 +440,7 @@ export const seedData: TrackerData = {
       sourceId: "src-bamsucks-archive",
       documentType: "Franchise disclosure document",
       fileType: "pdf",
-      externalUrl: "https://bamsucks.com/",
+      externalUrl: `${archiveRoot}/Bricks%20%26%20Minifigs%202023%20FDD.pdf`,
       redactionStatus: "public",
       status: "verified"
     },
@@ -451,9 +452,123 @@ export const seedData: TrackerData = {
       documentType: "Complaint",
       fileType: "pdf",
       datePublished: "2026-03-27T12:00:00.000Z",
-      externalUrl: "https://bamsucks.com/",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-Case-260200029-Complaint.pdf`,
       redactionStatus: "public-redacted",
       status: "court-record"
+    },
+    {
+      id: "doc-law-gorman-exhibit-a-lego-email",
+      title: "Exhibit A: LEGO customer service email",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260200029",
+      documentType: "Court exhibit",
+      fileType: "pdf",
+      datePublished: "2026-03-27T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-Case-260200029-Exhibit-A-LEGO-Email.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-law-gorman-exhibit-b-franchise-agreement",
+      title: "Exhibit B: franchise agreement",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260200029",
+      documentType: "Court exhibit",
+      fileType: "pdf",
+      datePublished: "2026-03-27T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-Case-260200029-Exhibit-B-Franchise-Agreement.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-law-gorman-exhibit-d-termination-letter",
+      title: "Exhibit D: immediate termination letter",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260200029",
+      documentType: "Court exhibit",
+      fileType: "pdf",
+      datePublished: "2026-03-27T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-Case-260200029-Exhibit-D-Termination-Letter.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-law-gorman-motion-stay-arbitration",
+      title: "Motion to stay and compel mediation/arbitration",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260200029",
+      documentType: "Motion",
+      fileType: "pdf",
+      datePublished: "2026-05-01T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-Case-260200029-Motion-To-Stay-Compel-Mediation-Arbitration.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-afp-26af01974-trespass",
+      title: "American Fork Police 26AF01974 trespass incident report",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Police report",
+      fileType: "pdf",
+      datePublished: "2026-03-08T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-26AF01974-Trespass-Incident-Report.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    },
+    {
+      id: "doc-afp-26af02007-harassment",
+      title: "American Fork Police 26AF02007 harassment incident report",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Police report",
+      fileType: "pdf",
+      datePublished: "2026-03-09T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-26AF02007-Harassment-Incident-Report.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    },
+    {
+      id: "doc-afp-26af02033-stalking-harassment",
+      title: "American Fork Police 26AF02033 stalking/harassment incident report",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Police report",
+      fileType: "pdf",
+      datePublished: "2026-03-10T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-26AF02033-Stalking-Harassment-Incident-Report.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    },
+    {
+      id: "doc-afp-26af02033-probable-cause",
+      title: "American Fork Police 26AF02033 probable cause statement",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Probable cause statement",
+      fileType: "pdf",
+      datePublished: "2026-03-10T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-26AF02033-Probable-Cause-Statement.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    },
+    {
+      id: "doc-afp-26af02033-booking-sheet",
+      title: "American Fork Police 26AF02033 booking sheet",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Booking record",
+      fileType: "pdf",
+      datePublished: "2026-03-10T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-26AF02033-Booking-Sheet.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    },
+    {
+      id: "doc-afp-search-warrant-3352981",
+      title: "Search warrant 3352981",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Search warrant",
+      fileType: "pdf",
+      datePublished: "2026-03-10T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/American-Fork-Police-Warrant-3352981-Search-Warrant.pdf`,
+      redactionStatus: "public-redacted",
+      status: "needs-review"
     },
     {
       id: "doc-bam-verified-complaint",
@@ -463,7 +578,7 @@ export const seedData: TrackerData = {
       documentType: "Verified complaint",
       fileType: "pdf",
       datePublished: "2026-05-27T12:00:00.000Z",
-      externalUrl: "https://bamsucks.com/",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf`,
       redactionStatus: "public-redacted",
       status: "court-record"
     },
@@ -475,7 +590,55 @@ export const seedData: TrackerData = {
       documentType: "Court order",
       fileType: "pdf",
       datePublished: "2026-05-28T12:00:00.000Z",
-      externalUrl: "https://bamsucks.com/",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-errata-260402353",
+      title: "Notice of errata, Utah Case No. 260402353",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Errata",
+      fileType: "pdf",
+      datePublished: "2026-05-28T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Errata.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-filing-receipt-260402353",
+      title: "Filing receipt, Utah Case No. 260402353",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Filing receipt",
+      fileType: "pdf",
+      datePublished: "2026-05-28T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Filing-Receipt.pdf`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-case-history-260402353",
+      title: "Case history image, Utah Case No. 260402353",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Docket image",
+      fileType: "png",
+      datePublished: "2026-05-30T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png`,
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-docket-events-260402353",
+      title: "Docket events image, Utah Case No. 260402353",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Docket image",
+      fileType: "png",
+      datePublished: "2026-05-30T12:00:00.000Z",
+      externalUrl: `${archiveRoot}/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png`,
       redactionStatus: "public-redacted",
       status: "court-record"
     },
@@ -489,17 +652,6 @@ export const seedData: TrackerData = {
       externalUrl: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
       redactionStatus: "public",
       status: "official-statement"
-    },
-    {
-      id: "doc-police-records-index",
-      title: "American Fork police records index",
-      sourceId: "src-bamsucks-archive",
-      documentType: "Police record index",
-      fileType: "pdf",
-      datePublished: "2026-03-10T12:00:00.000Z",
-      externalUrl: "https://bamsucks.com/",
-      redactionStatus: "public-redacted",
-      status: "needs-review"
     }
   ],
   clips: [
