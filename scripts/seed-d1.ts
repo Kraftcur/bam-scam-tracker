@@ -37,7 +37,7 @@ for (const source of seedData.sources) {
 
 for (const event of seedData.events) {
   statements.push(
-    `insert or replace into events (id, occurred_at, title, summary, category, involved_parties, source_ids, confidence, status, publication_risk) values (${[
+    `insert or replace into events (id, occurred_at, title, summary, category, involved_parties, source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective) values (${[
       sql(event.id),
       sql(event.occurredAt),
       sql(event.title),
@@ -47,7 +47,11 @@ for (const event of seedData.events) {
       json(event.sourceIds),
       sql(event.confidence),
       sql(event.status),
-      sql(event.publicationRisk)
+      sql(event.publicationRisk),
+      sql(event.imageUrl),
+      sql(event.videoUrl),
+      sql(event.benPerspective),
+      sql(event.bamPerspective)
     ].join(", ")});`
   );
 }

@@ -17,7 +17,7 @@ id = "85389f063f71431fb54d3d7197af362a"
 ENABLE_AI_INGESTION = "true"
 AI_MAX_SOURCES_PER_RUN = "2"
 AI_SOURCE_CHAR_LIMIT = "4000"
-OPENAI_MODEL = "gpt-4.1-mini"
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 
 [triggers]
-crons = ["0 */6 * * *"]
+crons = ["*/15 * * * *"]

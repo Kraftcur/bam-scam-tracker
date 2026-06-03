@@ -31,8 +31,8 @@ export type AppEnv = {
   ENABLE_AI_INGESTION?: string;
   AI_MAX_SOURCES_PER_RUN?: string;
   AI_SOURCE_CHAR_LIMIT?: string;
-  OPENAI_API_KEY?: string;
-  OPENAI_MODEL?: string;
+  GEMINI_API_KEY?: string;
+  GEMINI_MODEL?: string;
   PUBLIC_DONATION_URL?: string;
   PUBLIC_TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
@@ -79,7 +79,11 @@ const eventFromRow = (row: JsonRow): TimelineEvent =>
     sourceIds: parseList(row.source_ids),
     confidence: row.confidence,
     status: row.status,
-    publicationRisk: row.publication_risk
+    publicationRisk: row.publication_risk,
+    imageUrl: nullableString(row.image_url),
+    videoUrl: nullableString(row.video_url),
+    benPerspective: nullableString(row.ben_perspective),
+    bamPerspective: nullableString(row.bam_perspective)
   });
 
 const caseFromRow = (row: JsonRow): CaseRecord =>
@@ -153,7 +157,11 @@ const submissionFromRow = (row: JsonRow): SubmissionRecord =>
     suggestedCategory: row.suggested_category,
     moderationStatus: row.moderation_status,
     createdAt: row.created_at,
-    reviewerNote: nullableString(row.reviewer_note)
+    reviewerNote: nullableString(row.reviewer_note),
+    imageUrl: nullableString(row.image_url),
+    videoUrl: nullableString(row.video_url),
+    benPerspective: nullableString(row.ben_perspective),
+    bamPerspective: nullableString(row.bam_perspective)
   });
 
 const ingestionRunFromRow = (row: JsonRow): IngestionRun =>

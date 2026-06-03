@@ -255,7 +255,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-dexerto-may24", "src-brickfanatics-may29", "src-bamsucks-archive"],
       confidence: "medium",
       status: "alleged",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Bryan Mansell's side says the family collection was consigned, meaning the unsold sets still belonged to the family and should have been traceable.",
+      bamPerspective: "BAM says the arrangement was unauthorized at the corporate level and later documentation did not prove the sweeping value claim.",
+      videoUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=81s",
+      imageUrl: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
     },
     {
       id: "evt-store-repossession-2024",
@@ -267,7 +271,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bam-may28", "src-bamsucks-archive", "src-brickfanatics-may29"],
       confidence: "medium",
       status: "disputed",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "The Ben/Mansell framing is that corporate control swallowed customer property and nobody with power wanted to unwind it.",
+      bamPerspective: "BAM frames the takeover as enforcement against a troubled franchise and says it did not knowingly take a verified six-figure customer collection.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
       id: "evt-law-gorman-case",
@@ -279,7 +287,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
       confidence: "medium",
       status: "court-record",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
+      bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf"
     },
     {
       id: "evt-police-records-mar2026",
@@ -291,7 +303,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bamsucks-archive"],
       confidence: "medium",
       status: "needs-review",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Ben argues law enforcement treated his crew as the emergency while the original property dispute remained unresolved.",
+      bamPerspective: "BAM and police-side documents frame the encounters around trespass, stalking, harassment, residential picketing, and safety concerns.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png"
     },
     {
       id: "evt-bam-note-may21",
@@ -303,7 +319,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bam-may21"],
       confidence: "high",
       status: "official-statement",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
+      bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
       id: "evt-dexerto-initial-report",
@@ -315,7 +335,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-dexerto-may24"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
+      bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
+      videoUrl: "https://www.youtube.com/watch?v=14ktgvoH4Mc",
+      imageUrl: "https://i.ytimg.com/vi/14ktgvoH4Mc/hqdefault.jpg"
     },
     {
       id: "evt-recklessben-part1",
@@ -327,7 +351,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-part1", "src-salem-videos", "src-salem-timeline"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=411s",
+      imageUrl: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
     },
     {
       id: "evt-recklessben-response-video",
@@ -339,7 +367,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-response", "src-salem-videos"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=nny2ojTqW3A",
+      imageUrl: "https://i.ytimg.com/vi/nny2ojTqW3A/hqdefault.jpg"
     },
     {
       id: "evt-leaked-email-video",
@@ -351,7 +383,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-leaked-email", "src-salem-videos", "src-salem-brick-trials"],
       confidence: "medium",
       status: "needs-review",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=nny2ojTqW3A&t=450s",
+      imageUrl: "https://i.ytimg.com/vi/nny2ojTqW3A/hqdefault.jpg"
     },
     {
       id: "evt-recklessben-ceo-questions-video",
@@ -363,7 +399,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-ceo-questions", "src-recklessben-channel"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+      imageUrl: "https://i.ytimg.com/vi/IcVmSQpIPRY/hqdefault.jpg"
     },
     {
       id: "evt-bam-statement-may28",
@@ -375,7 +415,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bam-may28", "src-globenewswire-jun1"],
       confidence: "high",
       status: "official-statement",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
+      bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
       id: "evt-recklessben-arrest-video",
@@ -387,7 +431,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-arrest", "src-tribune-arrest-may31", "src-kotaku-jun1"],
       confidence: "medium",
       status: "alleged",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+      imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
     },
     {
       id: "evt-police-response-critiques",
@@ -399,7 +447,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-police-response-video", "src-culture-police-release", "src-kotaku-jun1"],
       confidence: "medium",
       status: "disputed",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Ben argues law enforcement treated his crew as the emergency while the original property dispute remained unresolved.",
+      bamPerspective: "BAM and police-side documents frame the encounters around trespass, stalking, harassment, residential picketing, and safety concerns.",
+      videoUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY&t=150s",
+      imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
     },
     {
       id: "evt-recklessben-police-response-jun1",
@@ -411,7 +463,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-recklessben-police-response", "src-police-response-video", "src-recklessben-channel"],
       confidence: "high",
       status: "disputed",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      benPerspective: "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+      bamPerspective: "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+      videoUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY&t=600s",
+      imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
     },
     {
       id: "evt-utah-civil-case-260402353",
@@ -423,7 +479,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
       confidence: "medium",
       status: "court-record",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
+      bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png"
     },
     {
       id: "evt-brickfanatics-report",
@@ -435,7 +495,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-brickfanatics-may29"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
+      bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
+      videoUrl: "",
+      imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
     },
     {
       id: "evt-globenewswire-jun1",
@@ -447,7 +511,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-globenewswire-jun1"],
       confidence: "high",
       status: "official-statement",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
+      bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
+      videoUrl: "",
+      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
       id: "evt-dexerto-lawsuit-jun2",
@@ -459,7 +527,11 @@ export const seedData: TrackerData = {
       sourceIds: ["src-dexerto-jun2", "src-bamsucks-archive"],
       confidence: "high",
       status: "verified",
-      publicationRisk: "low"
+      publicationRisk: "low",
+      benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
+      bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
+      videoUrl: "",
+      imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
     }
   ],
   cases: [

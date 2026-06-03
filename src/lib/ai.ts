@@ -7,7 +7,7 @@ export const extractedCandidateSchema = z.object({
       title: z.string(),
       summary: z.string(),
       category: z.enum(["collection", "franchise", "court", "police", "video", "statement", "media", "site"]),
-      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"]),
+      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]),
       confidence: z.enum(["high", "medium", "low"])
     })
   ),
@@ -16,14 +16,14 @@ export const extractedCandidateSchema = z.object({
       title: z.string(),
       documentType: z.string(),
       fileType: z.enum(["pdf", "png", "html", "audio", "video", "other"]),
-      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"])
+      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"])
     })
   ),
   claimCandidates: z.array(
     z.object({
       claimant: z.string(),
       claimText: z.string(),
-      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"]),
+      status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]),
       confidence: z.enum(["high", "medium", "low"]),
       editorNote: z.string()
     })
@@ -47,108 +47,111 @@ export async function extractCandidatesWithAi(input: {
 }): Promise<ExtractedCandidates> {
   if (!input.apiKey || input.sourceText.trim().length < 80) return emptyCandidates;
 
-  const response = await fetch("https://api.openai.com/v1/responses", {
+  const modelId = input.model || "gemini-3.1-flash-lite";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${input.apiKey}`;
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
-      authorization: `Bearer ${input.apiKey}`,
       "content-type": "application/json"
     },
     body: JSON.stringify({
-      model: input.model || "gpt-4.1-mini",
-      input: [
-        {
-          role: "system",
-          content:
-            "Extract only source-supported tracker candidates. Do not infer guilt, liability, crimes, motives, or private personal details. Court filings are allegations unless the text says an order or finding was entered."
-        },
+      systemInstruction: {
+        parts: [
+          {
+            text: "Extract only source-supported tracker candidates that are important to public freedom of speech discussions. Do not infer guilt, liability, crimes, motives, or private personal details. Court filings are allegations unless the text says an order or finding was entered.\nFor each event, also attempt to extract a 'benPerspective' (how RecklessBen or his supporters frame it), a 'bamPerspective' (how BAM Franchising or police frame it), and any relevant 'imageUrl' or 'videoUrl' if present in the text."
+          }
+        ]
+      },
+      contents: [
         {
           role: "user",
-          content: `Source title: ${input.sourceTitle}\nSource URL: ${input.sourceUrl}\n\nText:\n${input.sourceText.slice(0, 12000)}`
+          parts: [
+            {
+              text: `Source title: ${input.sourceTitle}\nSource URL: ${input.sourceUrl}\n\nText:\n${input.sourceText.slice(0, 12000)}`
+            }
+          ]
         }
       ],
-      text: {
-        format: {
-          type: "json_schema",
-          name: "tracker_candidates",
-          strict: true,
-          schema: {
-            type: "object",
-            additionalProperties: false,
-            required: ["timelineCandidates", "documentCandidates", "claimCandidates"],
-            properties: {
-              timelineCandidates: {
-                type: "array",
-                items: {
-                  type: "object",
-                  additionalProperties: false,
-                  required: ["occurredAt", "title", "summary", "category", "status", "confidence"],
-                  properties: {
-                    occurredAt: { type: "string" },
-                    title: { type: "string" },
-                    summary: { type: "string" },
-                    category: {
-                      type: "string",
-                      enum: ["collection", "franchise", "court", "police", "video", "statement", "media", "site"]
-                    },
-                    status: {
-                      type: "string",
-                      enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"]
-                    },
-                    confidence: { type: "string", enum: ["high", "medium", "low"] }
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            timelineCandidates: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  occurredAt: { type: "STRING" },
+                  title: { type: "STRING" },
+                  summary: { type: "STRING" },
+                  category: {
+                    type: "STRING",
+                    enum: ["collection", "franchise", "court", "police", "video", "statement", "media", "site"]
+                  },
+                  status: {
+                    type: "STRING",
+                    enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]
+                  },
+                  confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+                  imageUrl: { type: "STRING" },
+                  videoUrl: { type: "STRING" },
+                  benPerspective: { type: "STRING" },
+                  bamPerspective: { type: "STRING" }
+                },
+                required: ["occurredAt", "title", "summary", "category", "status", "confidence"]
+              }
+            },
+            documentCandidates: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  title: { type: "STRING" },
+                  documentType: { type: "STRING" },
+                  fileType: { type: "STRING", enum: ["pdf", "png", "html", "audio", "video", "other"] },
+                  status: {
+                    type: "STRING",
+                    enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]
                   }
-                }
-              },
-              documentCandidates: {
-                type: "array",
-                items: {
-                  type: "object",
-                  additionalProperties: false,
-                  required: ["title", "documentType", "fileType", "status"],
-                  properties: {
-                    title: { type: "string" },
-                    documentType: { type: "string" },
-                    fileType: { type: "string", enum: ["pdf", "png", "html", "audio", "video", "other"] },
-                    status: {
-                      type: "string",
-                      enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"]
-                    }
-                  }
-                }
-              },
-              claimCandidates: {
-                type: "array",
-                items: {
-                  type: "object",
-                  additionalProperties: false,
-                  required: ["claimant", "claimText", "status", "confidence", "editorNote"],
-                  properties: {
-                    claimant: { type: "string" },
-                    claimText: { type: "string" },
-                    status: {
-                      type: "string",
-                      enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review"]
-                    },
-                    confidence: { type: "string", enum: ["high", "medium", "low"] },
-                    editorNote: { type: "string" }
-                  }
-                }
+                },
+                required: ["title", "documentType", "fileType", "status"]
+              }
+            },
+            claimCandidates: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  claimant: { type: "STRING" },
+                  claimText: { type: "STRING" },
+                  status: {
+                    type: "STRING",
+                    enum: ["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]
+                  },
+                  confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+                  editorNote: { type: "STRING" }
+                },
+                required: ["claimant", "claimText", "status", "confidence", "editorNote"]
               }
             }
-          }
+          },
+          required: ["timelineCandidates", "documentCandidates", "claimCandidates"]
         }
       }
     })
   });
 
   if (!response.ok) {
-    throw new Error(`OpenAI extraction failed: ${response.status}`);
+    const errText = await response.text();
+    throw new Error(`Gemini extraction failed: ${response.status} ${errText}`);
   }
 
-  const payload = (await response.json()) as {
-    output_text?: string;
-    output?: Array<{ content?: Array<{ text?: string }> }>;
+  const payload = await response.json() as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
   };
-  const text = payload.output_text ?? payload.output?.flatMap((item) => item.content ?? []).find((item) => item.text)?.text;
+  const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) return emptyCandidates;
   return extractedCandidateSchema.parse(JSON.parse(text));
 }

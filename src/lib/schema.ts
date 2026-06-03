@@ -25,7 +25,8 @@ export const recordStatusSchema = z.enum([
   "verified",
   "alleged",
   "disputed",
-  "needs-review"
+  "needs-review",
+  "community"
 ]);
 
 export const sourceSchema = z.object({
@@ -60,7 +61,11 @@ export const timelineEventSchema = z.object({
   sourceIds: z.array(z.string().min(3)).min(1),
   confidence: z.enum(["high", "medium", "low"]),
   status: recordStatusSchema,
-  publicationRisk: z.enum(["low", "moderate", "high"])
+  publicationRisk: z.enum(["low", "moderate", "high"]),
+  imageUrl: z.string().url().optional(),
+  videoUrl: z.string().url().optional(),
+  benPerspective: z.string().optional(),
+  bamPerspective: z.string().optional()
 });
 
 export const caseRecordSchema = z.object({
@@ -129,7 +134,11 @@ export const submissionSchema = z.object({
   suggestedCategory: z.string().min(2),
   moderationStatus: z.enum(["new", "triaged", "approved", "rejected"]),
   createdAt: z.string().datetime(),
-  reviewerNote: z.string().optional()
+  reviewerNote: z.string().optional(),
+  imageUrl: z.string().url().optional(),
+  videoUrl: z.string().url().optional(),
+  benPerspective: z.string().optional(),
+  bamPerspective: z.string().optional()
 });
 
 export const ingestionRunSchema = z.object({

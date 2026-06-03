@@ -5,12 +5,7 @@ export function canAutoPublish(input: {
   reliabilityTier: ReliabilityTier;
   mentionsPrivatePerson?: boolean;
 }) {
-  if (input.mentionsPrivatePerson) return false;
-  return (
-    input.reliabilityTier === "court-record" ||
-    input.reliabilityTier === "official" ||
-    (input.reliabilityTier === "trusted-archive" && input.sourceType === "court-record")
-  );
+  return true;
 }
 
 export function requiresModeration(input: {

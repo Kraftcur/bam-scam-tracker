@@ -51,6 +51,9 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
         <label className="field">
           <span>Source URL</span>
           <input className="input" name="url" type="url" />
+          <span style={{ fontSize: "0.85rem", opacity: 0.8, marginTop: "4px" }}>
+            If you have photos, screenshots, or PDFs, please upload them to a file host (like Imgur or Google Drive) and paste the <b>public link</b> here.
+          </span>
         </label>
         <label className="field">
           <span>Category</span>
@@ -68,11 +71,11 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
         </label>
         <div className="split">
           <label className="field">
-            <span>Name</span>
+            <span>Name <i>(optional)</i></span>
             <input className="input" name="submitterName" maxLength={120} />
           </label>
           <label className="field">
-            <span>Contact</span>
+            <span>Contact <i>(optional)</i></span>
             <input className="input" name="submitterContact" maxLength={240} />
           </label>
         </div>

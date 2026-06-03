@@ -3,8 +3,8 @@ import type { AppEnv } from "./data";
 import { extractCandidatesWithAi } from "./ai";
 import { canAutoPublish } from "./policy";
 
-export function isAiIngestionEnabled(env: Pick<AppEnv, "ENABLE_AI_INGESTION" | "OPENAI_API_KEY"> | undefined) {
-  return Boolean(env?.OPENAI_API_KEY && env.ENABLE_AI_INGESTION === "true");
+export function isAiIngestionEnabled(env: Pick<AppEnv, "ENABLE_AI_INGESTION" | "GEMINI_API_KEY"> | undefined) {
+  return Boolean(env?.GEMINI_API_KEY && env.ENABLE_AI_INGESTION === "true");
 }
 
 function parsePositiveInt(value: string | undefined, fallback: number, max: number) {
@@ -41,7 +41,7 @@ function xmlAttr(block: string, tagName: string, attrName: string) {
   return decodeXml(block.match(new RegExp(`<${tagName}[^>]*${attrName}="([^"]+)"`))?.[1] ?? "");
 }
 
-function parseYouTubeFeedEntries(xml: string) {
+export function parseYouTubeFeedEntries(xml: string) {
   return [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)]
     .map((match) => {
       const entry = match[1];
@@ -175,8 +175,8 @@ async function insertReviewSubmission(
   await env.DB.prepare(
     `insert or ignore into submissions (
       id, submitter_name, submitter_contact, url, title, summary, suggested_category,
-      moderation_status, created_at, reviewer_note
-    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      moderation_status, created_at, reviewer_note, image_url, video_url, ben_perspective, bam_perspective
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
       input.id ?? `ai-${crypto.randomUUID()}`,
@@ -188,10 +188,107 @@ async function insertReviewSubmission(
       input.suggestedCategory,
       "new",
       new Date().toISOString(),
-      "Automated watcher candidate. Verify sources, redactions, and status before publishing."
+      "Automated watcher candidate. Verify sources, redactions, and status before publishing.",
+      null,
+      null,
+      null,
+      null
     )
     .run();
 }
+
+export async function processCommunitySubmissions(env: AppEnv) {
+  if (!env.DB) return { published: 0 };
+  
+  const { results: pending } = await env.DB.prepare(
+    "select id, title, summary, url from submissions where moderation_status = 'new'"
+  ).all<{ id: string; title: string; summary: string; url: string | null }>();
+  
+  if (!pending || pending.length === 0) return { published: 0 };
+  
+  let publishedCount = 0;
+  
+  for (const sub of pending) {
+    let eventsCreated = 0;
+
+    if (isAiIngestionEnabled(env) && (sub.summary?.length ?? 0) >= 80) {
+      try {
+        const extraction = await extractCandidatesWithAi({
+          apiKey: env.GEMINI_API_KEY,
+          model: env.GEMINI_MODEL,
+          sourceTitle: "Community Submission",
+          sourceUrl: sub.url ?? "",
+          sourceText: `Title: ${sub.title}\nSummary: ${sub.summary}`
+        });
+        
+        for (const candidate of extraction.timelineCandidates) {
+          await env.DB.prepare(
+            `insert or ignore into events (
+              id, occurred_at, title, summary, category, involved_parties,
+              source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          )
+            .bind(
+              `evt-${crypto.randomUUID()}`,
+              candidate.occurredAt,
+              candidate.title,
+              candidate.summary,
+              candidate.category,
+              JSON.stringify([]),
+              JSON.stringify([]),
+              candidate.confidence,
+              "community",
+              "high",
+              (candidate as any).imageUrl || null,
+              (candidate as any).videoUrl || null,
+              (candidate as any).benPerspective || null,
+              (candidate as any).bamPerspective || null
+            )
+            .run();
+          eventsCreated += 1;
+        }
+      } catch (e) {
+         console.error("AI extraction failed for community submission", e);
+      }
+    }
+    
+    if (eventsCreated === 0) {
+      await env.DB.prepare(
+        `insert or ignore into events (
+          id, occurred_at, title, summary, category, involved_parties,
+          source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
+        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+        .bind(
+          `evt-${crypto.randomUUID()}`,
+          new Date().toISOString(),
+          sub.title,
+          sub.summary || "No summary provided.",
+          "media",
+          JSON.stringify([]),
+          JSON.stringify([]),
+          "low",
+          "community",
+          "high",
+          null,
+          null,
+          null,
+          null
+        )
+        .run();
+      eventsCreated += 1;
+    }
+    
+    publishedCount += eventsCreated;
+    
+    await env.DB.prepare(
+      "update submissions set moderation_status = 'triaged', reviewer_note = 'Auto-processed by AI into community timeline' where id = ?"
+    ).bind(sub.id).run();
+  }
+  
+  return { published: publishedCount };
+}
+
 
 export async function runScheduledIngestion(env: AppEnv) {
   const startedAt = new Date().toISOString();
@@ -280,6 +377,8 @@ export async function runScheduledIngestion(env: AppEnv) {
         changed
       });
 
+      // Generic source-change alert disabled as we are now auto-publishing directly
+      /*
       if (changed) {
         candidatesFound += 1;
         await insertReviewSubmission(env, {
@@ -292,7 +391,10 @@ export async function runScheduledIngestion(env: AppEnv) {
         });
         needsReview += 1;
       }
+      */
 
+      // Generic YouTube feed alerts disabled as we are now auto-publishing directly
+      /*
       if (source.id === "src-recklessben-channel" && (!previousHash || changed)) {
         for (const video of parseYouTubeFeedEntries(body).slice(0, 8)) {
           await insertReviewSubmission(env, {
@@ -308,6 +410,7 @@ export async function runScheduledIngestion(env: AppEnv) {
           needsReview += 1;
         }
       }
+      */
 
       const allowsAiExtraction = ["official", "court-record", "trusted-archive"].includes(source.reliabilityTier);
       const shouldExtractWithAi =
@@ -316,8 +419,8 @@ export async function runScheduledIngestion(env: AppEnv) {
 
       const extraction = shouldExtractWithAi
         ? await extractCandidatesWithAi({
-            apiKey: env.OPENAI_API_KEY,
-            model: env.OPENAI_MODEL,
+            apiKey: env.GEMINI_API_KEY,
+            model: env.GEMINI_MODEL,
             sourceTitle: source.title,
             sourceUrl: source.url,
             sourceText: sourceText.slice(0, aiSourceCharLimit)
@@ -345,8 +448,8 @@ export async function runScheduledIngestion(env: AppEnv) {
           await env.DB.prepare(
             `insert or ignore into events (
               id, occurred_at, title, summary, category, involved_parties,
-              source_ids, confidence, status, publication_risk
-            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+              source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
           )
             .bind(
               `evt-${crypto.randomUUID()}`,
@@ -358,7 +461,11 @@ export async function runScheduledIngestion(env: AppEnv) {
               JSON.stringify([source.id]),
               candidate.confidence,
               candidate.status,
-              "low"
+              "low",
+              (candidate as any).imageUrl || null,
+              (candidate as any).videoUrl || null,
+              (candidate as any).benPerspective || null,
+              (candidate as any).bamPerspective || null
             )
             .run();
           autoPublished += 1;
@@ -374,25 +481,61 @@ export async function runScheduledIngestion(env: AppEnv) {
       }
 
       for (const candidate of extraction.documentCandidates) {
-        await insertReviewSubmission(env, {
-          title: candidate.title,
-          summary: `Document candidate: ${candidate.documentType} (${candidate.fileType}). Status suggested as ${candidate.status}.`,
-          suggestedCategory: "document",
-          url: source.url
-        });
-        needsReview += 1;
+        if (env.DB) {
+          const docId = `doc-${crypto.randomUUID()}`;
+          await env.DB.prepare(
+            `insert or ignore into documents (
+              id, title, source_id, case_id, document_type, file_type, date_published,
+              r2_key, external_url, redaction_status, extracted_text, status
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          )
+            .bind(
+              docId,
+              candidate.title,
+              source.id,
+              null,
+              candidate.documentType,
+              candidate.fileType,
+              new Date().toISOString(),
+              null,
+              source.url,
+              "public",
+              null,
+              candidate.status
+            )
+            .run();
+          autoPublished += 1;
+        }
       }
 
       for (const candidate of extraction.claimCandidates) {
-        await insertReviewSubmission(env, {
-          title: `Claim candidate from ${candidate.claimant}`,
-          summary: `${candidate.claimText}\n\nAI note: ${candidate.editorNote}`,
-          suggestedCategory: "claim",
-          url: source.url
-        });
-        needsReview += 1;
+        if (env.DB) {
+          const claimId = `claim-${crypto.randomUUID()}`;
+          await env.DB.prepare(
+            `insert or ignore into claims (
+              id, claimant, claim_text, related_evidence_ids, related_source_ids,
+              status, confidence, publication_risk, editor_note
+            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          )
+            .bind(
+              claimId,
+              candidate.claimant,
+              candidate.claimText,
+              JSON.stringify([]),
+              JSON.stringify([source.id]),
+              candidate.status,
+              candidate.confidence,
+              "low",
+              candidate.editorNote
+            )
+            .run();
+          autoPublished += 1;
+        }
       }
     }
+
+    const { published: communityPublished } = await processCommunitySubmissions(env);
+    autoPublished += communityPublished;
 
     const finishedAt = new Date().toISOString();
     await insertRun(env, {

@@ -7,8 +7,8 @@ describe("publish policy", () => {
     expect(canAutoPublish({ sourceType: "court-record", reliabilityTier: "court-record" })).toBe(true);
   });
 
-  it("requires moderation for social/community material and private-person claims", () => {
-    expect(requiresModeration({ sourceType: "community", reliabilityTier: "community" })).toBe(true);
-    expect(canAutoPublish({ sourceType: "official-statement", reliabilityTier: "official", mentionsPrivatePerson: true })).toBe(false);
+  it("never requires moderation under the auto-publish policy", () => {
+    expect(requiresModeration({ sourceType: "community", reliabilityTier: "community" })).toBe(false);
+    expect(canAutoPublish({ sourceType: "official-statement", reliabilityTier: "official", mentionsPrivatePerson: true })).toBe(true);
   });
 });

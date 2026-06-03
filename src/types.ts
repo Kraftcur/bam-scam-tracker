@@ -21,7 +21,8 @@ export type RecordStatus =
   | "verified"
   | "alleged"
   | "disputed"
-  | "needs-review";
+  | "needs-review"
+  | "community";
 
 export type Confidence = "high" | "medium" | "low";
 
@@ -59,6 +60,10 @@ export type TimelineEvent = {
   confidence: Confidence;
   status: RecordStatus;
   publicationRisk: PublicationRisk;
+  imageUrl?: string;
+  videoUrl?: string;
+  benPerspective?: string;
+  bamPerspective?: string;
 };
 
 export type CaseRecord = {
@@ -128,6 +133,10 @@ export type SubmissionRecord = {
   moderationStatus: "new" | "triaged" | "approved" | "rejected";
   createdAt: string;
   reviewerNote?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  benPerspective?: string;
+  bamPerspective?: string;
 };
 
 export type IngestionRun = {
