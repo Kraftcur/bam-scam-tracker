@@ -633,6 +633,171 @@ tr:last-child td {
   color: #f0e7d8;
 }
 
+.control-deck {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px;
+  border: 1px solid #2d3335;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgb(17 23 26 / 0.98), rgb(35 42 43 / 0.96)),
+    var(--charcoal);
+  color: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgb(17 23 26 / 0.18);
+}
+
+.control-deck::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgb(255 253 248 / 0.12);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.control-deck-intro {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  display: grid;
+  align-content: space-between;
+  gap: 16px;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.control-deck-intro h2 {
+  max-width: 330px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  text-wrap: balance;
+}
+
+.control-deck-intro::after {
+  content: "Evidence cockpit";
+  width: fit-content;
+  padding: 7px 10px;
+  border: 1px solid rgb(255 253 248 / 0.18);
+  border-radius: 999px;
+  color: #f0e7d8;
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.control-route-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.control-route {
+  position: relative;
+  isolation: isolate;
+  min-height: 204px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgb(255 253 248 / 0.14);
+  border-radius: 8px;
+  background: rgb(255 253 248 / 0.08);
+  color: var(--surface);
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform 170ms ease,
+    border-color 170ms ease,
+    background 170ms ease;
+}
+
+.control-route::before {
+  content: "";
+  position: absolute;
+  inset: auto -26px -46px -26px;
+  z-index: -1;
+  height: 112px;
+  background: var(--route-accent, var(--amber));
+  opacity: 0.32;
+  transform: skewY(-10deg);
+  transition:
+    opacity 170ms ease,
+    transform 170ms ease;
+}
+
+.control-route.latest {
+  --route-accent: var(--lego-yellow);
+}
+
+.control-route.proof {
+  --route-accent: var(--electric);
+}
+
+.control-route.people {
+  --route-accent: #8cb6d2;
+}
+
+.control-route.video {
+  --route-accent: #e96f58;
+}
+
+.control-route.court {
+  --route-accent: #c9a45f;
+}
+
+.control-route.receipts {
+  --route-accent: #9b83c7;
+}
+
+.control-route:hover,
+.control-route:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgb(255 253 248 / 0.34);
+  background: rgb(255 253 248 / 0.13);
+  outline: none;
+}
+
+.control-route:hover::before,
+.control-route:focus-visible::before {
+  opacity: 0.56;
+  transform: skewY(-6deg) translateY(-8px);
+}
+
+.control-route > span {
+  color: #f0e7d8;
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.control-route strong {
+  font-size: 1rem;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.control-route p {
+  color: #d8cec0;
+  font-size: 0.9rem;
+  line-height: 1.42;
+}
+
+.control-route small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff5df;
+  font-size: 0.78rem;
+  font-weight: 780;
+  line-height: 1.35;
+}
+
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2588,6 +2753,7 @@ tr:last-child td {
 
 @media (max-width: 1020px) {
   .story-hero,
+  .control-deck,
   .exhibit-grid,
   .exhibit-preview,
   .scene-panel,
@@ -2601,6 +2767,7 @@ tr:last-child td {
   }
 
   .stat-strip,
+  .control-route-grid,
   .receipt-grid,
   .lead-grid,
   .receipt-belt > div,
@@ -2613,6 +2780,21 @@ tr:last-child td {
 
   .watchdog-summary {
     grid-template-columns: 1fr;
+  }
+
+  .control-route-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(220px, 0.42fr);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .control-route {
+    min-height: 228px;
+    scroll-snap-align: start;
   }
 
   .now-grid,
@@ -2690,6 +2872,7 @@ tr:last-child td {
 @media (max-width: 640px) {
   .page-heading,
   .story-hero,
+  .control-deck,
   .section-band {
     scroll-margin-top: 188px;
   }
@@ -2712,6 +2895,7 @@ tr:last-child td {
   }
 
   .stat-strip,
+  .control-route-grid,
   .receipt-grid,
   .lead-grid,
   .receipt-belt > div,
@@ -2721,6 +2905,19 @@ tr:last-child td {
   .decoder-grid,
   .evidence-tools {
     grid-template-columns: 1fr;
+  }
+
+  .control-deck {
+    padding: 8px;
+  }
+
+  .control-deck-intro {
+    padding: 16px;
+  }
+
+  .control-route-grid {
+    grid-template-columns: none;
+    grid-auto-columns: minmax(210px, 0.84fr);
   }
 
   .stat-cell {

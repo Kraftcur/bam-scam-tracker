@@ -4,6 +4,16 @@ export type StoryStat = {
   note: string;
 };
 
+export type ControlRoute = {
+  id: string;
+  label: string;
+  href: string;
+  title: string;
+  forReader: string;
+  payoff: string;
+  accent: "latest" | "proof" | "people" | "video" | "court" | "receipts";
+};
+
 export type StoryAct = {
   id: string;
   date: string;
@@ -191,6 +201,63 @@ export const storyStats: StoryStat[] = [
     label: "site stance",
     value: "accountability-first",
     note: "The public evidence strongly explains why viewers side with Ben, while still labeling allegations and contested claims."
+  }
+];
+
+export const controlRoutes: ControlRoute[] = [
+  {
+    id: "route-latest",
+    label: "01 / now",
+    href: "#now",
+    title: "Tell me what is currently happening.",
+    forReader: "Start here if you just opened YouTube, saw chaos, and need the clean read.",
+    payoff: "Latest verified signal, record counts, and the best next proof to watch.",
+    accent: "latest"
+  },
+  {
+    id: "route-proof",
+    label: "02 / proof",
+    href: "#proof-ladder",
+    title: "What counts as real evidence?",
+    forReader: "Use this before trusting screenshots, Reddit threads, or confident comments.",
+    payoff: "How the tracker separates hot leads, creator footage, records, statements, and findings.",
+    accent: "proof"
+  },
+  {
+    id: "route-people",
+    label: "03 / cast",
+    href: "#pressure-map",
+    title: "Who are all these people?",
+    forReader: "Use this when BAM, Baker, Mansell, Gormans, police, and archive accounts blur together.",
+    payoff: "Roles, pressure points, evidence lanes, and what not to assume about each player.",
+    accent: "people"
+  },
+  {
+    id: "route-video",
+    label: "04 / clips",
+    href: "#clip-lab",
+    title: "Show me the video moments.",
+    forReader: "Jump straight to the timestamps everyone keeps arguing about.",
+    payoff: "What each clip shows, why it matters, and the careful read.",
+    accent: "video"
+  },
+  {
+    id: "route-court",
+    label: "05 / lawsuit",
+    href: "#lawsuit-translator",
+    title: "Translate the legal filing.",
+    forReader: "Use this when court language starts melting into soup.",
+    payoff: "BAM's theory, Ben-side pressure test, and what the court must actually decide.",
+    accent: "court"
+  },
+  {
+    id: "route-receipts",
+    label: "06 / receipts",
+    href: "#receipts",
+    title: "Open the source vault.",
+    forReader: "Use this when you want the PDFs, statements, docket images, and police records.",
+    payoff: "Fast-lane records with source/status labels instead of rumor loops.",
+    accent: "receipts"
   }
 ];
 

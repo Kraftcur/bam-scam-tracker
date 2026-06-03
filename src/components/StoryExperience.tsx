@@ -14,6 +14,7 @@ import {
 import { useMemo, useState } from "react";
 import type {
   ClipMoment,
+  ControlRoute,
   EvidenceScene,
   EvidenceThread,
   LawsuitLens,
@@ -27,6 +28,7 @@ import type {
 } from "../data/story";
 import {
   clipMoments,
+  controlRoutes,
   decoderCards,
   evidenceScenes,
   evidenceThreads,
@@ -175,6 +177,20 @@ function InternalLink({ href, children }: { href: string; children: string }) {
     <a className="button" href={href}>
       {children}
       <ArrowRight size={14} aria-hidden="true" />
+    </a>
+  );
+}
+
+function ControlRouteCard({ route }: { route: ControlRoute }) {
+  return (
+    <a className={`control-route ${route.accent}`} href={route.href}>
+      <span>{route.label}</span>
+      <strong>{route.title}</strong>
+      <p>{route.forReader}</p>
+      <small>
+        {route.payoff}
+        <ArrowRight size={13} aria-hidden="true" />
+      </small>
     </a>
   );
 }
@@ -565,6 +581,18 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             the same question: where is the complete inventory trail, and why did the people
             asking for it become the emergency?
           </p>
+        </div>
+      </section>
+
+      <section className="control-deck" aria-label="Case controls">
+        <div className="control-deck-intro">
+          <span className="eyebrow">Case Controls</span>
+          <h2>Pick the door. The story stays source-labeled.</h2>
+        </div>
+        <div className="control-route-grid">
+          {controlRoutes.map((route) => (
+            <ControlRouteCard key={route.id} route={route} />
+          ))}
         </div>
       </section>
 
