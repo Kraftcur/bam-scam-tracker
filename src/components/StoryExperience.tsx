@@ -12,8 +12,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceThread, StoryAct, VideoNode, VisualExhibit } from "../data/story";
-import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes, visualExhibits } from "../data/story";
+import type { EvidenceThread, StoryAct, TimelineBeat, VideoNode, VisualExhibit } from "../data/story";
+import { decoderCards, evidenceThreads, storyActs, storyStats, timelineBeats, videoNodes, visualExhibits } from "../data/story";
 import { formatDateTime } from "../lib/format";
 import type { DocumentRecord, IngestionRun, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
@@ -74,11 +74,79 @@ function VideoCard({ video }: { video: VideoNode }) {
   );
 }
 
+function TimelineBeatPanel({ beat }: { beat: TimelineBeat }) {
+  return (
+    <article className={`showdown-panel ${beat.tone}`} key={beat.id}>
+      <div className="row-top">
+        <div>
+          <span className="thread-tag">{beat.date}</span>
+          <h3>{beat.title}</h3>
+        </div>
+        {beat.isCurrent && <Badge value="latest" />}
+      </div>
+      <p className="showdown-subtitle">{beat.subtitle}</p>
+      <div className="side-grid">
+        <div className="side-card ben">
+          <span>Ben / Mansell side</span>
+          <p>{beat.benSide}</p>
+        </div>
+        <div className="side-card bam">
+          <span>BAM / police side</span>
+          <p>{beat.bamSide}</p>
+        </div>
+        <div className="side-card record">
+          <span>Record says</span>
+          <p>{beat.recordSays}</p>
+        </div>
+      </div>
+      <div className="settle-box">
+        <strong>What would actually settle this</strong>
+        <p>{beat.settleIt}</p>
+      </div>
+      <div className="row-top">
+        <p>{beat.whyItMatters}</p>
+        <a href={beat.sourceUrl} rel="noreferrer" target="_blank">
+          {beat.sourceLabel}
+          <ExternalLink size={14} aria-hidden="true" />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function TimelineBeatButton({
+  beat,
+  active,
+  onSelect
+}: {
+  beat: TimelineBeat;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button className={active ? "beat-button active" : "beat-button"} onClick={onSelect} type="button">
+      <span>{beat.date}</span>
+      <strong>{beat.title}</strong>
+      <small>{beat.subtitle}</small>
+    </button>
+  );
+}
+
+function InternalLink({ href, children }: { href: string; children: string }) {
+  return (
+    <a className="button" href={href}>
+      {children}
+      <ArrowRight size={14} aria-hidden="true" />
+    </a>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
   const [activeExhibit, setActiveExhibit] = useState<VisualExhibit>(visualExhibits[0]);
+  const [activeBeatId, setActiveBeatId] = useState(timelineBeats.find((beat) => beat.isCurrent)?.id ?? timelineBeats[0].id);
 
   const filteredThreads = useMemo(() => {
     const query = threadQuery.trim().toLowerCase();
@@ -109,6 +177,12 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
     const byId = new Map(documents.map((doc) => [doc.id, doc]));
     return receiptIds.map((id) => byId.get(id)).filter((doc): doc is DocumentRecord => Boolean(doc));
   }, [documents]);
+  const courtRecordCount = documents.filter((doc) => doc.status === "court-record").length;
+  const policeRecordCount = documents.filter((doc) =>
+    /police|warrant|probable cause|booking/i.test(`${doc.title} ${doc.documentType}`)
+  ).length;
+  const currentSignal = latestEvents[0];
+  const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
 
   return (
     <div className="story-page">
@@ -127,12 +201,12 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             Ben, how police became part of the story, and what the court papers actually say.
           </p>
           <div className="hero-actions">
-            <a className="button primary" href="#evidence">
-              Start With Evidence
+            <a className="button primary" href="#now">
+              Latest Info
               <ArrowRight size={17} aria-hidden="true" />
             </a>
-            <a className="button" href="#videos">
-              Watch the Trail
+            <a className="button" href="#storyline">
+              Open Timeline
               <PlayCircle size={17} aria-hidden="true" />
             </a>
             {donationUrl && (
@@ -160,6 +234,76 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             <p>{stat.note}</p>
           </div>
         ))}
+      </section>
+
+      <section className="section-band now-band" id="now">
+        <div className="section-heading">
+          <span className="eyebrow">Latest Right Now</span>
+          <h2>BAM's lawsuit is the live center of the story.</h2>
+          <p>
+            This is the clean read before the scroll: the controversy is no longer only
+            about missing LEGO. It is now inventory evidence, police power, public pressure,
+            and a Utah court docket moving at the same time.
+          </p>
+        </div>
+        <div className="now-grid">
+          <article className="now-lead">
+            <div className="meta">
+              <Badge value={currentSignal?.status ?? "verified"} />
+              <Badge value={currentSignal?.category ?? "court"} />
+            </div>
+            <h3>{currentSignal?.title ?? "Waiting for the next verified update"}</h3>
+            <p>{currentSignal?.summary ?? "The tracker will surface the next court, archive, or official-record change here."}</p>
+            <div className="now-actions">
+              <InternalLink href="/cases">Court tracker</InternalLink>
+              <InternalLink href="/documents">Source vault</InternalLink>
+              <InternalLink href="/feed.xml">RSS updates</InternalLink>
+            </div>
+          </article>
+          <div className="now-stack" aria-label="Current tracker counts">
+            <div>
+              <span>Court records indexed</span>
+              <strong>{courtRecordCount}</strong>
+              <p>Complaint, TRO, docket images, case history, and related filings.</p>
+            </div>
+            <div>
+              <span>Police / warrant records</span>
+              <strong>{policeRecordCount}</strong>
+              <p>Reports, probable-cause materials, booking sheet, and warrant leads.</p>
+            </div>
+            <div>
+              <span>Best next proof</span>
+              <strong>bodycam + docket</strong>
+              <p>Primary records beat hot takes. Always.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-band showdown-band" id="storyline">
+        <div className="section-heading">
+          <span className="eyebrow">Animated Storyline</span>
+          <h2>Move through what happened, one beat at a time.</h2>
+          <p>
+            Drag the case reel or tap a beat. The panel pops open with the Ben/Mansell read,
+            the BAM/police read, and the record-safe version in the middle.
+          </p>
+        </div>
+        <div className="timeline-toolbar">
+          <strong>Case reel</strong>
+          <span>{timelineBeats.length} beats indexed from consignment to lawsuit</span>
+        </div>
+        <div className="beat-rail" aria-label="Timeline beats">
+          {timelineBeats.map((beat) => (
+            <TimelineBeatButton
+              active={activeBeat.id === beat.id}
+              beat={beat}
+              key={beat.id}
+              onSelect={() => setActiveBeatId(beat.id)}
+            />
+          ))}
+        </div>
+        <TimelineBeatPanel beat={activeBeat} />
       </section>
 
       <section className="section-band exhibit-band" id="exhibits">

@@ -27,6 +27,22 @@ export type EvidenceThread = {
   heat: 1 | 2 | 3 | 4 | 5;
 };
 
+export type TimelineBeat = {
+  id: string;
+  date: string;
+  title: string;
+  subtitle: string;
+  benSide: string;
+  bamSide: string;
+  recordSays: string;
+  whyItMatters: string;
+  settleIt: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  tone: "origin" | "pressure" | "police" | "court";
+  isCurrent?: boolean;
+};
+
 export type VisualExhibit = {
   id: string;
   title: string;
@@ -243,6 +259,105 @@ export const evidenceThreads: EvidenceThread[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public court archive",
     heat: 4
+  }
+];
+
+export const timelineBeats: TimelineBeat[] = [
+  {
+    id: "beat-consignment",
+    date: "Nov 2023",
+    title: "The collection enters the story.",
+    subtitle: "A Star Wars LEGO collection is allegedly placed with the Salem store.",
+    benSide:
+      "Bryan Mansell's side says the family collection was consigned, meaning the unsold sets still belonged to the family and should have been traceable.",
+    bamSide:
+      "BAM says the arrangement was unauthorized at the corporate level and later documentation did not prove the sweeping value claim.",
+    recordSays:
+      "Public reports and archives confirm the consignment dispute exists. The exact inventory, value, authorization, and remaining items are still contested.",
+    whyItMatters:
+      "Everything downstream depends on whether the unsold inventory can be identified and tied back to the family.",
+    settleIt:
+      "Signed intake paperwork, tag photos, POS exports, storage records, and a chain-of-custody map.",
+    sourceUrl: "https://salembricktrials.com/bam-timeline",
+    sourceLabel: "Salem Brick Trials timeline",
+    tone: "origin"
+  },
+  {
+    id: "beat-takeover",
+    date: "Nov 2024",
+    title: "The store takeover makes ownership explosive.",
+    subtitle: "Corporate repossession and former-operator claims collide.",
+    benSide:
+      "The Ben/Mansell framing is that corporate control swallowed customer property and nobody with power wanted to unwind it.",
+    bamSide:
+      "BAM frames the takeover as enforcement against a troubled franchise and says it did not knowingly take a verified six-figure customer collection.",
+    recordSays:
+      "The Law/Gorman matter and BAM statements show competing stories about termination, assets, and what corporate knew.",
+    whyItMatters:
+      "This is where a local consignment dispute turns into a franchisor accountability fight.",
+    settleIt:
+      "Termination records, store inventory snapshots, security footage, employee statements, and any set-aside item logs.",
+    sourceUrl: "https://bamsucks.com/",
+    sourceLabel: "Public document archive",
+    tone: "origin"
+  },
+  {
+    id: "beat-ben-videos",
+    date: "May 2026",
+    title: "Ben makes it impossible to ignore.",
+    subtitle: "Videos turn a records dispute into a public-pressure campaign.",
+    benSide:
+      "Supporters see Ben exposing a story the family could not force into the open on its own, with aggressive but targeted accountability tactics.",
+    bamSide:
+      "BAM says the videos and tactics crossed into harassment, trespass, defamation, interference, and safety concerns for franchisees and employees.",
+    recordSays:
+      "The videos are primary evidence of what Ben published and did. They are not automatic proof of every claim he narrates.",
+    whyItMatters:
+      "This is the emotional center of the scandal: public pressure feels like the only lever that moved the story.",
+    settleIt:
+      "Timestamped clip index, exact alleged false statements, and side-by-side source records for each major claim.",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+    sourceLabel: "RecklessBen origin episode",
+    tone: "pressure"
+  },
+  {
+    id: "beat-police",
+    date: "Mar-Jun 2026",
+    title: "Police become a second scandal.",
+    subtitle: "Stops, searches, warrants, arrests, and official explanations become their own evidence fight.",
+    benSide:
+      "Ben argues law enforcement treated his crew as the emergency while the original property dispute remained unresolved.",
+    bamSide:
+      "BAM and police-side documents frame the encounters around trespass, stalking, harassment, residential picketing, and safety concerns.",
+    recordSays:
+      "Police reports, probable-cause records, warrant materials, Ben's videos, and official statements exist, but the full bodycam/dashcam context is still the key missing layer.",
+    whyItMatters:
+      "If police power was used unevenly, the story is no longer only about LEGO inventory.",
+    settleIt:
+      "Bodycam, dashcam, dispatch logs, full warrant affidavits, and redaction explanations.",
+    sourceUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+    sourceLabel: "American Fork police response",
+    tone: "police"
+  },
+  {
+    id: "beat-lawsuit",
+    date: "Now",
+    title: "BAM sues Ben, Mansell, and others.",
+    subtitle: "The latest live center is the Utah civil case and what the docket does next.",
+    benSide:
+      "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
+    bamSide:
+      "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
+    recordSays:
+      "The complaint and TRO materials are public records of allegations and requested relief. They are not final findings against Ben, Mansell, or anyone else.",
+    whyItMatters:
+      "This is what is currently happening: the viral fight is now a court fight, and docket updates matter more than rumor.",
+    settleIt:
+      "New docket entries, hearing dates, orders, answers, motions, and any factual findings from the court.",
+    sourceUrl: "https://bamsucks.com/",
+    sourceLabel: "Utah case archive",
+    tone: "court",
+    isCurrent: true
   }
 ];
 
