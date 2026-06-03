@@ -296,6 +296,21 @@ function StorySpineItem({
               <span key={tag}>{tag}</span>
             ))}
           </div>
+          {node.videoSnippets && node.videoSnippets.length > 0 && (
+            <div className="spine-video-snippets" aria-label={`Video snippets for ${node.headline}`}>
+              {node.videoSnippets.map((snippet) => (
+                <a href={snippet.href} key={`${node.id}-${snippet.label}`} rel="noreferrer" target="_blank" tabIndex={isOpen ? 0 : -1}>
+                  <img src={snippet.thumbnail} alt="" loading="lazy" />
+                  <span>
+                    <small>{snippet.timestamp}</small>
+                    <strong>{snippet.label}</strong>
+                    <span>{snippet.snippet}</span>
+                  </span>
+                  <ExternalLink size={13} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          )}
           <div className="spine-sources" aria-label={`Sources for ${node.headline}`}>
             {node.sources.map((source) => (
               <a

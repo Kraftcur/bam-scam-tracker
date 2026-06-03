@@ -82,6 +82,13 @@ export type StorySpineNode = {
     href: string;
     kind: "video" | "document" | "statement" | "coverage" | "archive" | "social" | "site";
   }>;
+  videoSnippets?: Array<{
+    label: string;
+    timestamp: string;
+    snippet: string;
+    href: string;
+    thumbnail: string;
+  }>;
 };
 
 export type EvidenceScene = {
@@ -1192,6 +1199,29 @@ export const storySpineNodes: StorySpineNode[] = [
         href: "https://salembricktrials.com/videos",
         kind: "archive"
       }
+    ],
+    videoSnippets: [
+      {
+        label: "Origin setup",
+        timestamp: "1:21",
+        snippet: "Sets up the missing-collection question and why the dispute left private channels.",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=81s",
+        thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
+      },
+      {
+        label: "Tag / inventory thread",
+        timestamp: "6:51",
+        snippet: "A useful jump point for the inventory-tag question viewers keep returning to.",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=411s",
+        thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
+      },
+      {
+        label: "Accountability pressure",
+        timestamp: "26:00",
+        snippet: "Shows why the public-pressure campaign became central to the story.",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=1560s",
+        thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
+      }
     ]
   },
   {
@@ -1253,6 +1283,22 @@ export const storySpineNodes: StorySpineNode[] = [
         href: "https://bamsucks.com/American-Fork-Police-Warrant-3352981-Search-Warrant.pdf",
         kind: "document"
       }
+    ],
+    videoSnippets: [
+      {
+        label: "Police response",
+        timestamp: "full video",
+        snippet: "Official public response that viewers compare against Ben's footage and records.",
+        href: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+        thumbnail: "https://i.ytimg.com/vi/IcVmSQpIPRY/hqdefault.jpg"
+      },
+      {
+        label: "Arrest arc",
+        timestamp: "full video",
+        snippet: "Creator-side episode that made the police-record lane a central part of the story.",
+        href: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+        thumbnail: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg"
+      }
     ]
   },
   {
@@ -1313,6 +1359,22 @@ export const storySpineNodes: StorySpineNode[] = [
         label: "Dexerto lawsuit coverage",
         href: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
         kind: "coverage"
+      }
+    ],
+    videoSnippets: [
+      {
+        label: "Lawsuit explainer",
+        timestamp: "coverage",
+        snippet: "A quick outside-summary jump point for the lawsuit's public context.",
+        href: "https://www.youtube.com/watch?v=14ktgvoH4Mc",
+        thumbnail: "https://i.ytimg.com/vi/14ktgvoH4Mc/hqdefault.jpg"
+      },
+      {
+        label: "Complaint-cited conduct",
+        timestamp: "49:53",
+        snippet: "One origin-episode moment useful for comparing video conduct to legal allegations.",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=2993s",
+        thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg"
       }
     ]
   },

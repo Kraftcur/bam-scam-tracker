@@ -13,16 +13,6 @@ const {
   description = "Neutral timeline and source hub for the Bricks & Minifigs / RecklessBen controversy.",
   donationUrl = ""
 } = Astro.props;
-
-const path = Astro.url.pathname;
-const navItems = [
-  ["/#now", "Latest"],
-  ["/#storyline", "Timeline"],
-  ["/#evidence", "Evidence"],
-  ["/timeline", "Archive"],
-  ["/submit", "Submit"],
-  ["/about", "About"]
-];
 ---
 
 <!doctype html>
@@ -43,15 +33,7 @@ const navItems = [
             <span class="brand-mark">BAM</span>
             <span>BAM Scam Tracker</span>
           </a>
-          <nav class="nav" aria-label="Primary navigation">
-            {
-              navItems.map(([href, label]) => (
-                <a href={href} aria-current={path === href || (path === "/" && href === "/#story") ? "page" : undefined}>
-                  {label}
-                </a>
-              ))
-            }
-          </nav>
+          <div class="topbar-spacer"></div>
           <DonationButton donationUrl={donationUrl} />
         </div>
       </header>

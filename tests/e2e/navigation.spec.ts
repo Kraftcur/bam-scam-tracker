@@ -10,8 +10,9 @@ test("dashboard loads source-first tracker", async ({ page }) => {
   const lawsuitBox = await page.getByRole("button", { name: /Utah lawsuit is live/i }).boundingBox();
   const originBox = await page.getByRole("button", { name: /Collection enters the dispute/i }).boundingBox();
   expect(lawsuitBox?.y ?? 0).toBeLessThan(originBox?.y ?? 0);
+  await expect(page.getByLabel("Primary navigation")).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute("href", "/feed.xml");
-  await page.getByLabel("Primary navigation").getByRole("link", { name: "Archive" }).click();
+  await page.goto("/timeline");
   await expect(page.getByRole("heading", { name: /Every dated item/i })).toBeVisible();
 });
 
@@ -27,6 +28,17 @@ test("homepage spine nodes expand and collapse", async ({ page }) => {
   await expect(socialPanel).toContainText("Social posts are not treated as verified facts");
   await socialNode.click();
   await expect(socialPanel).toBeHidden();
+});
+
+test("expanded spine nodes show compact video snippets", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
+  await page.getByRole("button", { name: /Videos make it public/i }).click();
+  const videoPanel = page.locator("#spine-panel-spine-public-video");
+  await expect(videoPanel).toBeVisible();
+  await expect(videoPanel.getByRole("link", { name: /Origin setup/i })).toBeVisible();
+  await expect(videoPanel.getByRole("link", { name: /Tag \/ inventory thread/i })).toBeVisible();
+  await expect(videoPanel.locator(".spine-video-snippets img")).toHaveCount(3);
 });
 
 test("floating people drawers show story roles", async ({ page }) => {

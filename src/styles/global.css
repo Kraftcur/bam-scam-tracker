@@ -1059,6 +1059,69 @@ tr:last-child td {
   font-weight: 850;
 }
 
+.spine-video-snippets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.spine-video-snippets a {
+  min-height: 86px;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--spine-accent) 22%, var(--line));
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.spine-video-snippets a:hover,
+.spine-video-snippets a:focus-visible {
+  border-color: color-mix(in srgb, var(--spine-accent) 60%, var(--line));
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.spine-video-snippets img {
+  width: 92px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--charcoal);
+}
+
+.spine-video-snippets span {
+  min-width: 0;
+}
+
+.spine-video-snippets a > span {
+  display: grid;
+  gap: 2px;
+}
+
+.spine-video-snippets small {
+  color: var(--spine-accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spine-video-snippets strong {
+  font-size: 0.88rem;
+  line-height: 1.15;
+}
+
+.spine-video-snippets a > span > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
 .spine-sources a {
   min-height: 36px;
   display: inline-flex;
@@ -3756,6 +3819,18 @@ tr:last-child td {
   .spine-footer-actions .button {
     width: 100%;
     justify-content: center;
+  }
+
+  .spine-video-snippets {
+    grid-template-columns: 1fr;
+  }
+
+  .spine-video-snippets a {
+    grid-template-columns: 86px minmax(0, 1fr) auto;
+  }
+
+  .spine-video-snippets img {
+    width: 86px;
   }
 
   .people-dock {
