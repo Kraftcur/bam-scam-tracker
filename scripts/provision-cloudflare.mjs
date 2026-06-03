@@ -8,6 +8,7 @@ const wranglerFiles = [resolve(root, "wrangler.toml"), resolve(root, "wrangler.i
 const d1Name = process.env.CF_D1_DATABASE_NAME || "bam_scam_tracker";
 const r2Bucket = process.env.CF_R2_BUCKET_NAME || "bam-scam-tracker-archive";
 const kvTitle = process.env.CF_KV_NAMESPACE_TITLE || "SESSION";
+const skipR2 = process.argv.includes("--skip-r2");
 const skipSeed = process.argv.includes("--skip-seed");
 const skipMigrate = process.argv.includes("--skip-migrate");
 
@@ -53,13 +54,22 @@ function listD1Databases() {
 }
 
 function listKvNamespaces() {
-  const output = run(["kv", "namespace", "list", "--json"], { capture: true });
+  const output = run(["kv", "namespace", "list"], { capture: true });
   return parseJsonOutput(output);
 }
 
 function listR2Buckets() {
-  const output = run(["r2", "bucket", "list", "--json"], { capture: true });
-  return parseJsonOutput(output);
+  try {
+    const output = run(["r2", "bucket", "list"], { capture: true });
+    return parseJsonOutput(output);
+  } catch (error) {
+    if (/enable R2/i.test(error.message)) {
+      console.warn("\nR2 is not enabled on this Cloudflare account. Skipping bucket creation for now.");
+      console.warn("The app can deploy without R2 because v1 uses public archive links; enable R2 later for mirrored PDFs/audio.");
+      return null;
+    }
+    throw error;
+  }
 }
 
 function ensureD1() {
@@ -95,21 +105,43 @@ function ensureKv() {
 }
 
 function ensureR2() {
+  if (skipR2) {
+    console.log("Skipping R2 provisioning because --skip-r2 was provided.");
+    return false;
+  }
+
   const buckets = listR2Buckets();
+  if (!buckets) {
+    return false;
+  }
   if (buckets.some((bucket) => bucket.name === r2Bucket)) {
     console.log(`Using existing R2 bucket ${r2Bucket}`);
-    return;
+    return true;
   }
 
   run(["r2", "bucket", "create", r2Bucket], { capture: true });
   console.log(`Created R2 bucket ${r2Bucket}`);
+  return true;
 }
 
-function patchWranglerConfigs({ d1Id, kvId }) {
+function withoutR2Binding(config) {
+  return config.replace(/\n\[\[r2_buckets\]\]\n(?:[^\n]*\n){2}/, "\n");
+}
+
+function patchWranglerConfigs({ d1Id, kvId, includeR2 }) {
   for (const file of wranglerFiles) {
     let config = readFileSync(file, "utf8");
-    config = config.replace(/database_id = "([^"]+)"/, `database_id = "${d1Id}"`);
-    config = config.replace(/id = "([^"]+)"/, `id = "${kvId}"`);
+    config = config.replace(
+      /(\[\[d1_databases\]\][\s\S]*?database_id = )"([^"]+)"/,
+      `$1"${d1Id}"`
+    );
+    config = config.replace(
+      /(\[\[kv_namespaces\]\][\s\S]*?id = )"([^"]+)"/,
+      `$1"${kvId}"`
+    );
+    if (!includeR2) {
+      config = withoutR2Binding(config);
+    }
     writeFileSync(file, config);
     console.log(`Patched ${file}`);
   }
@@ -130,8 +162,8 @@ function main() {
 
   const d1Id = ensureD1();
   const kvId = ensureKv();
-  ensureR2();
-  patchWranglerConfigs({ d1Id, kvId });
+  const includeR2 = ensureR2();
+  patchWranglerConfigs({ d1Id, kvId, includeR2 });
 
   if (!skipMigrate) {
     runNpm("db:migrate:remote");

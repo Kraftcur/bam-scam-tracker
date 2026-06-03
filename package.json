@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "cf:provision": "node scripts/provision-cloudflare.mjs",
-    "cf:deploy": "wrangler pages deploy ./dist",
+    "cf:deploy": "wrangler deploy -c dist/server/wrangler.json",
     "cf:deploy:ingest": "wrangler deploy -c wrangler.ingest.toml",
     "cf:deploy:all": "npm run build && npm run cf:deploy && npm run cf:deploy:ingest",
     "db:migrate:local": "wrangler d1 migrations apply bam_scam_tracker --local",

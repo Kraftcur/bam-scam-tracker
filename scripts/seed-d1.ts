@@ -16,7 +16,7 @@ function json(value: unknown) {
   return sql(JSON.stringify(value));
 }
 
-const statements: string[] = ["begin transaction;"];
+const statements: string[] = [];
 
 for (const source of seedData.sources) {
   statements.push(
@@ -139,8 +139,6 @@ for (const run of seedData.ingestionRuns) {
     ].join(", ")});`
   );
 }
-
-statements.push("commit;");
 
 const dir = mkdtempSync(join(tmpdir(), "bam-seed-"));
 const file = join(dir, "seed.sql");

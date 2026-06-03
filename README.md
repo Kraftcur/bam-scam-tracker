@@ -7,9 +7,9 @@ The editorial voice is accountability-forward and sympathetic to the public evid
 ## Stack
 
 - Astro with React islands
-- Cloudflare Pages for the web app
+- Cloudflare Workers with static assets for the web app
 - Cloudflare D1 for structured tracker data
-- Cloudflare R2 for archived public documents and clips
+- Cloudflare R2-ready helper for archived public documents and clips
 - Cloudflare Turnstile for submission spam control
 - Separate Cloudflare Worker cron for scheduled ingestion
 
@@ -46,7 +46,6 @@ npx wrangler login
 
 2. Provision Cloudflare resources. This creates or reuses:
    - D1 database `bam_scam_tracker`
-   - R2 bucket `bam-scam-tracker-archive`
    - KV namespace `SESSION`
    - patched D1/KV IDs in `wrangler.toml` and `wrangler.ingest.toml`
    - remote D1 migrations and seed data
@@ -55,12 +54,14 @@ npx wrangler login
 npm run cf:provision
 ```
 
+If R2 is not enabled on the account yet, provisioning skips the R2 bucket and deploys v1 with public archive links. Enable R2 later to mirror PDFs/audio and use `npm run r2:upload`.
+
 3. Set secrets:
 
 ```bash
-wrangler pages secret put ADMIN_TOKEN
-wrangler pages secret put OPENAI_API_KEY
-wrangler pages secret put TURNSTILE_SECRET_KEY
+wrangler secret put ADMIN_TOKEN
+wrangler secret put OPENAI_API_KEY
+wrangler secret put TURNSTILE_SECRET_KEY
 wrangler secret put OPENAI_API_KEY -c wrangler.ingest.toml
 ```
 
@@ -72,7 +73,7 @@ npm run cf:deploy:all
 
 ### GitHub Actions Path
 
-The workflow at `.github/workflows/cloudflare.yml` verifies every push to `codex/evidence-explorer`. It deploys only when run manually with `deploy=true`.
+The workflow at `.github/workflows/cloudflare.yml` verifies every push to `codex/evidence-explorer`. It deploys Workers only when run manually with `deploy=true`.
 
 Add these GitHub repository secrets before deploying from Actions:
 
@@ -81,7 +82,7 @@ Add these GitHub repository secrets before deploying from Actions:
 - `CF_D1_DATABASE_ID`
 - `CF_KV_NAMESPACE_ID`
 
-The workflow patches the Wrangler configs at runtime, builds, applies migrations, seeds D1, deploys Pages, and deploys the scheduled ingest Worker.
+The workflow patches the Wrangler configs at runtime, builds, applies migrations, seeds D1, deploys the main Worker with static assets, and deploys the scheduled ingest Worker.
 
 ### Manual Resource Setup
 
