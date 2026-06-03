@@ -27,6 +27,19 @@ export type EvidenceThread = {
   heat: 1 | 2 | 3 | 4 | 5;
 };
 
+export type VisualExhibit = {
+  id: string;
+  title: string;
+  kicker: string;
+  kind: "court-image" | "video-still" | "archive-record";
+  imageUrl: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  caption: string;
+  whyItMatters: string;
+  unresolved: string;
+};
+
 export type VideoNode = {
   id: string;
   title: string;
@@ -230,6 +243,73 @@ export const evidenceThreads: EvidenceThread[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public court archive",
     heat: 4
+  }
+];
+
+export const visualExhibits: VisualExhibit[] = [
+  {
+    id: "exhibit-docket-events",
+    title: "Docket events are the scoreboard, not the rumors.",
+    kicker: "Court image",
+    kind: "court-image",
+    imageUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png",
+    sourceLabel: "Public docket-events image",
+    caption:
+      "A docket image helps separate what was actually filed from what creators, companies, and commenters say happened.",
+    whyItMatters:
+      "When the internet argues about who is winning, the docket is the place to check whether anything actually changed.",
+    unresolved:
+      "Needs live verification against Utah Xchange before being treated as the current docket."
+  },
+  {
+    id: "exhibit-case-history",
+    title: "Case history shows the lawsuit's paper trail.",
+    kicker: "Court image",
+    kind: "court-image",
+    imageUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png",
+    sourceLabel: "Public case-history image",
+    caption:
+      "The case-history screenshot anchors the BAM v. RecklessBen matter to a concrete Utah case record.",
+    whyItMatters:
+      "It keeps the tracker grounded in dated records instead of only viral clips and secondhand summaries.",
+    unresolved:
+      "Future hearing dates and new filings still need official docket checks."
+  },
+  {
+    id: "exhibit-origin-video",
+    title: "The viral origin episode made the missing-inventory question unavoidable.",
+    kicker: "Video still",
+    kind: "video-still",
+    imageUrl: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+    sourceLabel: "RecklessBen origin episode",
+    caption:
+      "The first major episode frames the dispute around ownership, tags, inventory trails, and corporate accountability.",
+    whyItMatters:
+      "This is where public sympathy swings hard toward Ben and the Mansell family because the record feels inspectable.",
+    unresolved:
+      "Video evidence still needs timestamps, corroborating records, and separation between narration and proof."
+  },
+  {
+    id: "exhibit-police-video",
+    title: "The arrest arc turned a property dispute into a police-power story.",
+    kicker: "Video still",
+    kind: "video-still",
+    imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg",
+    sourceUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+    sourceLabel: "RecklessBen arrest episode",
+    caption:
+      "Ben's arrest-focused episode is why the tracker treats police records as a core evidence lane, not a side plot.",
+    whyItMatters:
+      "If police power was used unevenly, the scandal is bigger than the LEGO collection.",
+    unresolved:
+      "Bodycam, dashcam, warrant, dispatch, and redaction logs are the records that would settle the hardest claims."
   }
 ];
 

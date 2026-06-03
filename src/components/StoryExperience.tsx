@@ -12,8 +12,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceThread, StoryAct, VideoNode } from "../data/story";
-import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes } from "../data/story";
+import type { EvidenceThread, StoryAct, VideoNode, VisualExhibit } from "../data/story";
+import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes, visualExhibits } from "../data/story";
 import type { DocumentRecord, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
 
@@ -75,6 +75,7 @@ export default function StoryExperience({ documents, events, donationUrl }: Prop
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
+  const [activeExhibit, setActiveExhibit] = useState<VisualExhibit>(visualExhibits[0]);
 
   const filteredThreads = useMemo(() => {
     const query = threadQuery.trim().toLowerCase();
@@ -153,6 +154,57 @@ export default function StoryExperience({ documents, events, donationUrl }: Prop
             <p>{stat.note}</p>
           </div>
         ))}
+      </section>
+
+      <section className="section-band exhibit-band" id="exhibits">
+        <div className="section-heading">
+          <span className="eyebrow">Visual Evidence Board</span>
+          <h2>Screenshots you can actually orient around.</h2>
+          <p>
+            The story moves fast, so this board anchors the big swings to visible artifacts:
+            docket images, case history, and the video stills where the public narrative turns.
+          </p>
+        </div>
+        <div className="exhibit-grid">
+          <figure className="exhibit-preview">
+            <a href={activeExhibit.sourceUrl} rel="noreferrer" target="_blank">
+              <img src={activeExhibit.imageUrl} alt="" loading="lazy" />
+            </a>
+            <figcaption>
+              <span className="eyebrow">{activeExhibit.kicker}</span>
+              <h3>{activeExhibit.title}</h3>
+              <p>{activeExhibit.caption}</p>
+              <div className="why-box">
+                <strong>Why it matters</strong>
+                <p>{activeExhibit.whyItMatters}</p>
+              </div>
+              <div className="open-question">
+                <FileSearch size={16} aria-hidden="true" />
+                <span>{activeExhibit.unresolved}</span>
+              </div>
+              <a href={activeExhibit.sourceUrl} rel="noreferrer" target="_blank">
+                {activeExhibit.sourceLabel}
+                <ExternalLink size={14} aria-hidden="true" />
+              </a>
+            </figcaption>
+          </figure>
+          <div className="exhibit-pickers" aria-label="Visual exhibits">
+            {visualExhibits.map((exhibit) => (
+              <button
+                className={activeExhibit.id === exhibit.id ? "exhibit-picker active" : "exhibit-picker"}
+                key={exhibit.id}
+                onClick={() => setActiveExhibit(exhibit)}
+                type="button"
+              >
+                <img src={exhibit.imageUrl} alt="" loading="lazy" />
+                <span>
+                  <strong>{exhibit.title}</strong>
+                  <small>{exhibit.kicker}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="section-band" id="plain-english">
