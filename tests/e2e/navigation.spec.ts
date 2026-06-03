@@ -9,6 +9,7 @@ test("dashboard loads source-first tracker", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Fast leads go here/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Move through what happened/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Screenshots you can actually orient around/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /timestamp map for the moments/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /The tracker checks trusted sources/i })).toBeVisible();
   await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute("href", "/feed.xml");
   await expect(page.getByRole("link", { name: "Latest Info" })).toBeVisible();

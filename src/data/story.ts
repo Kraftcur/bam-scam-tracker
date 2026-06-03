@@ -115,6 +115,22 @@ export type VideoNode = {
   sourceLabel: string;
 };
 
+export type ClipMoment = {
+  id: string;
+  sequence: string;
+  timestamp: string;
+  title: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  thumbnail: string;
+  proofTag: "creator evidence" | "complaint-cited" | "official response" | "needs corroboration";
+  hook: string;
+  whatClipShows: string;
+  whyItMatters: string;
+  carefulRead: string;
+};
+
 export type DecoderCard = {
   phrase: string;
   translation: string;
@@ -952,6 +968,153 @@ export const videoNodes: VideoNode[] = [
       "Civil vs criminal framing",
       "Why legal leverage may be asymmetric"
     ]
+  }
+];
+
+export const clipMoments: ClipMoment[] = [
+  {
+    id: "clip-contract-property",
+    sequence: "01",
+    timestamp: "1:21-1:41",
+    title: "The ownership claim in twenty seconds",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=81s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "creator evidence",
+    hook: "If the sets remained family property until sold, every later inventory answer matters.",
+    whatClipShows:
+      "Bryan's side describes a consignment setup where the collection allegedly remained family property while the store kept a percentage from sales.",
+    whyItMatters:
+      "This is the simplest way into the whole case: was this ordinary store inventory, or customer property that needed a separate chain of custody?",
+    carefulRead:
+      "The clip proves the family-side explanation was publicly presented. The contract, inventory, and payment trail still decide the factual record."
+  },
+  {
+    id: "clip-repossession-footage",
+    sequence: "02",
+    timestamp: "2:20-3:35",
+    title: "The takeover footage becomes the first real receipt",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=140s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "creator evidence",
+    hook: "The story stops being abstract when the store takeover is tied to visible footage and immediate inventory questions.",
+    whatClipShows:
+      "The episode presents the franchise termination/takeover moment and discussion of sets Bryan allegedly had not yet been paid for.",
+    whyItMatters:
+      "This connects BAM's repossession narrative to the missing-inventory question viewers actually understand.",
+    carefulRead:
+      "Video context is powerful, but the exact seized inventory still needs records, photos, POS exports, and item-by-item reconciliation."
+  },
+  {
+    id: "clip-store-entry",
+    sequence: "03",
+    timestamp: "6:51-12:28",
+    title: "Ben enters the store and the dispute becomes a confrontation",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=411s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "complaint-cited",
+    hook: "This is where accountability theater and alleged trespass start occupying the same frame.",
+    whatClipShows:
+      "Ben arrives at the Salem store, asks about Bryan's sets, and the store/police response becomes part of the record.",
+    whyItMatters:
+      "Supporters read it as pressure after polite channels failed. BAM's lawsuit reads the same conduct as part of a targeted campaign.",
+    carefulRead:
+      "The clip can show what happened on camera. Whether it was lawful, defamatory, harassing, or protected commentary is a separate legal question."
+  },
+  {
+    id: "clip-ceo-hard-way",
+    sequence: "04",
+    timestamp: "12:40-14:46",
+    title: "The CEO confrontation becomes BAM's extortion frame",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=760s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "complaint-cited",
+    hook: "The same moment reads as leverage to supporters and threat language to BAM.",
+    whatClipShows:
+      "Ben confronts BAM leadership and frames return/payment as the easy way versus a harder public route.",
+    whyItMatters:
+      "This clip is a key split-screen: public-pressure strategy on one side, alleged coercive threat on the other.",
+    carefulRead:
+      "Do not summarize this as a court finding. It is a cited video moment whose legal meaning is what the lawsuit is fighting over."
+  },
+  {
+    id: "clip-brand-stunt",
+    sequence: "05",
+    timestamp: "26:00-35:59",
+    title: "The stunt tactics become both viral fuel and legal risk",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=1560s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "complaint-cited",
+    hook: "The public loved the pressure. The complaint treats the pressure as conduct.",
+    whatClipShows:
+      "The origin episode depicts altered branding/storefront tactics, a booth outside the store, and identity-switching after police arrived.",
+    whyItMatters:
+      "This is why the tracker cannot be only pro-Ben vibes: the most entertaining material is also the material BAM points at in court.",
+    carefulRead:
+      "The clip helps verify what Ben published. It does not by itself prove BAM's legal labels or Ben's defense."
+  },
+  {
+    id: "clip-raffle-police",
+    sequence: "06",
+    timestamp: "39:39-46:26",
+    title: "The raffle sequence tests whether police treat the LEGO dispute as crime or civil mess",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=2379s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "complaint-cited",
+    hook: "This is the clearest 'why won't police act?' moment for viewers.",
+    whatClipShows:
+      "Ben's group runs a raffle-style setup, brings the winner to the store, and pushes police to treat non-delivery as criminal.",
+    whyItMatters:
+      "It explains why viewers became angry at law enforcement while also showing why police might frame the dispute as civil.",
+    carefulRead:
+      "The clip captures the tactic and response; criminal liability, false-pretense theories, and police discretion require records beyond the edit."
+  },
+  {
+    id: "clip-josh-offer",
+    sequence: "07",
+    timestamp: "49:53-52:04",
+    title: "The partial-return offer is the inventory dispute in miniature",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=2993s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "creator evidence",
+    hook: "BAM-side framing says only a small remnant could be identified; Bryan-side framing says the family is nowhere near made whole.",
+    whatClipShows:
+      "The video points to a limited set-aside/return discussion and Bryan objecting to conditions or partial resolution.",
+    whyItMatters:
+      "This is the cleanest place to explain the gap between 'we found some sets' and 'where is the full collection?'",
+    carefulRead:
+      "A partial return offer does not settle ownership, value, sold inventory, missing inventory, or who is responsible for the gap."
+  },
+  {
+    id: "clip-small-claims",
+    sequence: "08",
+    timestamp: "1:08:14-1:21:39",
+    title: "Small-claims wins need docket discipline",
+    sourceTitle: "I tracked down the thief who stole $200,000 of LEGO",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=4094s",
+    sourceLabel: "RecklessBen origin episode",
+    thumbnail: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    proofTag: "needs corroboration",
+    hook: "This is where internet scoreboard talk can get sloppy fast.",
+    whatClipShows:
+      "Ben discusses small-claims strategy, service attempts, default framing, and treating non-response as a win.",
+    whyItMatters:
+      "The public narrative around 'they lost' or 'we won' needs exact docket outcomes, service facts, dismissals, and defendant names.",
+    carefulRead:
+      "A default-style clip is not the same thing as a final, collectible, fact-finding judgment. The docket has to carry that weight."
   }
 ];
 

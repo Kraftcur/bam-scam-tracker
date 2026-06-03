@@ -12,8 +12,19 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceScene, EvidenceThread, ProofLevel, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
+import type {
+  ClipMoment,
+  EvidenceScene,
+  EvidenceThread,
+  ProofLevel,
+  StoryAct,
+  TimelineBeat,
+  VerificationLead,
+  VideoNode,
+  VisualExhibit
+} from "../data/story";
 import {
+  clipMoments,
   decoderCards,
   evidenceScenes,
   evidenceThreads,
@@ -284,12 +295,71 @@ function EvidenceScenePanel({ scene }: { scene: EvidenceScene }) {
   );
 }
 
+function ClipMomentButton({
+  active,
+  clip,
+  onSelect
+}: {
+  active: boolean;
+  clip: ClipMoment;
+  onSelect: () => void;
+}) {
+  return (
+    <button className={active ? "clip-moment-button active" : "clip-moment-button"} onClick={onSelect} type="button">
+      <span>{clip.sequence}</span>
+      <strong>{clip.title}</strong>
+      <small>{clip.timestamp}</small>
+    </button>
+  );
+}
+
+function ClipMomentPanel({ clip }: { clip: ClipMoment }) {
+  return (
+    <article className="clip-moment-panel">
+      <a className="clip-screen" href={clip.sourceUrl} rel="noreferrer" target="_blank">
+        <img src={clip.thumbnail} alt="" loading="lazy" />
+        <span>
+          <PlayCircle size={18} aria-hidden="true" />
+          Jump to {clip.timestamp}
+        </span>
+      </a>
+      <div className="clip-moment-copy">
+        <div className="scene-kicker">
+          <span>{clip.sequence} / {clip.timestamp}</span>
+          <Badge value={clip.proofTag} />
+        </div>
+        <h3>{clip.title}</h3>
+        <p>{clip.hook}</p>
+        <div className="clip-proof-grid">
+          <div>
+            <strong>What the clip shows</strong>
+            <p>{clip.whatClipShows}</p>
+          </div>
+          <div>
+            <strong>Why it matters</strong>
+            <p>{clip.whyItMatters}</p>
+          </div>
+          <div>
+            <strong>Careful read</strong>
+            <p>{clip.carefulRead}</p>
+          </div>
+        </div>
+        <a className="clip-source-link" href={clip.sourceUrl} rel="noreferrer" target="_blank">
+          {clip.sourceLabel}
+          <ExternalLink size={14} aria-hidden="true" />
+        </a>
+      </div>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
   const [activeExhibit, setActiveExhibit] = useState<VisualExhibit>(visualExhibits[0]);
   const [activeSceneId, setActiveSceneId] = useState(evidenceScenes[0].id);
+  const [activeClipId, setActiveClipId] = useState(clipMoments[0].id);
   const [activeBeatId, setActiveBeatId] = useState(timelineBeats.find((beat) => beat.isCurrent)?.id ?? timelineBeats[0].id);
 
   const filteredThreads = useMemo(() => {
@@ -327,6 +397,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   ).length;
   const currentSignal = latestEvents[0];
   const activeScene = evidenceScenes.find((scene) => scene.id === activeSceneId) ?? evidenceScenes[0];
+  const activeClip = clipMoments.find((clip) => clip.id === activeClipId) ?? clipMoments[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
 
   return (
@@ -553,6 +624,30 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
               </button>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section-band clip-lab-band" id="clip-lab">
+        <div className="section-heading">
+          <span className="eyebrow">Clip Lab</span>
+          <h2>The timestamp map for the moments people keep arguing about.</h2>
+          <p>
+            These are not verdicts. They are jump points: what the footage shows, why viewers latch onto it,
+            and what the record still has to prove.
+          </p>
+        </div>
+        <div className="clip-lab-grid">
+          <div className="clip-moment-rail" aria-label="Timestamped clip moments">
+            {clipMoments.map((clip) => (
+              <ClipMomentButton
+                active={activeClip.id === clip.id}
+                clip={clip}
+                key={clip.id}
+                onSelect={() => setActiveClipId(clip.id)}
+              />
+            ))}
+          </div>
+          <ClipMomentPanel clip={activeClip} />
         </div>
       </section>
 
