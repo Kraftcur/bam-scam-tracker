@@ -1,4 +1,4 @@
-import { BookOpen, Coffee, ExternalLink, FileSearch, ShieldAlert, Sparkles, Users } from "lucide-react";
+import { BookOpen, Coffee, ExternalLink, FileSearch, MessagesSquare, ShieldAlert, Sparkles, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type {
   StoryPlayer,
@@ -255,11 +255,13 @@ function TimelineSpine({
   return (
     <div className="spine-shell" data-spine-ready={isHydrated ? "true" : "false"}>
       <div className="spine-copy">
-        <span className="eyebrow">Source-labeled public timeline</span>
+        <span className="eyebrow">Evidence-tiered public record</span>
         <h1>The BAM / RecklessBen story, on one scroll.</h1>
         <p>
-          Follow the public controversy as a continuous case spine: records, videos,
-          official statements, news coverage, and public conversation, each labeled by what it can actually prove.
+          A continuous case spine where every entry is tagged by evidence tier — court records and
+          official statements are kept separate from creator video, news coverage, and unverified social
+          chatter — so you can see exactly what each claim is backed by. Verified-tier sources are watched
+          automatically and the timeline updates itself as they change.
         </p>
       </div>
 
@@ -327,6 +329,10 @@ function TimelineSpine({
         <a className="button" href="/documents">
           Source Vault
           <FileSearch size={17} aria-hidden="true" />
+        </a>
+        <a className="button" href="/community">
+          Community Feed
+          <MessagesSquare size={17} aria-hidden="true" />
         </a>
         <a className="button" href="/about">
           Editorial Policy

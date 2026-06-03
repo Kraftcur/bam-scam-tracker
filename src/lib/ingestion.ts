@@ -537,24 +537,63 @@ export async function runScheduledIngestion(env: AppEnv) {
       }
       */
 
-      // Generic YouTube feed alerts disabled as we are now auto-publishing directly
-      /*
+      // Auto-import new RecklessBen uploads from the YouTube RSS feed. primary-video
+      // is a verified tier, so confirmed uploads publish straight to the timeline.
+      // They land as "needs-review" so the upload is recorded as primary footage
+      // while the specific claims inside the video still get labeled by a human.
+      // Deterministic ids (evt-yt-<videoId>) + `insert or ignore` keep re-runs idempotent.
       if (source.id === "src-recklessben-channel" && (!previousHash || changed)) {
         for (const video of parseYouTubeFeedEntries(body).slice(0, 8)) {
-          await insertReviewSubmission(env, {
-            id: `youtube-${video.videoId}`,
-            title: `RecklessBen upload: ${video.title}`,
-            summary:
-              `Published ${video.published || "unknown date"}. Views in RSS: ${video.views || "unknown"}. ` +
-              "Review this creator-video lead, add timestamped clips if relevant, and label underlying claims separately from what the video itself proves.",
-            suggestedCategory: "video",
-            url: video.url
-          });
           candidatesFound += 1;
-          needsReview += 1;
+          const allowed = canAutoPublish({
+            sourceType: source.sourceType,
+            reliabilityTier: source.reliabilityTier
+          });
+
+          if (allowed && env.DB) {
+            const publishedDate = video.published ? video.published.slice(0, 10) : "";
+            const result = await env.DB.prepare(
+              `insert or ignore into events (
+                id, occurred_at, title, summary, category, involved_parties,
+                source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
+              ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            )
+              .bind(
+                `evt-yt-${video.videoId}`,
+                video.published || new Date().toISOString(),
+                `RecklessBen upload: ${video.title}`,
+                `${publishedDate ? `Published ${publishedDate}. ` : ""}` +
+                  `${video.description ? `${video.description.slice(0, 280)} ` : "Primary creator footage. "}` +
+                  "Auto-imported from the YouTube feed; treat the upload as primary footage but label specific claims separately.",
+                "video",
+                JSON.stringify([]),
+                JSON.stringify([source.id]),
+                "low",
+                "needs-review",
+                "low",
+                video.thumbnail || null,
+                video.url,
+                null,
+                null
+              )
+              .run();
+            // `insert or ignore` reports 0 changes when the video already exists,
+            // so we only count genuinely new uploads as auto-published.
+            if (result.meta?.changes) autoPublished += 1;
+          } else {
+            await insertReviewSubmission(env, {
+              id: `youtube-${video.videoId}`,
+              title: `RecklessBen upload: ${video.title}`,
+              summary:
+                `Published ${video.published || "unknown date"}. Views in RSS: ${video.views || "unknown"}. ` +
+                "Review this creator-video lead, add timestamped clips if relevant, and label underlying claims separately from what the video itself proves.",
+              suggestedCategory: "video",
+              url: video.url
+            });
+            needsReview += 1;
+          }
         }
       }
-      */
 
       const allowsAiExtraction = ["official", "court-record", "trusted-archive"].includes(source.reliabilityTier);
       const shouldExtractWithAi =

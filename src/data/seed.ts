@@ -256,6 +256,28 @@ export const seedData: TrackerData = {
       reliabilityTier: "reported",
       lastChecked: now,
       notes: "Opinionated police-response critique. Useful for contested-evidence leads, not as an official finding."
+    },
+    {
+      id: "src-sub-c09c1b42-c4ba-4c21-9551-9c18546420c5",
+      url: "https://www.youtube.com/watch?v=ifte8245dBU",
+      title: "Fox 5 DC Interview With RecklessBen",
+      publisher: "Fox 5 DC",
+      sourceType: "video",
+      dateFound: "2026-06-03T22:42:49.144Z",
+      reliabilityTier: "primary-video",
+      lastChecked: "2026-06-03T22:42:49.228Z",
+      notes: "First-hand video interview."
+    },
+    {
+      id: "src-sub-bodycam-johnson-amfork",
+      url: "https://youtu.be/QfmWZ0Bkduw",
+      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
+      publisher: "Community submission",
+      sourceType: "community",
+      dateFound: now,
+      reliabilityTier: "community",
+      lastChecked: now,
+      notes: "Community-submitted lead. Useful for public context, not verified fact."
     }
   ],
   events: [
@@ -553,6 +575,33 @@ export const seedData: TrackerData = {
       bamPerspective: "McNeff presents BAM's side to police: the consignment was invalid/unauthorized, the former franchisee was responsible, and Ben/Mansell were allegedly using pressure tactics to extract money.",
       imageUrl: mcneffPoliceCallPosterUrl,
       videoUrl: mcneffPoliceCallPlayableUrl
+    },
+    {
+      id: "evt-community-sub-c09c1b42-c4ba-4c21-9551-9c18546420c5",
+      occurredAt: "2026-06-03T18:00:00.000Z",
+      title: "Fox 5 DC Interview With RecklessBen",
+      summary: "Fox 5 interview with Benjamin Schneider talking about what is going on currently. Also touches on Bryan Mansell / Mansell family and how they are feeling!",
+      category: "video",
+      involvedParties: ["Benjamin Schneider", "Bryan Mansell"],
+      sourceIds: ["src-sub-c09c1b42-c4ba-4c21-9551-9c18546420c5"],
+      confidence: "medium",
+      status: "verified",
+      publicationRisk: "moderate",
+      videoUrl: "https://www.youtube.com/watch?v=ifte8245dBU"
+    },
+    {
+      id: "evt-community-sub-bodycam-johnson-amfork",
+      occurredAt: "2026-03-10T12:00:00.000Z",
+      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
+      summary:
+        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it connects to the wider Bricks & Minifigs dispute before any claims are labeled.",
+      category: "police",
+      involvedParties: [],
+      sourceIds: ["src-sub-bodycam-johnson-amfork"],
+      confidence: "medium",
+      status: "community",
+      publicationRisk: "high",
+      videoUrl: "https://youtu.be/QfmWZ0Bkduw"
     }
   ],
   cases: [
@@ -1142,7 +1191,30 @@ export const seedData: TrackerData = {
       editorNote: "Timestamp and call date matter. Compare this statement against Oregon/Utah small-claims records, Law/Gorman filings, and the later BAM v. Schneider complaint before characterizing it."
     }
   ],
-  submissions: [],
+  submissions: [
+    {
+      id: "sub-bodycam-johnson-amfork",
+      url: "https://youtu.be/QfmWZ0Bkduw",
+      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
+      summary:
+        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it connects to the wider Bricks & Minifigs dispute before any claims are labeled.",
+      suggestedCategory: "clip",
+      moderationStatus: "triaged",
+      createdAt: now,
+      reviewerNote:
+        "Auto-scored 72/100; action: timeline review; cluster: clip-police-bodycam-bodycam-footage; reasons: has-source-url, detailed-summary, media-evidence-lead, named-source-context.",
+      videoUrl: "https://youtu.be/QfmWZ0Bkduw",
+      communityEventId: "evt-community-sub-bodycam-johnson-amfork",
+      aiScore: 72,
+      aiScoreReasons: ["has-source-url", "detailed-summary", "media-evidence-lead", "named-source-context"],
+      clusterKey: "clip-police-bodycam-bodycam-footage",
+      duplicateKey: "youtu.be/QfmWZ0Bkduw",
+      suggestedAction: "timeline-review",
+      aiSummary:
+        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it...",
+      processedAt: now
+    }
+  ],
   ingestionRuns: [
     {
       id: "run-seed-20260603",

@@ -7,6 +7,9 @@ import { getEnv } from "../lib/runtime";
 const env = getEnv(Astro.locals);
 const data = await getTrackerData(env);
 const donationUrl = getDonationUrl(env);
+// Keep the verified timeline clean: community-sourced leads live on /community,
+// not in the court-record / official-statement timeline.
+const verifiedEvents = data.events.filter((event) => event.status !== "community");
 ---
 
 <BaseLayout title="Timeline | BAM Scam Tracker" donationUrl={donationUrl}>
@@ -15,5 +18,5 @@ const donationUrl = getDonationUrl(env);
     <h1>Every dated item with its source and status.</h1>
     <p class="lede">Court records, official statements, news reports, and disputed claims stay separated so readers can see what is known, alleged, or still under review.</p>
   </section>
-  <TimelineExplorer client:load events={data.events} sources={data.sources} />
+  <TimelineExplorer client:load events={verifiedEvents} sources={data.sources} />
 </BaseLayout>
