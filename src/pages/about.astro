@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="About | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Editorial policy</span>
+    <h1>Source-first, neutral, and careful with disputed facts.</h1>
+    <p class="lede">This tracker is built to help readers follow a fast-moving public controversy without turning allegations into findings.</p>
+  </section>
+
+  <section class="split">
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-header"><h2>Standards</h2></div>
+        <div class="panel-body stack">
+          <p>Every public event needs at least one source. Court filings are labeled as filings, not proof. Official statements are labeled as the speaker's position. News reports and community archives are helpful leads but do not replace primary records.</p>
+          <p>Private identifying information is excluded. If a public file includes sensitive material, the tracker should link to a redacted copy or summarize the public-record relevance without republishing the sensitive detail.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Corrections</h2></div>
+        <div class="panel-body stack">
+          <p>Submit corrections through the suggestion form with the record title, source URL, and what should change. Corrections should preserve source provenance instead of silently rewriting the timeline.</p>
+          <a class="button" href="/submit">Submit Correction</a>
+        </div>
+      </section>
+    </div>
+
+    <aside class="stack">
+      <section class="panel" id="support">
+        <div class="panel-header"><h2>Support</h2></div>
+        <div class="panel-body stack">
+          <p>Donations support hosting, court-record access, document storage, and review time. Donations do not buy editorial treatment.</p>
+          {donationUrl ? <a class="button warn" href={donationUrl} target="_blank" rel="noreferrer">Support the Tracker</a> : <p class="notice">Set PUBLIC_DONATION_URL to enable the support button.</p>}
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Disclaimer</h2></div>
+        <div class="panel-body">
+          <p>This site is an informational archive and is not legal advice. It does not represent Bricks & Minifigs, BAM Franchising, RecklessBen, the Mansell family, any court, or any party to the dispute.</p>
+        </div>
+      </section>
+    </aside>
+  </section>
+</BaseLayout>

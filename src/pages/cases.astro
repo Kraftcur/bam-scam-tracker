@@ -1,0 +1,23 @@
+---
+import CaseTracker from "../components/CaseTracker";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Cases | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Court tracker</span>
+    <h1>Known case numbers, parties, sources, and docket caveats.</h1>
+    <p class="lede">Case records are seeded from public archives and should be checked against Utah Xchange before any future court date is treated as current.</p>
+  </section>
+  <div class="notice">
+    Utah filings and docket images republished elsewhere are useful leads. The tracker treats Utah Xchange and direct court records as the authoritative verification source for dates and docket status.
+  </div>
+  <br />
+  <CaseTracker client:load cases={data.cases} sources={data.sources} />
+</BaseLayout>

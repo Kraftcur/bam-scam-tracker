@@ -1,0 +1,19 @@
+---
+import TimelineExplorer from "../components/TimelineExplorer";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Timeline | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Timeline</span>
+    <h1>Every dated item with its source and status.</h1>
+    <p class="lede">Court records, official statements, news reports, and disputed claims stay separated so readers can see what is known, alleged, or still under review.</p>
+  </section>
+  <TimelineExplorer client:load events={data.events} sources={data.sources} />
+</BaseLayout>

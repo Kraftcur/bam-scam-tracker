@@ -1,0 +1,69 @@
+---
+import "../styles/global.css";
+import DonationButton from "../components/DonationButton.astro";
+
+type Props = {
+  title?: string;
+  description?: string;
+  donationUrl?: string;
+};
+
+const {
+  title = "BAM Scam Tracker",
+  description = "Neutral timeline and source hub for the Bricks & Minifigs / RecklessBen controversy.",
+  donationUrl = ""
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const navItems = [
+  ["/#story", "Story"],
+  ["/#evidence", "Evidence"],
+  ["/#videos", "Videos"],
+  ["/#decoder", "Decoder"],
+  ["/timeline", "Archive"],
+  ["/submit", "Submit"],
+  ["/about", "About"]
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <a class="brand" href="/">
+            <span class="brand-mark">BAM</span>
+            <span>BAM Scam Tracker</span>
+          </a>
+          <nav class="nav" aria-label="Primary navigation">
+            {
+              navItems.map(([href, label]) => (
+                <a href={href} aria-current={path === href || (path === "/" && href === "/#story") ? "page" : undefined}>
+                  {label}
+                </a>
+              ))
+            }
+          </nav>
+          <DonationButton donationUrl={donationUrl} />
+        </div>
+      </header>
+      <main class="main">
+        <slot />
+      </main>
+      <footer class="footer">
+        <div class="footer-inner">
+          <span>Neutral tracker. Allegations are labeled. Court filings are not findings.</span>
+          <a href="/about">Editorial policy and corrections</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

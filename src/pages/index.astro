@@ -1,0 +1,18 @@
+---
+import StoryExperience from "../components/StoryExperience";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout
+  title="BAM Scam Tracker | Evidence Map"
+  description="An evidence-first, plain-English guide to the Bricks & Minifigs / RecklessBen controversy."
+  donationUrl={donationUrl}
+>
+  <StoryExperience client:load events={data.events} donationUrl={donationUrl} />
+</BaseLayout>

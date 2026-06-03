@@ -1,0 +1,19 @@
+---
+import AdminReview from "../components/AdminReview";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Admin | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Moderation</span>
+    <h1>Review community suggestions and AI-drafted updates.</h1>
+    <p class="lede">The v1 admin flow uses a single token. Cloudflare Access can sit in front of this route for production.</p>
+  </section>
+  <AdminReview client:load submissions={data.submissions} />
+</BaseLayout>

@@ -1,0 +1,614 @@
+import type { TrackerData } from "../types";
+
+const now = "2026-06-03T00:00:00.000Z";
+
+export const seedData: TrackerData = {
+  sources: [
+    {
+      id: "src-bamsucks-archive",
+      url: "https://bamsucks.com/",
+      title: "Bricks & Minifigs dispute archive",
+      publisher: "BAM Sucks public archive",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "trusted-archive",
+      lastChecked: now,
+      notes: "Public archive of filings, police records, statements, and timeline materials. Verify court records against Utah Xchange before treating as official."
+    },
+    {
+      id: "src-utah-xchange",
+      url: "https://www.utcourts.gov/en/court-records-publications/records/xchange.html",
+      title: "Xchange: Public Case Search",
+      publisher: "Utah State Courts",
+      sourceType: "court-record",
+      dateFound: now,
+      reliabilityTier: "court-record",
+      lastChecked: now,
+      notes: "Official Utah district and justice court case information source."
+    },
+    {
+      id: "src-bam-may28",
+      url: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+      title: "Response to Customer Inquiries Regarding Bricks & Minifigs Salem, Oregon",
+      publisher: "Bricks & Minifigs",
+      sourceType: "official-statement",
+      dateFound: now,
+      reliabilityTier: "official",
+      lastChecked: now
+    },
+    {
+      id: "src-bam-may21",
+      url: "https://bricksandminifigs.com/blog/blog/2026/05/21/salem-oregon-bricks-and-minifigs-store-situation/",
+      title: "A Note to Our Community about the Bricks & Minifigs Salem, OR Store",
+      publisher: "Bricks & Minifigs",
+      sourceType: "official-statement",
+      dateFound: now,
+      reliabilityTier: "official",
+      lastChecked: now
+    },
+    {
+      id: "src-globenewswire-jun1",
+      url: "https://www.globenewswire.com/news-release/2026/06/01/3304463/0/en/bricks-minifigs-issues-comprehensive-public-statement-on-salem-oregon-dispute-reaffirms-offer-to-help-mansell-family.html",
+      title: "Bricks & Minifigs Issues Comprehensive Public Statement on Salem, Oregon Dispute",
+      publisher: "GlobeNewswire",
+      sourceType: "official-statement",
+      dateFound: now,
+      reliabilityTier: "official",
+      lastChecked: now
+    },
+    {
+      id: "src-brickfanatics-may29",
+      url: "https://www.brickfanatics.com/bricks-minifigs-issue-statement-lego-dispute",
+      title: "Bricks & Minifigs issues new statement on $200,000 LEGO collection dispute",
+      publisher: "Brick Fanatics",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-dexerto-may24",
+      url: "https://www.dexerto.com/youtube/dispute-over-200k-lego-star-wars-collection-triggers-lawsuits-and-viral-investigation-3367546/",
+      title: "Dispute over $200k Lego Star Wars collection triggers lawsuits and viral investigation",
+      publisher: "Dexerto",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-dexerto-jun2",
+      url: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
+      title: "Bricks & Minifigs sues Reckless Ben over viral $200k Lego Star Wars investigation",
+      publisher: "Dexerto",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-salem-brick-trials",
+      url: "https://salembricktrials.com/",
+      title: "Salem Brick Trials",
+      publisher: "Salem Brick Trials",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "trusted-archive",
+      lastChecked: now,
+      notes: "Public archive related to the dispute. Treat as a lead source until individual documents are verified."
+    },
+    {
+      id: "src-salem-timeline",
+      url: "https://salembricktrials.com/bam-timeline",
+      title: "BAM timeline with video references",
+      publisher: "Salem Brick Trials",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "trusted-archive",
+      lastChecked: now,
+      notes: "Detailed timeline that separates BAM claims, former-operator responses, and RecklessBen video timestamp references."
+    },
+    {
+      id: "src-salem-videos",
+      url: "https://salembricktrials.com/videos",
+      title: "Video Catalog",
+      publisher: "Salem Brick Trials",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "trusted-archive",
+      lastChecked: now
+    },
+    {
+      id: "src-recklessben-part1",
+      url: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+      title: "I tracked down the thief who stole $200,000 of LEGO",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Primary creator episode. Treat claims as creator/video evidence unless independently verified."
+    },
+    {
+      id: "src-recklessben-arrest",
+      url: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+      title: "I got arrested because of legos",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now
+    },
+    {
+      id: "src-recklessben-response",
+      url: "https://www.youtube.com/watch?v=bWg2bnAqW6k",
+      title: "Bricks and Minifigs responded to my video",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now
+    },
+    {
+      id: "src-recklessben-leaked-email",
+      url: "https://youtu.be/nny2ojTqW3A",
+      title: "I got Bricks and Minifigs leaked Email",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now
+    },
+    {
+      id: "src-police-response-video",
+      url: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+      title: "Police Official Response",
+      publisher: "American Fork Police / YouTube",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "official",
+      lastChecked: now
+    },
+    {
+      id: "src-lawful-masses",
+      url: "https://www.youtube.com/watch?v=14ktgvoH4Mc",
+      title: "They STOLE his $200k Lego Collection . . . LEGALLY?",
+      publisher: "Lawful Masses",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-tribune-arrest-may31",
+      url: "https://tribune.com.pk/story/2610658/reckless-ben-details-arrests-in-new-video-about-bricks-and-minifigs-200k-lego-collection-dispute",
+      title: "Reckless Ben details arrests in new video about Bricks and Minifigs $200K Lego collection dispute",
+      publisher: "The Express Tribune",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-kotaku-jun1",
+      url: "https://kotaku.com/star-wars-lego-collection-reckless-ben-bricks-minifigs-youtube-mormon-mafia-arrest-mexico-2000701091",
+      title: "Mormon Mafia conspiracy trends online after YouTuber flees to Mexico following arrest",
+      publisher: "Kotaku",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now
+    },
+    {
+      id: "src-culture-police-release",
+      url: "https://cultureofgaming.com/the-biggest-lies-and-red-flags-in-the-american-fork-police-release-bricks-and-minifigs-scam/",
+      title: "The Biggest Lies And Red Flags In The American Fork Police Release",
+      publisher: "Culture of Gaming",
+      sourceType: "news-report",
+      dateFound: now,
+      reliabilityTier: "reported",
+      lastChecked: now,
+      notes: "Opinionated police-response critique. Useful for contested-evidence leads, not as an official finding."
+    }
+  ],
+  events: [
+    {
+      id: "evt-consignment-2023",
+      occurredAt: "2023-11-22T12:00:00.000Z",
+      title: "Mansell collection allegedly placed on consignment",
+      summary: "The dispute centers on a Star Wars LEGO collection that Bryan Mansell says was placed with the Salem-Keizer Bricks & Minifigs store under a consignment arrangement. The existence, scope, value, and corporate authorization of that arrangement are disputed across the public record.",
+      category: "collection",
+      involvedParties: ["Bryan Mansell", "Mansell family", "Former Salem-Keizer franchise operators"],
+      sourceIds: ["src-dexerto-may24", "src-brickfanatics-may29", "src-bamsucks-archive"],
+      confidence: "medium",
+      status: "alleged",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-store-repossession-2024",
+      occurredAt: "2024-11-14T12:00:00.000Z",
+      title: "Salem store transition and repossession dispute",
+      summary: "BAM says it repossessed the Salem location because of alleged financial defaults and other breaches. Former operators dispute BAM's account and filed their own case concerning termination, assets, and reputational harm.",
+      category: "franchise",
+      involvedParties: ["BAM Franchising", "Chrystal Law/Gorman", "Benjamin Gorman", "Baker Bricks"],
+      sourceIds: ["src-bam-may28", "src-bamsucks-archive", "src-brickfanatics-may29"],
+      confidence: "medium",
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-law-gorman-case",
+      occurredAt: "2026-03-27T12:00:00.000Z",
+      title: "Law/Gorman case filed in Utah Business and Chancery Court",
+      summary: "Public archive materials identify Utah Business and Chancery Court Case No. 260200029 as a complaint by Chrystal Law, Benjamin Gorman, and Bricks & Minifigs Salem 1 alleging wrongful franchise termination, asset seizure, reputational harm, and related claims.",
+      category: "court",
+      involvedParties: ["Chrystal Law/Gorman", "Benjamin Gorman", "Bricks & Minifigs Salem 1", "BAM Franchising"],
+      sourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
+      confidence: "medium",
+      status: "court-record",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-police-records-mar2026",
+      occurredAt: "2026-03-08T12:00:00.000Z",
+      title: "American Fork police records begin appearing in archive",
+      summary: "Public archive materials list American Fork police reports from March 8 through March 10, 2026 involving Reckless Ben / Benjamin Schneider and people connected to the Bricks & Minifigs dispute.",
+      category: "police",
+      involvedParties: ["American Fork Police", "Benjamin Schneider", "People connected to the dispute"],
+      sourceIds: ["src-bamsucks-archive"],
+      confidence: "medium",
+      status: "needs-review",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-bam-note-may21",
+      occurredAt: "2026-05-21T12:00:00.000Z",
+      title: "Bricks & Minifigs publishes community note",
+      summary: "Bricks & Minifigs published a public note acknowledging community discussion around the former Salem, Oregon store situation.",
+      category: "statement",
+      involvedParties: ["Bricks & Minifigs"],
+      sourceIds: ["src-bam-may21"],
+      confidence: "high",
+      status: "official-statement",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-dexerto-initial-report",
+      occurredAt: "2026-05-24T13:38:00.000Z",
+      title: "National entertainment coverage summarizes dispute",
+      summary: "Dexerto reported that the dispute had expanded into lawsuits, police investigations, and a viral YouTube series, while noting that allegations around police corruption remained unproven.",
+      category: "media",
+      involvedParties: ["Dexerto", "Reckless Ben", "Bricks & Minifigs", "Mansell family"],
+      sourceIds: ["src-dexerto-may24"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-recklessben-part1",
+      occurredAt: "2026-05-21T12:00:00.000Z",
+      title: "RecklessBen publishes first major LEGO investigation",
+      summary: "The first core episode brought the Mansell collection dispute to a much larger audience and documented Ben's argument that public pressure was needed to recover the collection or force answers.",
+      category: "video",
+      involvedParties: ["RecklessBen", "Bryan Mansell", "Bricks & Minifigs", "BAM Franchising"],
+      sourceIds: ["src-recklessben-part1", "src-salem-videos", "src-salem-timeline"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-recklessben-response-video",
+      occurredAt: "2026-05-23T12:00:00.000Z",
+      title: "RecklessBen responds to BAM's public explanation",
+      summary: "A follow-up video focused on BAM's public statement and Ben's rebuttal to the unauthorized-consignment framing, including his argument that unpaid-for sets should not remain with the store.",
+      category: "video",
+      involvedParties: ["RecklessBen", "BAM Franchising", "Bricks & Minifigs"],
+      sourceIds: ["src-recklessben-response", "src-salem-videos"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-leaked-email-video",
+      occurredAt: "2026-05-28T12:00:00.000Z",
+      title: "Leaked-email follow-up expands the PR angle",
+      summary: "A RecklessBen segment and public archive references point to internal franchise-network messaging and crisis response after the controversy spread online.",
+      category: "video",
+      involvedParties: ["RecklessBen", "BAM Franchising", "Bricks & Minifigs franchise network"],
+      sourceIds: ["src-recklessben-leaked-email", "src-salem-videos", "src-salem-brick-trials"],
+      confidence: "medium",
+      status: "needs-review",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-bam-statement-may28",
+      occurredAt: "2026-05-28T12:00:00.000Z",
+      title: "BAM publishes detailed official statement",
+      summary: "BAM denied that corporate leadership or new Salem franchisees knowingly stole the collection, characterized the consignment as unauthorized, and said it would strengthen inventory records, transaction documentation, and de-escalation training.",
+      category: "statement",
+      involvedParties: ["BAM Franchising", "Bricks & Minifigs", "Mansell family"],
+      sourceIds: ["src-bam-may28", "src-globenewswire-jun1"],
+      confidence: "high",
+      status: "official-statement",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-recklessben-arrest-video",
+      occurredAt: "2026-05-30T12:00:00.000Z",
+      title: "RecklessBen details police stops, searches, and arrest",
+      summary: "The arrest-focused episode and subsequent coverage describe repeated police encounters, trespass notices, vehicle searches, a search warrant, and Ben's allegation that authorities targeted his group while protecting people he accused of wrongdoing.",
+      category: "video",
+      involvedParties: ["RecklessBen", "American Fork Police", "Josh Johnson", "Brandon Best"],
+      sourceIds: ["src-recklessben-arrest", "src-tribune-arrest-may31", "src-kotaku-jun1"],
+      confidence: "medium",
+      status: "alleged",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-police-response-critiques",
+      occurredAt: "2026-05-31T12:00:00.000Z",
+      title: "Police response becomes a separate evidence fight",
+      summary: "American Fork police's public response and outside commentary raised a new dispute over stop-sign footage, search justifications, warrant context, and whether the official explanation matches the visible record.",
+      category: "police",
+      involvedParties: ["American Fork Police", "RecklessBen", "Public commentators"],
+      sourceIds: ["src-police-response-video", "src-culture-police-release", "src-kotaku-jun1"],
+      confidence: "medium",
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-utah-civil-case-260402353",
+      occurredAt: "2026-05-28T12:00:00.000Z",
+      title: "Utah civil case materials and TRO appear in public archive",
+      summary: "Public archive materials identify Utah Fourth Judicial District Court Case No. 260402353 and include a verified complaint, temporary restraining order, errata, filing receipt, case history, and docket events. Filings contain allegations and are not findings of liability.",
+      category: "court",
+      involvedParties: ["BAM Franchising", "Bricks & Minifigs plaintiffs", "Benjamin Schneider", "Bryan Mansell", "Victor Nguyen"],
+      sourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
+      confidence: "medium",
+      status: "court-record",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-brickfanatics-report",
+      occurredAt: "2026-05-29T12:00:00.000Z",
+      title: "Brick Fanatics reports on competing accounts",
+      summary: "Brick Fanatics reported BAM's position, Law/Gorman's dispute of that position, and BAM CEO Ammon McNeff's statement that no court had found Bricks & Minifigs guilty of theft or related wrongdoing.",
+      category: "media",
+      involvedParties: ["Brick Fanatics", "BAM Franchising", "Chrystal Law/Gorman"],
+      sourceIds: ["src-brickfanatics-may29"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-globenewswire-jun1",
+      occurredAt: "2026-06-01T13:20:00.000Z",
+      title: "BAM statement distributed via GlobeNewswire",
+      summary: "A GlobeNewswire release said Bricks & Minifigs had published a comprehensive public statement and reaffirmed willingness to work toward a fair outcome for the Mansell family through proper legal channels.",
+      category: "statement",
+      involvedParties: ["Bricks & Minifigs", "GlobeNewswire", "Mansell family"],
+      sourceIds: ["src-globenewswire-jun1"],
+      confidence: "high",
+      status: "official-statement",
+      publicationRisk: "low"
+    },
+    {
+      id: "evt-dexerto-lawsuit-jun2",
+      occurredAt: "2026-06-02T17:41:00.000Z",
+      title: "Dexerto reports BAM lawsuit against Reckless Ben and others",
+      summary: "Dexerto reported that BAM Franchising and related plaintiffs sued Benjamin Schneider / Reckless Ben, Reckless Ben LLC, Bryan Mansell, Victor Nguyen, and Doe defendants, alleging defamation, harassment, and related claims. The complaint's allegations are not court findings.",
+      category: "media",
+      involvedParties: ["Dexerto", "BAM Franchising", "Benjamin Schneider", "Bryan Mansell", "Victor Nguyen"],
+      sourceIds: ["src-dexerto-jun2", "src-bamsucks-archive"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "low"
+    }
+  ],
+  cases: [
+    {
+      id: "case-utah-260402353",
+      caseNumber: "260402353",
+      title: "BAM Franchising et al. v. Schneider et al.",
+      jurisdiction: "Utah",
+      court: "Fourth Judicial District Court, Utah County",
+      parties: ["BAM Franchising", "Ammon McNeff", "Matthew McNeff", "Josh Johnson", "Brandon Best", "Baker Bricks", "Benjamin Paul Schneider", "Reckless Ben LLC", "Bryan Mansell", "Victor Nguyen", "Doe defendants"],
+      judge: "Tony F. Graf Jr.",
+      status: "Public archive lists complaint, TRO, errata, receipt, case history, and docket events. Verify active docket and future hearing dates in Utah Xchange.",
+      sourceIds: ["src-bamsucks-archive", "src-utah-xchange", "src-dexerto-jun2"],
+      summary: "Civil action tied to the online campaign and public dispute. Filings contain allegations and requested relief, not final findings.",
+      lastChecked: now
+    },
+    {
+      id: "case-utah-260200029",
+      caseNumber: "260200029",
+      title: "Law/Gorman and Bricks & Minifigs Salem 1 matter",
+      jurisdiction: "Utah",
+      court: "Utah Business and Chancery Court",
+      parties: ["Chrystal Law/Gorman", "Benjamin Gorman", "Bricks & Minifigs Salem 1", "BAM Franchising"],
+      status: "Public archive lists complaint, exhibits, and motion to stay and compel mediation/arbitration. Verify active docket and future hearing dates in Utah Xchange.",
+      sourceIds: ["src-bamsucks-archive", "src-utah-xchange"],
+      summary: "Former Salem franchise operator dispute involving termination, asset seizure, and related allegations.",
+      lastChecked: now
+    }
+  ],
+  documents: [
+    {
+      id: "doc-fdd-2023",
+      title: "Bricks & Minifigs 2023 Franchise Disclosure Document",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Franchise disclosure document",
+      fileType: "pdf",
+      externalUrl: "https://bamsucks.com/",
+      redactionStatus: "public",
+      status: "verified"
+    },
+    {
+      id: "doc-law-gorman-complaint",
+      title: "Law/Gorman complaint, Utah Case No. 260200029",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260200029",
+      documentType: "Complaint",
+      fileType: "pdf",
+      datePublished: "2026-03-27T12:00:00.000Z",
+      externalUrl: "https://bamsucks.com/",
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-verified-complaint",
+      title: "Verified complaint, Utah Case No. 260402353",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Verified complaint",
+      fileType: "pdf",
+      datePublished: "2026-05-27T12:00:00.000Z",
+      externalUrl: "https://bamsucks.com/",
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-tro-260402353",
+      title: "Temporary restraining order and preliminary injunction hearing notice",
+      sourceId: "src-bamsucks-archive",
+      caseId: "case-utah-260402353",
+      documentType: "Court order",
+      fileType: "pdf",
+      datePublished: "2026-05-28T12:00:00.000Z",
+      externalUrl: "https://bamsucks.com/",
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-bam-may28-statement",
+      title: "BAM May 28, 2026 official statement",
+      sourceId: "src-bam-may28",
+      documentType: "Official statement",
+      fileType: "html",
+      datePublished: "2026-05-28T12:00:00.000Z",
+      externalUrl: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+      redactionStatus: "public",
+      status: "official-statement"
+    },
+    {
+      id: "doc-police-records-index",
+      title: "American Fork police records index",
+      sourceId: "src-bamsucks-archive",
+      documentType: "Police record index",
+      fileType: "pdf",
+      datePublished: "2026-03-10T12:00:00.000Z",
+      externalUrl: "https://bamsucks.com/",
+      redactionStatus: "public-redacted",
+      status: "needs-review"
+    }
+  ],
+  clips: [
+    {
+      id: "clip-recklessben-part1-origin",
+      title: "Part 1: ownership, store takeover, and corporate confrontation",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+      sourceId: "src-recklessben-part1",
+      startsAt: "00:01:21",
+      endsAt: "00:14:46",
+      transcriptExcerpt: "Index lead: Bryan explains the contract/ownership framing; later segments show Ben confronting BAM leadership over the collection.",
+      relatedEventIds: ["evt-consignment-2023", "evt-recklessben-part1"],
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-raffle-signage",
+      title: "Part 1: pressure tactics, raffle, signage, and small-claims strategy",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+      sourceId: "src-recklessben-part1",
+      startsAt: "00:26:00",
+      endsAt: "01:24:01",
+      transcriptExcerpt: "Index lead: BAM's complaint cites these segments as part of its harassment/extortion narrative; supporters view them as aggressive public-pressure tactics.",
+      relatedEventIds: ["evt-recklessben-part1", "evt-utah-civil-case-260402353"],
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-arrest-police",
+      title: "Arrest episode: stops, search warrant, and police focus",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+      sourceId: "src-recklessben-arrest",
+      transcriptExcerpt: "Index lead: Ben details police encounters and argues that law enforcement treated his crew as the problem while the original property dispute remained unresolved.",
+      relatedEventIds: ["evt-recklessben-arrest-video", "evt-police-response-critiques"],
+      status: "alleged",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-police-response",
+      title: "American Fork police public response",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+      sourceId: "src-police-response-video",
+      transcriptExcerpt: "Index lead: official response to Ben-related incidents; compare against dashcam/bodycam/warrant materials if released.",
+      relatedEventIds: ["evt-police-response-critiques"],
+      status: "official-statement",
+      publicationRisk: "moderate"
+    }
+  ],
+  claims: [
+    {
+      id: "claim-collection-value",
+      claimant: "Mansell family / public reports",
+      claimText: "The collection was valued at up to roughly $200,000.",
+      relatedEvidenceIds: ["doc-fdd-2023"],
+      relatedSourceIds: ["src-dexerto-may24", "src-brickfanatics-may29", "src-salem-brick-trials"],
+      status: "disputed",
+      confidence: "medium",
+      publicationRisk: "moderate",
+      editorNote: "Use value language carefully. BAM disputes the $100,000 to $200,000 range and says documentation it received supported a lower range."
+    },
+    {
+      id: "claim-consignment-authorization",
+      claimant: "BAM Franchising",
+      claimText: "BAM says the Salem consignment arrangement was unauthorized and made without corporate knowledge or approval.",
+      relatedEvidenceIds: ["doc-bam-may28-statement"],
+      relatedSourceIds: ["src-bam-may28", "src-brickfanatics-may29"],
+      status: "official-statement",
+      confidence: "high",
+      publicationRisk: "low",
+      editorNote: "This is BAM's stated position, not an independent finding."
+    },
+    {
+      id: "claim-corporate-wrongdoing",
+      claimant: "BAM Franchising / Ammon McNeff",
+      claimText: "BAM says no court has found Bricks & Minifigs, corporate leadership, or current Salem franchisees guilty of theft or related wrongdoing.",
+      relatedEvidenceIds: ["doc-bam-may28-statement"],
+      relatedSourceIds: ["src-bam-may28", "src-brickfanatics-may29"],
+      status: "official-statement",
+      confidence: "high",
+      publicationRisk: "low",
+      editorNote: "Track future court findings separately if the docket changes."
+    },
+    {
+      id: "claim-harassment-campaign",
+      claimant: "BAM Franchising and related plaintiffs",
+      claimText: "BAM and related plaintiffs allege that Reckless Ben and others conducted a campaign involving defamation, harassment, trespass, and other conduct.",
+      relatedEvidenceIds: ["doc-bam-verified-complaint", "doc-tro-260402353"],
+      relatedSourceIds: ["src-bamsucks-archive", "src-dexerto-jun2"],
+      status: "alleged",
+      confidence: "medium",
+      publicationRisk: "moderate",
+      editorNote: "Complaint allegations must be described as allegations unless adjudicated."
+    }
+  ],
+  submissions: [],
+  ingestionRuns: [
+    {
+      id: "run-seed-20260603",
+      sourceName: "Initial curated seed",
+      startedAt: now,
+      finishedAt: now,
+      status: "completed",
+      candidatesFound: 24,
+      autoPublished: 13,
+      needsReview: 4
+    }
+  ]
+};

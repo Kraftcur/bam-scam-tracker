@@ -1,0 +1,19 @@
+---
+import ClipIndex from "../components/ClipIndex";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Clips | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Clips</span>
+    <h1>Timestamped audio and video references.</h1>
+    <p class="lede">Clips are indexed as references, not proof by themselves. Exact URLs, timestamps, and short transcript excerpts are required before publication.</p>
+  </section>
+  <ClipIndex client:load clips={data.clips} events={data.events} />
+</BaseLayout>

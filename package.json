@@ -1,0 +1,43 @@
+{
+  "name": "bam-scam-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro check && astro build",
+    "preview": "astro preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "cf:deploy": "wrangler pages deploy ./dist",
+    "cf:deploy:ingest": "wrangler deploy -c wrangler.ingest.toml",
+    "db:migrate:local": "wrangler d1 migrations apply bam_scam_tracker --local",
+    "db:migrate:remote": "wrangler d1 migrations apply bam_scam_tracker --remote",
+    "db:seed:local": "tsx scripts/seed-d1.ts --local",
+    "db:seed:remote": "tsx scripts/seed-d1.ts --remote",
+    "r2:upload": "node scripts/upload-r2.mjs",
+    "pdf:extract": "node scripts/extract-public-pdf-text.mjs"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.6.1",
+    "@astrojs/react": "^5.0.7",
+    "astro": "^6.4.3",
+    "lucide-react": "^0.468.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@cloudflare/workers-types": "^4.20250601.0",
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^24.0.3",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.8",
+    "wrangler": "^4.20.0"
+  }
+}

@@ -1,0 +1,19 @@
+---
+import ClaimsMatrix from "../components/ClaimsMatrix";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Claims | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Claim matrix</span>
+    <h1>Who said what, and what supports or disputes it.</h1>
+    <p class="lede">This page avoids flattening contested facts into headlines. Claims remain labeled until a source, admission, or court finding changes the status.</p>
+  </section>
+  <ClaimsMatrix client:load claims={data.claims} documents={data.documents} sources={data.sources} />
+</BaseLayout>

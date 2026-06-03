@@ -1,0 +1,19 @@
+---
+type Props = {
+  donationUrl?: string;
+};
+
+const { donationUrl = "" } = Astro.props;
+---
+
+{
+  donationUrl ? (
+    <a class="button warn" href={donationUrl} rel="noreferrer" target="_blank">
+      Support
+    </a>
+  ) : (
+    <a class="button" href="/about#support">
+      Support
+    </a>
+  )
+}

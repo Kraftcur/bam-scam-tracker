@@ -1,0 +1,15 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@data/*": ["src/data/*"],
+      "@lib/*": ["src/lib/*"],
+      "@styles/*": ["src/styles/*"],
+      "@types": ["src/types.ts"]
+    },
+    "types": ["@cloudflare/workers-types", "node"]
+  },
+  "include": ["src", "tests", "scripts", "astro.config.mjs", "vitest.config.ts", "playwright.config.ts"]
+}

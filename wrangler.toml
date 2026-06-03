@@ -1,0 +1,26 @@
+name = "bam-scam-tracker"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bam_scam_tracker"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "ARCHIVE_BUCKET"
+bucket_name = "bam-scam-tracker-archive"
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+PUBLIC_SITE_NAME = "BAM Scam Tracker"
+PUBLIC_DONATION_URL = ""
+ADMIN_TOKEN = ""
+OPENAI_MODEL = "gpt-4.1-mini"
+
+[triggers]
+crons = ["0 */6 * * *"]

@@ -1,0 +1,330 @@
+import {
+  ArrowRight,
+  BookOpen,
+  ExternalLink,
+  Filter,
+  Flame,
+  Gavel,
+  PlayCircle,
+  Search,
+  ShieldAlert,
+  Sparkles
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import type { EvidenceThread, StoryAct, VideoNode } from "../data/story";
+import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes } from "../data/story";
+import type { TimelineEvent } from "../types";
+import { Badge } from "./Badge";
+
+type Props = {
+  events: TimelineEvent[];
+  donationUrl?: string;
+};
+
+const heatLabels = ["cold", "warm", "hot", "red-hot", "critical"];
+
+function HeatMeter({ heat }: { heat: EvidenceThread["heat"] }) {
+  return (
+    <span className="heat-meter" aria-label={`${heat} out of 5 heat`}>
+      {Array.from({ length: 5 }, (_, index) => (
+        <span key={index} className={index < heat ? "on" : ""} />
+      ))}
+    </span>
+  );
+}
+
+function VideoCard({ video }: { video: VideoNode }) {
+  return (
+    <a className="video-tile" href={video.url} rel="noreferrer" target="_blank">
+      <span className="video-thumb">
+        <img src={video.thumbnail} alt="" loading="lazy" />
+        <span className="play-chip">
+          <PlayCircle size={18} aria-hidden="true" />
+          Watch
+        </span>
+      </span>
+      <span className="video-copy">
+        <span className="meta">
+          <Badge value={video.role.toLowerCase().replaceAll(" ", "-")} />
+          <span>{video.date}</span>
+        </span>
+        <strong>{video.title}</strong>
+        <span className="watch-list">{video.watchFor.join(" • ")}</span>
+      </span>
+    </a>
+  );
+}
+
+export default function StoryExperience({ events, donationUrl }: Props) {
+  const [threadQuery, setThreadQuery] = useState("");
+  const [threadMode, setThreadMode] = useState("all");
+  const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
+
+  const filteredThreads = useMemo(() => {
+    const query = threadQuery.trim().toLowerCase();
+    return evidenceThreads.filter((thread) => {
+      const haystack = [
+        thread.title,
+        thread.tagline,
+        thread.summary,
+        thread.openQuestion,
+        thread.evidence.join(" ")
+      ]
+        .join(" ")
+        .toLowerCase();
+      const modeMatch =
+        threadMode === "all" ||
+        (threadMode === "hottest" && thread.heat >= 4) ||
+        (threadMode === "police" && thread.id.includes("police")) ||
+        (threadMode === "inventory" && (thread.id.includes("tags") || thread.id.includes("claims")));
+      return (!query || haystack.includes(query)) && modeMatch;
+    });
+  }, [threadMode, threadQuery]);
+
+  const latestEvents = events.slice(0, 5);
+
+  return (
+    <div className="story-page">
+      <section className="story-hero" id="story">
+        <div className="hero-media-grid" aria-hidden="true">
+          {videoNodes.slice(0, 4).map((video) => (
+            <img src={video.thumbnail} alt="" key={video.id} />
+          ))}
+        </div>
+        <div className="hero-content">
+          <div className="eyebrow">Evidence-first scandal map</div>
+          <h1>The LEGO case got weird. This makes it understandable.</h1>
+          <p>
+            A fast, opinionated guide to the Bricks & Minifigs / RecklessBen controversy:
+            what allegedly happened to the Mansell collection, why viewers rallied behind
+            Ben, how police became part of the story, and what the court papers actually say.
+          </p>
+          <div className="hero-actions">
+            <a className="button primary" href="#evidence">
+              Start With Evidence
+              <ArrowRight size={17} aria-hidden="true" />
+            </a>
+            <a className="button" href="#videos">
+              Watch the Trail
+              <PlayCircle size={17} aria-hidden="true" />
+            </a>
+            {donationUrl && (
+              <a className="button warn" href={donationUrl} rel="noreferrer" target="_blank">
+                Support the Tracker
+              </a>
+            )}
+          </div>
+        </div>
+        <div className="hero-brief">
+          <strong>The thesis</strong>
+          <p>
+            The public support for Ben makes sense because the visible record keeps raising
+            the same question: where is the complete inventory trail, and why did the people
+            asking for it become the emergency?
+          </p>
+        </div>
+      </section>
+
+      <section className="stat-strip" aria-label="Key context">
+        {storyStats.map((stat) => (
+          <div className="stat-cell" key={stat.label}>
+            <span>{stat.label}</span>
+            <strong>{stat.value}</strong>
+            <p>{stat.note}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="section-band" id="plain-english">
+        <div className="section-heading">
+          <span className="eyebrow">Plain English</span>
+          <h2>The whole thing in five acts.</h2>
+          <p>
+            Pick an act to see the stripped-down version: what happened, why it matters,
+            and which receipts carry the weight.
+          </p>
+        </div>
+        <div className="act-grid">
+          <div className="act-rail" role="tablist" aria-label="Story acts">
+            {storyActs.map((act) => (
+              <button
+                type="button"
+                className={activeAct.id === act.id ? "act-tab active" : "act-tab"}
+                onClick={() => setActiveAct(act)}
+                key={act.id}
+              >
+                <span>{act.date}</span>
+                <strong>{act.title}</strong>
+              </button>
+            ))}
+          </div>
+          <article className={`act-panel ${activeAct.leaning}`}>
+            <div className="meta">
+              <Badge value={activeAct.leaning === "ben" ? "ben-side" : activeAct.leaning} />
+              <span>{activeAct.kicker}</span>
+            </div>
+            <h3>{activeAct.title}</h3>
+            <p>{activeAct.plainEnglish}</p>
+            <div className="why-box">
+              <strong>Why it matters</strong>
+              <p>{activeAct.whyItMatters}</p>
+            </div>
+            <div className="receipt-stack">
+              {activeAct.receipts.map((receipt) => (
+                <span className="pill" key={receipt}>{receipt}</span>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="section-band evidence-band" id="evidence">
+        <div className="section-heading">
+          <span className="eyebrow">Evidence Map</span>
+          <h2>The hot questions, not just the documents.</h2>
+          <p>
+            This is the part normal public-record sites miss. Each thread explains what the
+            evidence suggests, what the opposing story says, and what records would settle it.
+          </p>
+        </div>
+        <div className="evidence-tools">
+          <label className="field">
+            <span>
+              <Search size={14} aria-hidden="true" /> Search the threads
+            </span>
+            <input
+              className="input"
+              value={threadQuery}
+              onChange={(event) => setThreadQuery(event.target.value)}
+              placeholder="inventory, police, default, email"
+            />
+          </label>
+          <label className="field">
+            <span>
+              <Filter size={14} aria-hidden="true" /> Focus
+            </span>
+            <select className="select" value={threadMode} onChange={(event) => setThreadMode(event.target.value)}>
+              <option value="all">All threads</option>
+              <option value="hottest">Hottest</option>
+              <option value="police">Police arc</option>
+              <option value="inventory">Inventory trail</option>
+            </select>
+          </label>
+        </div>
+        <div className="evidence-grid">
+          {filteredThreads.map((thread) => (
+            <article className="evidence-card" key={thread.id}>
+              <div className="row-top">
+                <div>
+                  <span className="thread-tag">{thread.tagline}</span>
+                  <h3>{thread.title}</h3>
+                </div>
+                <HeatMeter heat={thread.heat} />
+              </div>
+              <p>{thread.summary}</p>
+              <ul>
+                {thread.evidence.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <div className="open-question">
+                <Flame size={16} aria-hidden="true" />
+                <span>{thread.openQuestion}</span>
+              </div>
+              <a href={thread.sourceUrl} rel="noreferrer" target="_blank">
+                {thread.sourceLabel}
+                <ExternalLink size={14} aria-hidden="true" />
+              </a>
+              <span className="heat-label">{heatLabels[thread.heat - 1]}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-band video-band" id="videos">
+        <div className="section-heading">
+          <span className="eyebrow">Video Trail</span>
+          <h2>The watch order that makes the story click.</h2>
+          <p>
+            Start with Ben's core episodes, then compare the police response and legal analysis.
+            The point is not just what each video says; it is how each one changes the record.
+          </p>
+        </div>
+        <div className="video-grid">
+          {videoNodes.map((video) => (
+            <VideoCard video={video} key={video.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section-band decoder-band" id="decoder">
+        <div className="section-heading">
+          <span className="eyebrow">Court Decoder</span>
+          <h2>Legalese translated before it melts your brain.</h2>
+          <p>
+            Court filings matter, but they are written to win disputes, not to help normal people.
+            These translations keep the documents useful without letting them cosplay as truth.
+          </p>
+        </div>
+        <div className="decoder-grid">
+          {decoderCards.map((card) => (
+            <article className="decoder-card" key={card.phrase}>
+              <Gavel size={21} aria-hidden="true" />
+              <h3>{card.phrase}</h3>
+              <p>{card.translation}</p>
+              <strong>{card.watchOut}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-band timeline-band" id="timeline">
+        <div className="section-heading">
+          <span className="eyebrow">Live Thread</span>
+          <h2>Latest tracker updates.</h2>
+          <p>
+            The full archive is still available, but the homepage keeps the newest useful
+            updates close to the evidence map.
+          </p>
+        </div>
+        <div className="live-grid">
+          {latestEvents.map((event) => (
+            <article className="live-card" key={event.id}>
+              <div className="meta">
+                <Badge value={event.status} />
+                <Badge value={event.category} />
+              </div>
+              <h3>{event.title}</h3>
+              <p>{event.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-band action-band" id="help">
+        <div className="action-copy">
+          <span className="eyebrow">Help Build the Receipts</span>
+          <h2>Got a timestamp, screenshot, filing, bodycam link, or correction?</h2>
+          <p>
+            Send it in. The site is pro-accountability, but it gets stronger only when every
+            claim is tied to a source and every source is labeled honestly.
+          </p>
+        </div>
+        <div className="action-buttons">
+          <a className="button primary" href="/submit">
+            Submit Evidence
+            <Sparkles size={17} aria-hidden="true" />
+          </a>
+          <a className="button" href="/timeline">
+            Open Data Archive
+            <BookOpen size={17} aria-hidden="true" />
+          </a>
+          <a className="button" href="/about">
+            Editorial Policy
+            <ShieldAlert size={17} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+    </div>
+  );
+}

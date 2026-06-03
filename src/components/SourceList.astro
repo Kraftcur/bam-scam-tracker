@@ -1,0 +1,31 @@
+---
+import type { Source } from "../types";
+import StatusBadge from "./StatusBadge.astro";
+
+type Props = {
+  sources: Source[];
+};
+
+const { sources } = Astro.props;
+---
+
+<div class="list">
+  {
+    sources.map((source) => (
+      <article class="row-card">
+        <div class="row-top">
+          <h3>
+            <a href={source.url} rel="noreferrer" target="_blank">{source.title}</a>
+          </h3>
+          <StatusBadge value={source.reliabilityTier} />
+        </div>
+        <div class="meta">
+          <span>{source.publisher}</span>
+          <StatusBadge value={source.sourceType} />
+          <span>Checked {new Date(source.lastChecked).toLocaleDateString()}</span>
+        </div>
+        {source.notes && <p>{source.notes}</p>}
+      </article>
+    ))
+  }
+</div>

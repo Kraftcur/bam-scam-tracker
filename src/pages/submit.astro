@@ -1,0 +1,32 @@
+---
+import SubmissionForm from "../components/SubmissionForm";
+import TurnstileScript from "../components/TurnstileScript.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const donationUrl = getDonationUrl(env);
+const turnstileSiteKey = env?.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+
+<BaseLayout title="Submit | BAM Scam Tracker" donationUrl={donationUrl}>
+  <TurnstileScript siteKey={turnstileSiteKey} />
+  <section class="page-heading">
+    <span class="eyebrow">Community suggestions</span>
+    <h1>Send a source, correction, court date, document, or clip.</h1>
+    <p class="lede">Suggestions enter moderation. Social claims, YouTube allegations, Reddit threads, and private-person material do not publish automatically.</p>
+  </section>
+  <section class="split">
+    <SubmissionForm client:load turnstileSiteKey={turnstileSiteKey} />
+    <aside class="panel">
+      <div class="panel-header">
+        <h2>Review Standard</h2>
+      </div>
+      <div class="panel-body stack">
+        <p>Low-risk official records may be added after automated checks. Claims about private people, screenshots, anonymous tips, and social posts require human review.</p>
+        <p>No home addresses, private phone numbers, private emails, or unredacted sensitive records should be submitted.</p>
+      </div>
+    </aside>
+  </section>
+</BaseLayout>

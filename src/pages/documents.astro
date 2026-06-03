@@ -1,0 +1,19 @@
+---
+import DocumentLibrary from "../components/DocumentLibrary";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout title="Documents | BAM Scam Tracker" donationUrl={donationUrl}>
+  <section class="page-heading">
+    <span class="eyebrow">Documents</span>
+    <h1>Filings, statements, archive pages, and evidence indexes.</h1>
+    <p class="lede">The first version links to public sources. R2-backed copies and extracted text can be added after source rights, redactions, and storage policies are confirmed.</p>
+  </section>
+  <DocumentLibrary client:load documents={data.documents} sources={data.sources} cases={data.cases} />
+</BaseLayout>
