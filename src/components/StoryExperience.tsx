@@ -495,8 +495,8 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
           <span className="eyebrow">Help Build the Receipts</span>
           <h2>Got a timestamp, screenshot, filing, bodycam link, or correction?</h2>
           <p>
-            Send it in. The site is pro-accountability, but it gets stronger only when every
-            claim is tied to a source and every source is labeled honestly.
+            Send it in. The tracker gets stronger when every claim is tied to a source and every
+            source is labeled clearly.
           </p>
         </div>
         <div className="action-panel">
