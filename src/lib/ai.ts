@@ -3,12 +3,16 @@ import { z } from "zod";
 export const extractedCandidateSchema = z.object({
   timelineCandidates: z.array(
     z.object({
-      occurredAt: z.string().describe("ISO datetime if known, otherwise best available date at noon UTC"),
+      occurredAt: z.string().describe("ISO datetime if known. Prefer visible recording/bodycam/dashcam timestamps over upload or discovery dates."),
       title: z.string(),
       summary: z.string(),
       category: z.enum(["collection", "franchise", "court", "police", "video", "statement", "media", "site"]),
       status: z.enum(["court-record", "official-statement", "verified", "alleged", "disputed", "needs-review", "community"]),
-      confidence: z.enum(["high", "medium", "low"])
+      confidence: z.enum(["high", "medium", "low"]),
+      imageUrl: z.string().optional(),
+      videoUrl: z.string().optional(),
+      benPerspective: z.string().optional(),
+      bamPerspective: z.string().optional()
     })
   ),
   documentCandidates: z.array(
@@ -59,7 +63,7 @@ export async function extractCandidatesWithAi(input: {
       systemInstruction: {
         parts: [
           {
-            text: "Extract only source-supported tracker candidates that are important to public freedom of speech discussions. Do not infer guilt, liability, crimes, motives, or private personal details. Court filings are allegations unless the text says an order or finding was entered.\nFor each event, also attempt to extract a 'benPerspective' (how RecklessBen or his supporters frame it), a 'bamPerspective' (how BAM Franchising or police frame it), and any relevant 'imageUrl' or 'videoUrl' if present in the text."
+            text: "Extract only source-supported tracker candidates that are important to public freedom of speech discussions. Do not infer guilt, liability, crimes, motives, or private personal details. Court filings are allegations unless the text says an order or finding was entered.\nFor event dates, prefer the time the underlying thing happened. If source text or video-analysis notes mention a visible bodycam, dashcam, CCTV, phone-recording, or document timestamp, use that timestamp for occurredAt and mention any later upload/surfacing date in the summary. If only publication/upload time is known, use that and say so.\nFor each event, also attempt to extract a 'benPerspective' (how RecklessBen or his supporters frame it), a 'bamPerspective' (how BAM Franchising or police frame it), and any relevant 'imageUrl' or 'videoUrl' if present in the text."
           }
         ]
       },

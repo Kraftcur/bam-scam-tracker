@@ -4316,6 +4316,57 @@ tr:last-child td {
   background: var(--charcoal);
 }
 
+.video-fallback-panel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--charcoal);
+  color: #fff;
+}
+
+.video-fallback-panel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.42;
+}
+
+.video-fallback-panel > div {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  max-width: min(320px, calc(100% - 32px));
+  padding: 18px;
+  text-align: center;
+  background: rgba(17, 23, 26, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.video-fallback-panel strong {
+  font-size: 1rem;
+}
+
+.video-fallback-panel span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+}
+
+.video-fallback-panel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-weight: 850;
+}
+
 .video-badge,
 .image-badge {
   position: absolute;

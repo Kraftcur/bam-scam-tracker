@@ -165,6 +165,8 @@ export function StoryPlayback({ events, sources }: Props) {
   const [speed, setSpeed] = useState(15); // seconds per step
   const [progress, setProgress] = useState(0); // 0 to 100
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const nativeVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [nativeVideoErrored, setNativeVideoErrored] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleShare = () => {
@@ -214,6 +216,7 @@ export function StoryPlayback({ events, sources }: Props) {
   useEffect(() => {
     // Reset progress when step changes
     setProgress(0);
+    setNativeVideoErrored(false);
   }, [currentStepIndex]);
 
   useEffect(() => {
@@ -260,6 +263,21 @@ export function StoryPlayback({ events, sources }: Props) {
 
   const isYouTubeVideo = step.videoUrl ? isYouTubeUrl(step.videoUrl) : false;
   const youtubeEmbedUrl = step.videoUrl && isYouTubeVideo ? getYouTubeEmbedUrl(step.videoUrl, isPlaying) : "";
+
+  useEffect(() => {
+    const video = nativeVideoRef.current;
+    if (!video || !step.videoUrl || isYouTubeVideo) return;
+
+    if (!isPlaying) {
+      video.pause();
+      return;
+    }
+
+    video.muted = true;
+    video.play().catch(() => {
+      setIsPlaying(false);
+    });
+  }, [isPlaying, step.id, step.videoUrl, isYouTubeVideo]);
 
   return (
     <div className="playback-shell">
@@ -362,13 +380,33 @@ export function StoryPlayback({ events, sources }: Props) {
             </div>
           ) : step.videoUrl ? (
             <div className="video-embed-wrapper">
-              <video
-                autoPlay={isPlaying}
-                controls
-                muted={isPlaying}
-                playsInline
-                src={step.videoUrl}
-              />
+              {nativeVideoErrored ? (
+                <div className="video-fallback-panel">
+                  {step.imageUrl && <img src={step.imageUrl} alt="" aria-hidden="true" />}
+                  <div>
+                    <strong>Open the clip source</strong>
+                    <span>This host blocked inline playback in the browser.</span>
+                    <a href={step.videoUrl} rel="noreferrer" target="_blank">
+                      Watch source
+                      <ExternalLink size={13} aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  autoPlay={isPlaying}
+                  controls
+                  crossOrigin="anonymous"
+                  key={step.id}
+                  muted={isPlaying}
+                  playsInline
+                  poster={step.imageUrl || undefined}
+                  preload="metadata"
+                  ref={nativeVideoRef}
+                  src={step.videoUrl}
+                  onError={() => setNativeVideoErrored(true)}
+                />
+              )}
               <span className="video-badge">
                 <Film size={14} /> Video Clip
               </span>

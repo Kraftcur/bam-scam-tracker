@@ -3,6 +3,7 @@ import type { TrackerData } from "../types";
 const now = "2026-06-03T00:00:00.000Z";
 const archiveRoot = "https://bamsucks.com";
 const mcneffPoliceCallUrl = "https://video.twimg.com/amplify_video/2062282560475197440/vid/avc1/1276x720/voA3U2BPFfkL48BV.mp4?tag=27";
+const mcneffPoliceCallPosterUrl = "https://bam-scam-tracker.tomcurrie.workers.dev/media/mcneff-police-call-poster.jpg";
 
 export const seedData: TrackerData = {
   sources: [
@@ -67,7 +68,7 @@ export const seedData: TrackerData = {
       dateFound: "2026-06-03T21:20:09.000Z",
       reliabilityTier: "primary-video",
       lastChecked: now,
-      notes: "Direct MP4 clip. Local Whisper transcript created June 3, 2026; treat transcript text as machine-generated and verify exact wording before quoting."
+      notes: "Direct MP4 clip surfaced June 3, 2026. Bodycam overlay reads 2026-03-10 16:45:50 -0600 at the first frame. Local Whisper transcript created June 3, 2026; treat transcript text as machine-generated and verify exact wording before quoting."
     },
     {
       id: "src-brickfanatics-may29",
@@ -538,17 +539,18 @@ export const seedData: TrackerData = {
     },
     {
       id: "evt-mcneff-police-call-clip",
-      occurredAt: "2026-06-03T21:20:09.000Z",
-      title: "Ammon McNeff police-call clip surfaces",
-      summary: "A 4:45 X/Twitter video clip appears to show BAM CEO Ammon McNeff giving police the BAM-side account: unauthorized consignment, alleged creator harassment/extortion, alleged fake documents, alleged store vandalism, and lawsuit-status claims. The clip is indexed as a primary video source, but its claims need comparison against court records and other public evidence.",
-      category: "statement",
+      occurredAt: "2026-03-10T22:45:50.000Z",
+      title: "Bodycam records McNeff police call",
+      summary: "The clip surfaced on June 3, but the bodycam overlay places the recorded interaction on March 10, 2026 at 4:45 PM CT. In the 4:45 clip, BAM CEO Ammon McNeff gives police the BAM-side account: unauthorized consignment, alleged creator harassment/extortion, alleged fake documents, alleged store vandalism, and lawsuit-status claims.",
+      category: "police",
       involvedParties: ["Ammon McNeff", "BAM Franchising", "Bricks & Minifigs", "RecklessBen", "Bryan Mansell", "Police"],
       sourceIds: ["src-twitter-mcneff-police-call", "src-bamsucks-archive", "src-utah-xchange"],
       confidence: "medium",
       status: "needs-review",
       publicationRisk: "high",
-      benPerspective: "Ben-side viewers are likely to treat this as a key compare-against-the-record clip, especially where it describes Ben, Mansell, lawsuits, vandalism, fake documents, and extortion.",
+      benPerspective: "Ben-side viewers are likely to treat this as a key compare-against-the-record bodycam clip, especially where it describes Ben, Mansell, lawsuits, vandalism, fake documents, and extortion.",
       bamPerspective: "McNeff presents BAM's side to police: the consignment was invalid/unauthorized, the former franchisee was responsible, and Ben/Mansell were allegedly using pressure tactics to extract money.",
+      imageUrl: mcneffPoliceCallPosterUrl,
       videoUrl: mcneffPoliceCallUrl
     }
   ],
