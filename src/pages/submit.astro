@@ -14,8 +14,8 @@ const turnstileSiteKey = env?.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLI
   <TurnstileScript siteKey={turnstileSiteKey} />
   <section class="page-heading">
     <span class="eyebrow">Community suggestions</span>
-    <h1>Send a source, correction, court date, document, or clip.</h1>
-    <p class="lede">Suggestions enter moderation. Social claims, YouTube allegations, Reddit threads, and private-person material do not publish automatically.</p>
+    <h1>Add a source, correction, court date, document, or clip.</h1>
+    <p class="lede">Submissions are scored, clustered, and posted to the Community Feed as public leads. Strong items become timeline-review candidates.</p>
   </section>
   <section class="split">
     <SubmissionForm client:load turnstileSiteKey={turnstileSiteKey} />
@@ -24,7 +24,8 @@ const turnstileSiteKey = env?.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.PUBLI
         <h2>Review Standard</h2>
       </div>
       <div class="panel-body stack">
-        <p>Low-risk official records may be added after automated checks. Claims about private people, screenshots, anonymous tips, and social posts require human review.</p>
+        <p>Community leads are not verified facts. Claims about private people, screenshots, anonymous tips, and social posts stay labeled until reviewed.</p>
+        <p>The score helps group duplicates and decide whether an item belongs only in the feed or should be considered for the main timeline.</p>
         <p>No home addresses, private phone numbers, private emails, or unredacted sensitive records should be submitted.</p>
       </div>
     </aside>

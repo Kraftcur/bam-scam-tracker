@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { insertSubmission } from "../../lib/data";
+import { processCommunitySubmission } from "../../lib/ingestion";
 import { publicSubmissionInputSchema } from "../../lib/schema";
 import { getEnv, json, slugId } from "../../lib/runtime";
 import type { SubmissionRecord } from "../../types";
@@ -85,5 +86,6 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
   };
 
   await insertSubmission(env, submission);
-  return json({ submission }, { status: 201 });
+  const processing = await processCommunitySubmission(env, submission.id);
+  return json({ submission: { ...submission, processing } }, { status: 201 });
 };

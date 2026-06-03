@@ -15,5 +15,5 @@ const communityEvents = data.events.filter(e => e.status === "community");
   description="A dedicated timeline for crowd-sourced and unverified community evidence regarding the Bricks & Minifigs controversy."
   donationUrl={donationUrl}
 >
-  <CommunityTimeline client:load events={communityEvents} />
+  <CommunityTimeline client:load events={communityEvents} submissions={data.submissions} />
 </BaseLayout>

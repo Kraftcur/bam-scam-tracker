@@ -138,7 +138,15 @@ export const submissionSchema = z.object({
   imageUrl: z.string().url().optional(),
   videoUrl: z.string().url().optional(),
   benPerspective: z.string().optional(),
-  bamPerspective: z.string().optional()
+  bamPerspective: z.string().optional(),
+  communityEventId: z.string().optional(),
+  aiScore: z.number().int().min(0).max(100).optional(),
+  aiScoreReasons: z.array(z.string()).optional(),
+  clusterKey: z.string().optional(),
+  duplicateKey: z.string().optional(),
+  suggestedAction: z.enum(["feed", "timeline-review", "duplicate", "needs-human", "reject"]).optional(),
+  aiSummary: z.string().optional(),
+  processedAt: z.string().datetime().optional()
 });
 
 export const ingestionRunSchema = z.object({

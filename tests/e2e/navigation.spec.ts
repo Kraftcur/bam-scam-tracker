@@ -75,6 +75,6 @@ test("timeline filtering works", async ({ page }) => {
 
 test("submission form validates required fields", async ({ page }) => {
   await page.goto("/submit");
-  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByRole("button", { name: "Add to feed" }).click();
   await expect(page.locator("input:invalid, textarea:invalid").first()).toBeVisible();
 });

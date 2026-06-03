@@ -24,7 +24,7 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
 
     if (response.ok) {
       setState("success");
-      setMessage("Submitted for review.");
+      setMessage("Added to feed for review.");
       event.currentTarget.reset();
     } else {
       const payload = await response.json().catch(() => ({ error: "Submission failed." })) as { error?: string };
@@ -36,7 +36,7 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
   return (
     <form className="panel" onSubmit={onSubmit}>
       <div className="panel-header">
-        <h2>Suggest an Update</h2>
+        <h2>Add to Community Feed</h2>
       </div>
       <div className="panel-body stack">
         <label className="field">
@@ -83,7 +83,7 @@ export default function SubmissionForm({ turnstileSiteKey }: { turnstileSiteKey?
         <div className="toolbar">
           <button className="button primary" type="submit" disabled={state === "submitting"}>
             <Send size={17} aria-hidden="true" />
-            {state === "submitting" ? "Submitting" : "Submit"}
+            {state === "submitting" ? "Adding" : "Add to feed"}
           </button>
           {message && <span className={`pill ${state === "error" ? "disputed" : "verified"}`}>{message}</span>}
         </div>

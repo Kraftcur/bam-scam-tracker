@@ -137,6 +137,14 @@ export type SubmissionRecord = {
   videoUrl?: string;
   benPerspective?: string;
   bamPerspective?: string;
+  communityEventId?: string;
+  aiScore?: number;
+  aiScoreReasons?: string[];
+  clusterKey?: string;
+  duplicateKey?: string;
+  suggestedAction?: "feed" | "timeline-review" | "duplicate" | "needs-human" | "reject";
+  aiSummary?: string;
+  processedAt?: string;
 };
 
 export type IngestionRun = {

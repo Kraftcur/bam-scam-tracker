@@ -54,6 +54,9 @@ const parseList = (value: unknown): string[] => {
 const nullableString = (value: unknown): string | undefined =>
   typeof value === "string" && value.length > 0 ? value : undefined;
 
+const nullableNumber = (value: unknown): number | undefined =>
+  value === null || value === undefined ? undefined : Number(value);
+
 const sourceFromRow = (row: JsonRow): Source =>
   sourceSchema.parse({
     id: row.id,
@@ -83,7 +86,15 @@ const eventFromRow = (row: JsonRow): TimelineEvent =>
     imageUrl: nullableString(row.image_url),
     videoUrl: nullableString(row.video_url),
     benPerspective: nullableString(row.ben_perspective),
-    bamPerspective: nullableString(row.bam_perspective)
+    bamPerspective: nullableString(row.bam_perspective),
+    communityEventId: nullableString(row.community_event_id),
+    aiScore: nullableNumber(row.ai_score),
+    aiScoreReasons: parseList(row.ai_score_reasons),
+    clusterKey: nullableString(row.cluster_key),
+    duplicateKey: nullableString(row.duplicate_key),
+    suggestedAction: nullableString(row.suggested_action),
+    aiSummary: nullableString(row.ai_summary),
+    processedAt: nullableString(row.processed_at)
   });
 
 const caseFromRow = (row: JsonRow): CaseRecord =>
@@ -264,8 +275,10 @@ export async function insertSubmission(env: AppEnv | undefined, submission: Subm
   await env.DB.prepare(
     `insert into submissions (
       id, submitter_name, submitter_contact, url, title, summary, suggested_category,
-      moderation_status, created_at, reviewer_note
-    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      moderation_status, created_at, reviewer_note, image_url, video_url, ben_perspective,
+      bam_perspective, community_event_id, ai_score, ai_score_reasons, cluster_key,
+      duplicate_key, suggested_action, ai_summary, processed_at
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
       submission.id,
@@ -277,7 +290,19 @@ export async function insertSubmission(env: AppEnv | undefined, submission: Subm
       submission.suggestedCategory,
       submission.moderationStatus,
       submission.createdAt,
-      submission.reviewerNote ?? null
+      submission.reviewerNote ?? null,
+      submission.imageUrl ?? null,
+      submission.videoUrl ?? null,
+      submission.benPerspective ?? null,
+      submission.bamPerspective ?? null,
+      submission.communityEventId ?? null,
+      submission.aiScore ?? null,
+      submission.aiScoreReasons ? JSON.stringify(submission.aiScoreReasons) : null,
+      submission.clusterKey ?? null,
+      submission.duplicateKey ?? null,
+      submission.suggestedAction ?? null,
+      submission.aiSummary ?? null,
+      submission.processedAt ?? null
     )
     .run();
 

@@ -1,6 +1,7 @@
 import { seedData } from "../data/seed";
 import type { AppEnv } from "./data";
 import { extractCandidatesWithAi } from "./ai";
+import { communityDuplicateKey, publicReviewerNote, scoreCommunitySubmission } from "./community-intel";
 import { canAutoPublish } from "./policy";
 
 export function isAiIngestionEnabled(env: Pick<AppEnv, "ENABLE_AI_INGESTION" | "GEMINI_API_KEY"> | undefined) {
@@ -197,96 +198,239 @@ async function insertReviewSubmission(
     .run();
 }
 
+type CommunitySubmissionRow = {
+  id: string;
+  title: string;
+  summary: string;
+  suggested_category: string;
+  url: string | null;
+  created_at: string;
+};
+
+function communityCategory(category: string) {
+  if (category === "court-date" || category === "document") return "court";
+  if (category === "clip") return "video";
+  if (category === "correction") return "site";
+  if (category === "police") return "police";
+  return "media";
+}
+
+function communitySourceUrl(submission: CommunitySubmissionRow) {
+  return submission.url || `https://bam-scam-tracker.tomcurrie.workers.dev/community#${submission.id}`;
+}
+
+async function upsertCommunitySource(env: AppEnv, submission: CommunitySubmissionRow) {
+  const sourceId = `src-${submission.id}`;
+  await env.DB!.prepare(
+    `insert or replace into sources (
+      id, url, title, publisher, source_type, archive_url, date_found,
+      reliability_tier, last_checked, notes
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  )
+    .bind(
+      sourceId,
+      communitySourceUrl(submission),
+      submission.title,
+      "Community submission",
+      "community",
+      null,
+      submission.created_at,
+      "community",
+      new Date().toISOString(),
+      "Community-submitted lead. Useful for public context, not verified fact."
+    )
+    .run();
+  return sourceId;
+}
+
+async function loadCommunityContext(env: AppEnv) {
+  const [eventsResult, submissionsResult, sourcesResult] = await Promise.all([
+    env.DB!.prepare("select id, occurred_at, title, summary, category, involved_parties, source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective from events").all<any>(),
+    env.DB!.prepare("select id, title, summary, suggested_category, moderation_status, created_at, url, duplicate_key from submissions").all<any>(),
+    env.DB!.prepare("select title, url from sources where url is not null").all<any>()
+  ]);
+  const events = (eventsResult.results ?? []).map((row) => ({
+    id: row.id,
+    occurredAt: row.occurred_at,
+    title: row.title,
+    summary: row.summary,
+    category: row.category,
+    involvedParties: JSON.parse(row.involved_parties || "[]"),
+    sourceIds: JSON.parse(row.source_ids || "[]"),
+    confidence: row.confidence,
+    status: row.status,
+    publicationRisk: row.publication_risk,
+    imageUrl: row.image_url || undefined,
+    videoUrl: row.video_url || undefined,
+    benPerspective: row.ben_perspective || undefined,
+    bamPerspective: row.bam_perspective || undefined
+  }));
+  const submissions = (submissionsResult.results ?? []).map((row) => ({
+    id: row.id,
+    title: row.title,
+    summary: row.summary,
+    suggestedCategory: row.suggested_category,
+    moderationStatus: row.moderation_status,
+    createdAt: row.created_at,
+    url: row.url || undefined,
+    duplicateKey: row.duplicate_key || undefined
+  }));
+  const sourceKeys = (sourcesResult.results ?? [])
+    .map((row) => communityDuplicateKey({ title: row.title || "", url: row.url || undefined }))
+    .filter(Boolean);
+  return { events, submissions, sourceKeys };
+}
+
+export async function processCommunitySubmission(env: AppEnv | undefined, submissionId: string) {
+  if (!env?.DB) return { published: 0, suggestedAction: "needs-human", score: 0 };
+
+  const submission = await env.DB.prepare(
+    "select id, title, summary, suggested_category, url, created_at from submissions where id = ?"
+  ).bind(submissionId).first<CommunitySubmissionRow>();
+  if (!submission) return { published: 0, suggestedAction: "needs-human", score: 0 };
+
+  const context = await loadCommunityContext(env);
+  const intel = scoreCommunitySubmission(
+    {
+      url: submission.url || undefined,
+      title: submission.title,
+      summary: submission.summary,
+      suggestedCategory: submission.suggested_category
+    },
+    context.events,
+    context.submissions.filter((item) => item.id !== submission.id),
+    context.sourceKeys
+  );
+
+  const processedAt = new Date().toISOString();
+  const reviewerNote = publicReviewerNote(intel);
+
+  if (intel.suggestedAction === "duplicate" || intel.suggestedAction === "reject") {
+    await env.DB.prepare(
+      `update submissions set moderation_status = 'triaged', reviewer_note = ?, ai_score = ?,
+        ai_score_reasons = ?, cluster_key = ?, duplicate_key = ?, suggested_action = ?,
+        ai_summary = ?, processed_at = ? where id = ?`
+    )
+      .bind(
+        reviewerNote,
+        intel.score,
+        JSON.stringify(intel.scoreReasons),
+        intel.clusterKey,
+        intel.duplicateKey,
+        intel.suggestedAction,
+        intel.aiSummary,
+        processedAt,
+        submission.id
+      )
+      .run();
+    return { published: 0, suggestedAction: intel.suggestedAction, score: intel.score };
+  }
+
+  let candidate = {
+    occurredAt: submission.created_at,
+    title: submission.title,
+    summary: intel.aiSummary || submission.summary,
+    category: communityCategory(submission.suggested_category),
+    confidence: intel.score >= 70 ? "medium" : "low",
+    imageUrl: null as string | null,
+    videoUrl: submission.url && /\.(mp4|mov|webm)(\?|#|$)/i.test(submission.url) ? submission.url : null,
+    benPerspective: null as string | null,
+    bamPerspective: null as string | null
+  };
+
+  if (isAiIngestionEnabled(env) && submission.summary.length >= 80 && intel.score >= 45) {
+    try {
+      const extraction = await extractCandidatesWithAi({
+        apiKey: env.GEMINI_API_KEY,
+        model: env.GEMINI_MODEL,
+        sourceTitle: submission.title,
+        sourceUrl: submission.url ?? "",
+        sourceText: `Community lead. Keep as community-only unless reviewed.\nTitle: ${submission.title}\nSummary: ${submission.summary}`
+      });
+      const first = extraction.timelineCandidates[0];
+      if (first) {
+        candidate = {
+          ...candidate,
+          occurredAt: first.occurredAt || candidate.occurredAt,
+          title: first.title || candidate.title,
+          summary: first.summary || candidate.summary,
+          category: first.category || candidate.category,
+          confidence: first.confidence || candidate.confidence,
+          imageUrl: (first as any).imageUrl || candidate.imageUrl,
+          videoUrl: (first as any).videoUrl || candidate.videoUrl,
+          benPerspective: (first as any).benPerspective || null,
+          bamPerspective: (first as any).bamPerspective || null
+        };
+      }
+    } catch (error) {
+      console.error("AI extraction failed for community submission", error);
+    }
+  }
+
+  const sourceId = await upsertCommunitySource(env, submission);
+  const eventId = `evt-community-${submission.id}`;
+  await env.DB.prepare(
+    `insert or replace into events (
+      id, occurred_at, title, summary, category, involved_parties,
+      source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  )
+    .bind(
+      eventId,
+      candidate.occurredAt,
+      candidate.title,
+      candidate.summary,
+      candidate.category,
+      JSON.stringify([]),
+      JSON.stringify([sourceId]),
+      candidate.confidence,
+      "community",
+      "high",
+      candidate.imageUrl,
+      candidate.videoUrl,
+      candidate.benPerspective,
+      candidate.bamPerspective
+    )
+    .run();
+
+  await env.DB.prepare(
+    `update submissions set moderation_status = 'triaged', reviewer_note = ?, community_event_id = ?,
+      ai_score = ?, ai_score_reasons = ?, cluster_key = ?, duplicate_key = ?,
+      suggested_action = ?, ai_summary = ?, processed_at = ? where id = ?`
+  )
+    .bind(
+      reviewerNote,
+      eventId,
+      intel.score,
+      JSON.stringify(intel.scoreReasons),
+      intel.clusterKey,
+      intel.duplicateKey,
+      intel.suggestedAction,
+      intel.aiSummary,
+      processedAt,
+      submission.id
+    )
+    .run();
+
+  return { published: 1, suggestedAction: intel.suggestedAction, score: intel.score, eventId };
+}
+
 export async function processCommunitySubmissions(env: AppEnv) {
   if (!env.DB) return { published: 0 };
-  
-  const { results: pending } = await env.DB.prepare(
-    "select id, title, summary, url from submissions where moderation_status = 'new'"
-  ).all<{ id: string; title: string; summary: string; url: string | null }>();
-  
-  if (!pending || pending.length === 0) return { published: 0 };
-  
-  let publishedCount = 0;
-  
-  for (const sub of pending) {
-    let eventsCreated = 0;
 
-    if (isAiIngestionEnabled(env) && (sub.summary?.length ?? 0) >= 80) {
-      try {
-        const extraction = await extractCandidatesWithAi({
-          apiKey: env.GEMINI_API_KEY,
-          model: env.GEMINI_MODEL,
-          sourceTitle: "Community Submission",
-          sourceUrl: sub.url ?? "",
-          sourceText: `Title: ${sub.title}\nSummary: ${sub.summary}`
-        });
-        
-        for (const candidate of extraction.timelineCandidates) {
-          await env.DB.prepare(
-            `insert or ignore into events (
-              id, occurred_at, title, summary, category, involved_parties,
-              source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
-            ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-          )
-            .bind(
-              `evt-${crypto.randomUUID()}`,
-              candidate.occurredAt,
-              candidate.title,
-              candidate.summary,
-              candidate.category,
-              JSON.stringify([]),
-              JSON.stringify([]),
-              candidate.confidence,
-              "community",
-              "high",
-              (candidate as any).imageUrl || null,
-              (candidate as any).videoUrl || null,
-              (candidate as any).benPerspective || null,
-              (candidate as any).bamPerspective || null
-            )
-            .run();
-          eventsCreated += 1;
-        }
-      } catch (e) {
-         console.error("AI extraction failed for community submission", e);
-      }
-    }
-    
-    if (eventsCreated === 0) {
-      await env.DB.prepare(
-        `insert or ignore into events (
-          id, occurred_at, title, summary, category, involved_parties,
-          source_ids, confidence, status, publication_risk, image_url, video_url, ben_perspective, bam_perspective
-        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      )
-        .bind(
-          `evt-${crypto.randomUUID()}`,
-          new Date().toISOString(),
-          sub.title,
-          sub.summary || "No summary provided.",
-          "media",
-          JSON.stringify([]),
-          JSON.stringify([]),
-          "low",
-          "community",
-          "high",
-          null,
-          null,
-          null,
-          null
-        )
-        .run();
-      eventsCreated += 1;
-    }
-    
-    publishedCount += eventsCreated;
-    
-    await env.DB.prepare(
-      "update submissions set moderation_status = 'triaged', reviewer_note = 'Auto-processed by AI into community timeline' where id = ?"
-    ).bind(sub.id).run();
+  const { results: pending } = await env.DB.prepare(
+    "select id from submissions where moderation_status = 'new' order by created_at asc limit 10"
+  ).all<{ id: string }>();
+
+  if (!pending || pending.length === 0) return { published: 0 };
+
+  let published = 0;
+  for (const submission of pending) {
+    const result = await processCommunitySubmission(env, submission.id);
+    published += result.published;
   }
-  
-  return { published: publishedCount };
+
+  return { published };
 }
 
 
