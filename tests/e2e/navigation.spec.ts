@@ -27,7 +27,13 @@ test("dashboard loads source-first tracker", async ({ page }) => {
 test("watch mode uses matching video for June 1 police rebuttal", async ({ page }) => {
   await page.goto("/?view=play");
   await expect(page.getByRole("heading", { name: "Timeline Watch Mode" })).toBeVisible();
-  await page.locator('button[title*="RecklessBen responds to American Fork police"]').click();
+  await expect(page.getByText(/Autoplay Active/i)).toBeVisible();
+  const targetStepValue = await page.getByLabel("Jump to timeline step").locator("option").evaluateAll((options) => {
+    const target = options.find((option) => option.textContent?.includes("RecklessBen responds to American Fork police"));
+    return target?.getAttribute("value") ?? "";
+  });
+  expect(targetStepValue).not.toBe("");
+  await page.getByLabel("Jump to timeline step").selectOption(targetStepValue);
   await expect(page.getByRole("heading", { name: "RecklessBen responds to American Fork police" })).toBeVisible();
   await expect(page.locator("iframe")).toHaveAttribute("src", /2YEzhDn0jY8/);
   await expect(page.locator("iframe")).not.toHaveAttribute("src", /cxZPfj8AlmY/);

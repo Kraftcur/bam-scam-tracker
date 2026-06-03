@@ -1,18 +1,4 @@
-import {
-  ArrowRight,
-  BookOpen,
-  Coffee,
-  ExternalLink,
-  Filter,
-  Flame,
-  FileSearch,
-  Gavel,
-  PlayCircle,
-  Search,
-  ShieldAlert,
-  Sparkles,
-  Users
-} from "lucide-react";
+import { BookOpen, Coffee, ExternalLink, FileSearch, ShieldAlert, Sparkles, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type {
   StoryPlayer,
@@ -22,7 +8,7 @@ import {
   storyPlayers,
 } from "../data/story";
 import { formatDateTime } from "../lib/format";
-import type { DocumentRecord, IngestionRun, SourceCheck, TimelineEvent } from "../types";
+import type { DocumentRecord, IngestionRun, Source, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
 import { StoryPlayback } from "./StoryPlayback";
 
@@ -30,37 +16,10 @@ type Props = {
   documents: DocumentRecord[];
   events: TimelineEvent[];
   ingestionRuns: IngestionRun[];
+  sources: Source[];
   sourceChecks: SourceCheck[];
   donationUrl?: string;
 };
-
-const heatLabels = ["cold", "warm", "hot", "red-hot", "critical"];
-const receiptIds = [
-  "doc-bam-verified-complaint",
-  "doc-tro-260402353",
-  "doc-afp-26af02033-probable-cause",
-  "doc-afp-search-warrant-3352981",
-  "doc-bam-docket-events-260402353",
-  "doc-law-gorman-complaint",
-  "doc-law-gorman-exhibit-d-termination-letter",
-  "doc-bam-may28-statement"
-];
-
-function formatDocKind(doc: DocumentRecord) {
-  return `${doc.documentType} • ${doc.fileType.toUpperCase()}`;
-}
-
-function HeatMeter({ heat }: { heat: number }) {
-  return (
-    <span className="heat-meter" aria-label={`${heat} out of 5 heat`}>
-      {Array.from({ length: 5 }, (_, index) => (
-        <span key={index} className={index < heat ? "on" : ""} />
-      ))}
-    </span>
-  );
-}
-
-
 
 const spineTypeLabels: Record<StorySpineNode["type"], string> = {
   "court-record": "Court record",
@@ -401,7 +360,7 @@ function TimelineSpine({
 }
 
 
-export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
+export default function StoryExperience({ documents, events, ingestionRuns, sources, sourceChecks, donationUrl }: Props) {
   const [viewMode, setViewMode] = useState<"spine" | "play">("play");
 
   const latestRun = ingestionRuns[0];
@@ -474,7 +433,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
       </nav>
 
       {viewMode === "play" && (
-        <StoryPlayback events={events} />
+        <StoryPlayback events={events} sources={sources} />
       )}
 
       {viewMode === "spine" && (

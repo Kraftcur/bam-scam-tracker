@@ -15,7 +15,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "./Badge";
 import { formatDateTime } from "../lib/format";
-import type { TimelineEvent } from "../types";
+import type { Source, SourceType, TimelineEvent } from "../types";
 
 type PlaybackStep = {
   id: string;
@@ -37,9 +37,10 @@ type PlaybackStep = {
 
 type Props = {
   events: TimelineEvent[];
+  sources: Source[];
 };
 
-function getYouTubeEmbedUrl(url: string) {
+function getYouTubeEmbedUrl(url: string, autoplay: boolean) {
   try {
     const urlObj = new URL(url);
     let videoId = "";
@@ -70,15 +71,62 @@ function getYouTubeEmbedUrl(url: string) {
         startSeconds = parseInt(t, 10) || 0;
       }
     }
-    return `https://www.youtube.com/embed/${videoId}?start=${startSeconds}&enablejsapi=1&rel=0`;
+    const params = new URLSearchParams({
+      start: String(startSeconds),
+      enablejsapi: "1",
+      rel: "0"
+    });
+    if (autoplay) {
+      params.set("autoplay", "1");
+      params.set("mute", "1");
+    }
+    return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
   } catch (e) {
     return "";
   }
 }
 
-export function StoryPlayback({ events }: Props) {
+function receiptKind(sourceType: SourceType): PlaybackStep["receipts"][number]["kind"] {
+  if (sourceType === "video") return "video";
+  if (sourceType === "audio") return "video";
+  if (sourceType === "court-record") return "document";
+  if (sourceType === "official-statement") return "statement";
+  if (sourceType === "news-report") return "coverage";
+  if (sourceType === "community") return "social";
+  return "archive";
+}
+
+function fallbackPerspective(event: TimelineEvent, lane: "ben" | "bam") {
+  if (lane === "ben") {
+    if (event.category === "video") return "Creator-side source is linked below. Use the clip and timestamp for the exact claim.";
+    if (event.category === "media") return "Creator-side context is not separately summarized yet; this step is coverage of the public dispute.";
+    return "Creator-side note not added yet. The receipt links below show what this step is based on.";
+  }
+
+  if (event.category === "statement") return "Official-side statement is linked below. Compare it with the surrounding creator videos and filings.";
+  if (event.category === "police") return "Police or court-side records are linked below. This step should be read from the cited public record.";
+  if (event.category === "court") return "Court-side position is in the filing or docket source linked below; filings are allegations unless a court rules.";
+  return "BAM / police-side note not added yet. The receipt links below show what this step is based on.";
+}
+
+function visibleChapterIndexes(currentIndex: number, totalSteps: number) {
+  const indexes = new Set<number>();
+  indexes.add(0);
+  indexes.add(totalSteps - 1);
+  for (let index = currentIndex - 2; index <= currentIndex + 2; index += 1) {
+    if (index >= 0 && index < totalSteps) indexes.add(index);
+  }
+  return [...indexes].sort((a, b) => a - b);
+}
+
+function compactTitle(title: string) {
+  return title.length > 46 ? `${title.slice(0, 43)}...` : title;
+}
+
+export function StoryPlayback({ events, sources }: Props) {
   // Sort events chronologically for playback (oldest to newest)
   const sortedEvents = [...events].sort((a, b) => a.occurredAt.localeCompare(b.occurredAt));
+  const sourceMap = new Map(sources.map((source) => [source.id, source]));
 
   const playbackSteps: PlaybackStep[] = sortedEvents.map((event, index) => ({
     id: event.id,
@@ -86,16 +134,24 @@ export function StoryPlayback({ events }: Props) {
     date: formatDateTime(event.occurredAt),
     title: event.title,
     summary: event.summary,
-    benPerspective: event.benPerspective || "",
-    bamPerspective: event.bamPerspective || "",
+    benPerspective: event.benPerspective || fallbackPerspective(event, "ben"),
+    bamPerspective: event.bamPerspective || fallbackPerspective(event, "bam"),
     recordPerspective: event.summary,
     imageUrl: event.imageUrl || "",
     videoUrl: event.videoUrl || "",
-    receipts: []
+    receipts: event.sourceIds
+      .map((sourceId) => sourceMap.get(sourceId))
+      .filter((source): source is Source => Boolean(source))
+      .slice(0, 4)
+      .map((source) => ({
+        label: source.title,
+        href: source.archiveUrl || source.url,
+        kind: receiptKind(source.sourceType)
+      }))
   }));
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [activeTab, setActiveTab] = useState<"ben" | "bam" | "record">("ben");
   const [speed, setSpeed] = useState(15); // seconds per step
   const [progress, setProgress] = useState(0); // 0 to 100
@@ -115,6 +171,8 @@ export function StoryPlayback({ events }: Props) {
 
   const step = playbackSteps[currentStepIndex];
   const totalSteps = playbackSteps.length;
+  const chapterIndexes = visibleChapterIndexes(currentStepIndex, totalSteps);
+  const overallProgress = totalSteps > 1 ? ((currentStepIndex + progress / 100) / (totalSteps - 1)) * 100 : 100;
 
   useEffect(() => {
     try {
@@ -188,10 +246,10 @@ export function StoryPlayback({ events }: Props) {
   const handleReset = () => {
     setCurrentStepIndex(0);
     setProgress(0);
-    setIsPlaying(false);
+    setIsPlaying(true);
   };
 
-  const youtubeEmbedUrl = step.videoUrl ? getYouTubeEmbedUrl(step.videoUrl) : "";
+  const youtubeEmbedUrl = step.videoUrl ? getYouTubeEmbedUrl(step.videoUrl, isPlaying) : "";
 
   return (
     <div className="playback-shell">
@@ -224,28 +282,55 @@ export function StoryPlayback({ events }: Props) {
         </div>
       </div>
 
-      {/* Stepper Progress Bar */}
-      <div className="playback-stepper">
-        {playbackSteps.map((s, idx) => (
-          <button
-            key={s.id}
-            className={`step-dot-btn ${idx === currentStepIndex ? "active" : ""} ${idx < currentStepIndex ? "completed" : ""}`}
-            onClick={() => {
-              setCurrentStepIndex(idx);
-              setIsPlaying(false);
+      <div className="playback-chapter-rail" aria-label="Timeline watch mode chapters">
+        <div className="chapter-now">
+          <span>Now Playing</span>
+          <strong>{step.sequence} / {totalSteps}: {compactTitle(step.title)}</strong>
+          <div className="chapter-progress-track" aria-hidden="true">
+            <span style={{ width: `${Math.min(overallProgress, 100)}%` }} />
+          </div>
+        </div>
+        <div className="chapter-strip" aria-label="Nearby chapters">
+          {chapterIndexes.map((idx, position) => {
+            const previousIndex = chapterIndexes[position - 1];
+            const hasGap = typeof previousIndex === "number" && idx - previousIndex > 1;
+            const s = playbackSteps[idx];
+            return (
+              <span className="chapter-strip-item" key={s.id}>
+                {hasGap && <span className="chapter-gap" aria-hidden="true">...</span>}
+                <button
+                  className={`chapter-chip ${idx === currentStepIndex ? "active" : ""} ${idx < currentStepIndex ? "completed" : ""}`}
+                  onClick={() => {
+                    setCurrentStepIndex(idx);
+                    setProgress(0);
+                  }}
+                  title={`Go to step ${s.sequence}: ${s.title}`}
+                  type="button"
+                >
+                  <span>{s.sequence}</span>
+                  <strong>{compactTitle(s.title)}</strong>
+                </button>
+              </span>
+            );
+          })}
+        </div>
+        <label className="chapter-jump-select">
+          <span>Jump to any point</span>
+          <select
+            aria-label="Jump to timeline step"
+            value={currentStepIndex}
+            onChange={(event) => {
+              setCurrentStepIndex(Number(event.target.value));
+              setProgress(0);
             }}
-            title={`Go to step ${s.sequence}: ${s.title}`}
           >
-            <span className="dot-label">{s.sequence}</span>
-            <span className="dot-progress-container">
-              {idx === currentStepIndex ? (
-                <span className="dot-progress-fill" style={{ width: `${progress}%` }}></span>
-              ) : idx < currentStepIndex ? (
-                <span className="dot-progress-fill completed"></span>
-              ) : null}
-            </span>
-          </button>
-        ))}
+            {playbackSteps.map((s, idx) => (
+              <option key={s.id} value={idx}>
+                {s.sequence} - {s.title}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {/* Main Split Player */}

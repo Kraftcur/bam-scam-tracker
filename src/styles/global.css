@@ -4076,6 +4076,13 @@ tr:last-child td {
   display: grid;
   gap: 24px;
   padding: 10px 0 48px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.playback-shell > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .playback-header {
@@ -4114,65 +4121,158 @@ tr:last-child td {
   cursor: pointer;
 }
 
-/* Stepper Progress Dots */
-.playback-stepper {
+/* Compact Chapter Rail */
+.playback-chapter-rail {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 94%, var(--green-soft));
+  border-radius: 12px;
+  padding: 14px;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 8px;
-  padding: 12px 0;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.5fr) minmax(190px, 0.55fr);
+  gap: 14px;
+  align-items: center;
+  box-shadow: var(--shadow);
 }
 
-.step-dot-btn {
-  background: transparent;
-  border: none;
-  display: flex;
-  flex-direction: column;
+.chapter-now {
+  display: grid;
   gap: 6px;
-  padding: 4px 0;
-  text-align: left;
-  cursor: pointer;
-  outline: none;
   min-width: 0;
 }
 
-.step-dot-btn .dot-label {
-  font-size: 0.78rem;
-  font-weight: 850;
+.chapter-now span,
+.chapter-jump-select span {
   color: var(--muted);
-  transition: color 0.2s ease;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.step-dot-btn.active .dot-label {
+.chapter-now strong {
   color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.step-dot-btn.completed .dot-label {
+.chapter-progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.chapter-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--electric));
+  transition: width 0.1s linear;
+}
+
+.chapter-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chapter-strip-item {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.chapter-gap {
+  align-self: center;
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.chapter-chip {
+  width: 130px;
+  min-height: 56px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  border-radius: 8px;
+  padding: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.chapter-chip:hover {
+  border-color: #c8c0b3;
+  transform: translateY(-1px);
+}
+
+.chapter-chip span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--line);
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.chapter-chip strong {
+  font-size: 0.73rem;
+  line-height: 1.15;
+  font-weight: 800;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chapter-chip.completed span {
+  background: var(--green-soft);
   color: var(--green);
 }
 
-.dot-progress-container {
-  height: 6px;
-  width: 100%;
-  background: var(--line);
-  border-radius: 999px;
-  overflow: hidden;
-  display: block;
-  position: relative;
+.chapter-chip.active {
+  border-color: color-mix(in srgb, var(--green) 65%, var(--ink));
+  box-shadow: 0 10px 28px rgba(46, 125, 82, 0.14);
+  color: var(--ink);
 }
 
-.dot-progress-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: var(--ink);
-  transition: width 0.1s linear;
-  width: 0;
-}
-
-.dot-progress-fill.completed {
-  width: 100%;
+.chapter-chip.active span {
   background: var(--green);
+  color: #fffdf8;
+}
+
+.chapter-jump-select {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.chapter-jump-select select {
+  min-height: 42px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 750;
+  padding: 7px 10px;
+  cursor: pointer;
 }
 
 /* Grid layout */
@@ -4181,6 +4281,11 @@ tr:last-child td {
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 24px;
   align-items: start;
+  min-width: 0;
+}
+
+.playback-player-grid > * {
+  min-width: 0;
 }
 
 /* Left side Media */
@@ -4191,6 +4296,7 @@ tr:last-child td {
   overflow: hidden;
   box-shadow: var(--shadow);
   position: relative;
+  min-width: 0;
 }
 
 .video-embed-wrapper {
@@ -4275,6 +4381,13 @@ tr:last-child td {
   box-shadow: var(--shadow);
   display: grid;
   gap: 16px;
+  min-width: 0;
+}
+
+.playback-details-card > *,
+.perspective-container > *,
+.step-receipts-vault > * {
+  min-width: 0;
 }
 
 .card-top-header {
@@ -4598,9 +4711,19 @@ tr:last-child td {
     grid-template-columns: 1fr;
   }
   
-  .playback-stepper {
-    grid-template-columns: repeat(5, 1fr);
+  .playback-chapter-rail {
+    grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .chapter-strip {
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .chapter-chip {
+    width: 168px;
   }
   
   .playback-header {
@@ -4769,5 +4892,25 @@ tr:last-child td {
     font-size: 1.1rem;
     gap: 0;
   }
-}
 
+  .chapter-strip {
+    gap: 7px;
+  }
+
+  .chapter-chip {
+    width: 52px;
+    min-height: 44px;
+    padding: 6px;
+    grid-template-columns: 1fr;
+    place-items: center;
+  }
+
+  .chapter-chip strong {
+    display: none;
+  }
+
+  .chapter-chip span {
+    width: 30px;
+    height: 30px;
+  }
+}
