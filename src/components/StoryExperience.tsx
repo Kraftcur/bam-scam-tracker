@@ -12,7 +12,7 @@ import {
   ShieldAlert,
   Sparkles
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type {
   ClipMoment,
   ControlRoute,
@@ -22,6 +22,7 @@ import type {
   ProofLevel,
   StoryAct,
   StoryPlayer,
+  StorySpineNode,
   TimelineBeat,
   VerificationLead,
   VideoNode,
@@ -36,6 +37,7 @@ import {
   lawsuitLenses,
   proofLevels,
   storyPlayers,
+  storySpineNodes,
   storyActs,
   storyStats,
   timelineBeats,
@@ -193,6 +195,241 @@ function ControlRouteCard({ route }: { route: ControlRoute }) {
         <ArrowRight size={13} aria-hidden="true" />
       </small>
     </a>
+  );
+}
+
+const spineTypeLabels: Record<StorySpineNode["type"], string> = {
+  "court-record": "Court record",
+  "official-statement": "Official statement",
+  "creator-video": "Creator video",
+  "news-coverage": "News",
+  "social-signal": "Social signal",
+  "source-watch": "Source watch",
+  context: "Context"
+};
+
+const spineLegendItems: Array<{ type: StorySpineNode["type"]; label: string }> = [
+  { type: "court-record", label: "Court record" },
+  { type: "official-statement", label: "Official statement" },
+  { type: "creator-video", label: "Creator video" },
+  { type: "news-coverage", label: "News" },
+  { type: "social-signal", label: "Social signal" },
+  { type: "source-watch", label: "Needs review" }
+];
+
+function isExternalUrl(href: string) {
+  return /^https?:\/\//i.test(href);
+}
+
+function SpineLegend() {
+  return (
+    <aside className="spine-legend" aria-label="Timeline source legend">
+      {spineLegendItems.map((item) => (
+        <span className={`legend-pill ${item.type}`} key={item.type}>
+          <span aria-hidden="true" />
+          {item.label}
+        </span>
+      ))}
+      <small>Social signals show public discussion, not verified facts.</small>
+    </aside>
+  );
+}
+
+function StorySpineItem({
+  node,
+  index,
+  isOpen,
+  onToggle
+}: {
+  node: StorySpineNode;
+  index: number;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const panelId = `spine-panel-${node.id}`;
+  return (
+    <article className={`spine-node ${index % 2 === 0 ? "left" : "right"} ${node.type} ${isOpen ? "open" : ""}`}>
+      <div className="spine-tick" aria-hidden="true">
+        <span />
+      </div>
+      <button
+        aria-controls={panelId}
+        aria-expanded={isOpen}
+        className="spine-node-trigger"
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onToggle();
+          }
+        }}
+        onClick={onToggle}
+        type="button"
+      >
+        <span className="spine-date">{node.dateLabel}</span>
+        <span className="spine-headline">{node.headline}</span>
+        <span className="spine-dek">{node.dek}</span>
+        <span className="spine-meta-row">
+          <Badge value={spineTypeLabels[node.type].toLowerCase().replaceAll(" ", "-")} />
+          <Badge value={node.status} />
+          <span className="spine-source-count">{node.sources.length} source{node.sources.length === 1 ? "" : "s"}</span>
+        </span>
+        <span className="spine-burst" aria-hidden="true">
+          <span>{spineTypeLabels[node.type]}</span>
+          <span>{node.confidence} confidence</span>
+          <span>{node.tags[0]}</span>
+        </span>
+      </button>
+      <div className="spine-detail" hidden={!isOpen} id={panelId}>
+        <div>
+          <strong>What the record says</strong>
+          <p>{node.known}</p>
+        </div>
+        <div>
+          <strong>What remains disputed</strong>
+          <p>{node.disputed}</p>
+        </div>
+        <p>{node.detail}</p>
+        <div className="spine-tags" aria-label={`Tags for ${node.headline}`}>
+          {node.tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+        <div className="spine-sources" aria-label={`Sources for ${node.headline}`}>
+          {node.sources.map((source) => (
+            <a
+              href={source.href}
+              key={`${node.id}-${source.label}`}
+              rel={isExternalUrl(source.href) ? "noreferrer" : undefined}
+              target={isExternalUrl(source.href) ? "_blank" : undefined}
+            >
+              <Badge value={source.kind} />
+              <span>{source.label}</span>
+              {isExternalUrl(source.href) && <ExternalLink size={13} aria-hidden="true" />}
+            </a>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function TimelineSpine({
+  nodes,
+  courtRecordCount,
+  policeRecordCount,
+  sourceChecks,
+  changedChecks,
+  latestRun,
+  supportUrl
+}: {
+  nodes: StorySpineNode[];
+  courtRecordCount: number;
+  policeRecordCount: number;
+  sourceChecks: SourceCheck[];
+  changedChecks: number;
+  latestRun?: IngestionRun;
+  supportUrl: string;
+}) {
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [openNodeIds, setOpenNodeIds] = useState<string[]>([nodes[0]?.id, nodes.find((node) => node.id === "spine-lawsuit")?.id]
+    .filter((id): id is string => Boolean(id)));
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const toggleNode = (id: string) => {
+    setOpenNodeIds((current) => {
+      if (current.includes(id)) return current.filter((nodeId) => nodeId !== id);
+      return [id, ...current].slice(0, 2);
+    });
+  };
+
+  return (
+    <div className="spine-shell" data-spine-ready={isHydrated ? "true" : "false"}>
+      <div className="spine-copy">
+        <span className="eyebrow">Source-labeled public timeline</span>
+        <h1>The BAM / RecklessBen story, on one scroll.</h1>
+        <p>
+          Follow the public controversy as a continuous case spine: records, videos,
+          official statements, news coverage, and public conversation, each labeled by what it can actually prove.
+        </p>
+      </div>
+
+      <div className="spine-status-strip" aria-label="Tracker status">
+        <div>
+          <span>Court records indexed</span>
+          <strong>{courtRecordCount}</strong>
+        </div>
+        <div>
+          <span>Police / warrant records</span>
+          <strong>{policeRecordCount}</strong>
+        </div>
+        <div>
+          <span>Watched sources</span>
+          <strong>{sourceChecks.length}</strong>
+        </div>
+        <div>
+          <span>Changed sources</span>
+          <strong>{changedChecks}</strong>
+        </div>
+      </div>
+
+      <SpineLegend />
+
+      <div className="spine-track" aria-label="Continuous case timeline">
+        {nodes.map((node, index) => (
+          <StorySpineItem
+            index={index}
+            isOpen={openNodeIds.includes(node.id)}
+            key={node.id}
+            node={node}
+            onToggle={() => toggleNode(node.id)}
+          />
+        ))}
+        <article className="spine-support-node">
+          <div className="spine-tick" aria-hidden="true">
+            <span />
+          </div>
+          <div className="spine-support-card">
+            <div>
+              <span className="spine-date">Support</span>
+              <strong>Keep the timeline updated</strong>
+              <p>
+                Donations support hosting, record access, storage, and review time.
+                They do not buy editorial treatment.
+              </p>
+            </div>
+            <a className="coffee-card" href={supportUrl} rel="noreferrer" target="_blank">
+              <img src="/buy-me-a-coffee-qr.png" alt="QR code for buymeacoffee.com/bam.scam.tracker" loading="lazy" />
+              <span>
+                <small>Optional support</small>
+                <strong>Buy me a coffee</strong>
+              </span>
+              <Coffee size={18} aria-hidden="true" />
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <div className="spine-footer-actions">
+        <a className="button primary" href="/submit">
+          Submit Evidence
+          <Sparkles size={17} aria-hidden="true" />
+        </a>
+        <a className="button" href="/documents">
+          Source Vault
+          <FileSearch size={17} aria-hidden="true" />
+        </a>
+        <a className="button" href="/about">
+          Editorial Policy
+          <ShieldAlert size={17} aria-hidden="true" />
+        </a>
+        <span>
+          Last source check: {latestRun ? formatDateTime(latestRun.finishedAt ?? latestRun.startedAt) : "pending"}
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -543,6 +780,53 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const activePlayer = storyPlayers.find((player) => player.id === activePlayerId) ?? storyPlayers[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
   const supportUrl = donationUrl || "https://buymeacoffee.com/bam.scam.tracker";
+  const spineNodes = useMemo<StorySpineNode[]>(() => {
+    const liveNode: StorySpineNode = {
+      id: "spine-live",
+      dateLabel: currentSignal?.occurredAt?.slice(0, 10) ?? "Live",
+      headline: "Latest verified update",
+      dek: currentSignal?.title ?? "Waiting for the next source-labeled update.",
+      type: currentSignal?.category === "statement" ? "official-statement" : currentSignal?.category === "media" ? "news-coverage" : "source-watch",
+      status: (currentSignal?.status as StorySpineNode["status"]) ?? "context",
+      confidence: currentSignal?.confidence ?? "medium",
+      tags: [currentSignal?.category ?? "status", "latest", "tracker"],
+      known:
+        currentSignal?.summary ??
+        "The tracker surfaces the newest court, archive, official statement, or moderated public-record update here.",
+      disputed:
+        "New items are source-labeled and should be read according to their status: filing, statement, coverage, social signal, or verified record.",
+      detail:
+        "This live node keeps the top of the timeline current without turning every update into a separate page section.",
+      sources: [
+        {
+          label: "Full timeline archive",
+          href: "/timeline",
+          kind: "site"
+        },
+        {
+          label: "RSS updates",
+          href: "/feed.xml",
+          kind: "site"
+        }
+      ]
+    };
+
+    return [liveNode, ...storySpineNodes];
+  }, [currentSignal]);
+
+  if (spineNodes.length >= 0) {
+    return (
+      <TimelineSpine
+        changedChecks={changedChecks}
+        courtRecordCount={courtRecordCount}
+        latestRun={latestRun}
+        nodes={spineNodes}
+        policeRecordCount={policeRecordCount}
+        sourceChecks={sourceChecks}
+        supportUrl={supportUrl}
+      />
+    );
+  }
 
   return (
     <div className="story-page">

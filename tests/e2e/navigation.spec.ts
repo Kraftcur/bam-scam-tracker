@@ -2,21 +2,45 @@ import { expect, test } from "@playwright/test";
 
 test("dashboard loads source-first tracker", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /The LEGO case got weird/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /How this site decides/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /BAM's lawsuit is the live center/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Watch the story like a case board/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /filing, translated into what BAM has to prove/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Who is pulling on the story/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Fast leads go here/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Move through what happened/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Screenshots you can actually orient around/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /timestamp map for the moments/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /The tracker checks trusted sources/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /story, on one scroll/i })).toBeVisible();
+  await expect(page.locator(".spine-track")).toBeVisible();
+  await expect(page.getByLabel("Timeline source legend")).toContainText("Social signals show public discussion, not verified facts.");
+  await expect(page.getByRole("button", { name: /Collection enters the dispute/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Utah lawsuit is live/i })).toBeVisible();
   await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute("href", "/feed.xml");
-  await expect(page.getByRole("link", { name: "Latest Info" })).toBeVisible();
   await page.getByLabel("Primary navigation").getByRole("link", { name: "Archive" }).click();
   await expect(page.getByRole("heading", { name: /Every dated item/i })).toBeVisible();
+});
+
+test("homepage spine nodes expand and collapse", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
+  const socialNode = page.getByRole("button", { name: /Social posts widen picture/i });
+  const socialPanel = page.locator("#spine-panel-spine-social");
+  await expect(socialPanel).toBeHidden();
+  await socialNode.click();
+  await expect(socialPanel).toBeVisible();
+  await expect(socialPanel).toContainText("What remains disputed");
+  await expect(socialPanel).toContainText("Social posts are not treated as verified facts");
+  await socialNode.click();
+  await expect(socialPanel).toBeHidden();
+});
+
+test("homepage spine supports keyboard expansion", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
+  const statementNode = page.getByRole("button", { name: /BAM publishes responses/i });
+  await statementNode.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#spine-panel-spine-official-response")).toBeVisible();
+});
+
+test("homepage spine has no mobile horizontal overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /story, on one scroll/i })).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
 });
 
 test("timeline filtering works", async ({ page }) => {

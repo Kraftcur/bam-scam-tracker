@@ -58,6 +58,32 @@ export type TimelineBeat = {
   }>;
 };
 
+export type StorySpineNode = {
+  id: string;
+  dateLabel: string;
+  headline: string;
+  dek: string;
+  type:
+    | "court-record"
+    | "official-statement"
+    | "creator-video"
+    | "news-coverage"
+    | "social-signal"
+    | "source-watch"
+    | "context";
+  status: "recorded" | "alleged" | "disputed" | "needs-review" | "context";
+  confidence: "high" | "medium" | "low";
+  tags: string[];
+  known: string;
+  disputed: string;
+  detail: string;
+  sources: Array<{
+    label: string;
+    href: string;
+    kind: "video" | "document" | "statement" | "coverage" | "archive" | "social" | "site";
+  }>;
+};
+
 export type EvidenceScene = {
   id: string;
   label: string;
@@ -1078,6 +1104,243 @@ export const timelineBeats: TimelineBeat[] = [
         label: "Dexerto lawsuit coverage",
         href: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
         kind: "coverage"
+      }
+    ]
+  }
+];
+
+export const storySpineNodes: StorySpineNode[] = [
+  {
+    id: "spine-origin",
+    dateLabel: "Nov 2023",
+    headline: "Collection enters the dispute",
+    dek: "A family LEGO collection becomes the root of the public records fight.",
+    type: "context",
+    status: "disputed",
+    confidence: "medium",
+    tags: ["inventory", "consignment", "origin"],
+    known:
+      "Public timelines and coverage describe a Star Wars LEGO collection tied to the Salem store dispute.",
+    disputed:
+      "The exact intake terms, complete item list, valuation, authorization, and remaining inventory are still contested.",
+    detail:
+      "This is the beginning of the case spine: before the videos, court papers, and police records, the central question is whether a traceable customer collection remained identifiable after the store dispute escalated.",
+    sources: [
+      {
+        label: "Salem Brick Trials timeline",
+        href: "https://salembricktrials.com/bam-timeline",
+        kind: "archive"
+      },
+      {
+        label: "Dexerto overview",
+        href: "https://www.dexerto.com/youtube/dispute-over-200k-lego-star-wars-collection-triggers-lawsuits-and-viral-investigation-3367546/",
+        kind: "coverage"
+      }
+    ]
+  },
+  {
+    id: "spine-store-control",
+    dateLabel: "Nov 2024",
+    headline: "Store control changes hands",
+    dek: "Former-operator claims and corporate statements collide around assets and records.",
+    type: "court-record",
+    status: "alleged",
+    confidence: "medium",
+    tags: ["franchise", "assets", "records"],
+    known:
+      "Public archive materials include filings and exhibits from disputes connected to the Salem store.",
+    disputed:
+      "What corporate knew, what assets were present, and whether any customer items were preserved remain contested.",
+    detail:
+      "The ownership/control transition is where a private consignment fight starts looking like a larger franchisor accountability issue. The tracker should treat filings as allegations unless a court later makes findings.",
+    sources: [
+      {
+        label: "Public document archive",
+        href: "https://bamsucks.com/",
+        kind: "archive"
+      },
+      {
+        label: "BAM May 28 statement",
+        href: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+        kind: "statement"
+      }
+    ]
+  },
+  {
+    id: "spine-public-video",
+    dateLabel: "May 2026",
+    headline: "Videos make it public",
+    dek: "Creator episodes turn the dispute into a broad public conversation.",
+    type: "creator-video",
+    status: "recorded",
+    confidence: "high",
+    tags: ["video", "public pressure", "timeline"],
+    known:
+      "The videos are primary evidence of what was published, filmed, and said by the creator.",
+    disputed:
+      "A video can show conduct and narration, but it does not by itself prove every underlying claim.",
+    detail:
+      "This node is the public-attention switch. It belongs in the timeline because many later events, statements, and filings respond to or cite the creator campaign.",
+    sources: [
+      {
+        label: "Origin episode",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+        kind: "video"
+      },
+      {
+        label: "Video catalog",
+        href: "https://salembricktrials.com/videos",
+        kind: "archive"
+      }
+    ]
+  },
+  {
+    id: "spine-official-response",
+    dateLabel: "May 2026",
+    headline: "BAM publishes responses",
+    dek: "Official statements push back on the public narrative and disputed claims.",
+    type: "official-statement",
+    status: "recorded",
+    confidence: "high",
+    tags: ["statement", "corporate", "response"],
+    known:
+      "BAM published statements addressing the Salem dispute and its position on responsibility and resolution.",
+    disputed:
+      "Official statements are a party's position; they still need to be compared against records, filings, and opposing evidence.",
+    detail:
+      "These statements are important because they are official public positions, not because they resolve the factual dispute. They should sit beside creator/video and court-record nodes for comparison.",
+    sources: [
+      {
+        label: "BAM May 21 note",
+        href: "https://bricksandminifigs.com/blog/blog/2026/05/21/salem-oregon-bricks-and-minifigs-store-situation/",
+        kind: "statement"
+      },
+      {
+        label: "BAM May 28 response",
+        href: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+        kind: "statement"
+      }
+    ]
+  },
+  {
+    id: "spine-police",
+    dateLabel: "Mar-Jun 2026",
+    headline: "Police records enter",
+    dek: "Stops, searches, warrants, and arrest records become a second evidence lane.",
+    type: "court-record",
+    status: "recorded",
+    confidence: "high",
+    tags: ["police", "warrant", "bodycam"],
+    known:
+      "Police response materials, probable-cause records, warrant materials, and related videos are publicly indexed.",
+    disputed:
+      "The full bodycam, dashcam, dispatch, and redaction context remain key to evaluating the competing narratives.",
+    detail:
+      "This is why the timeline is not only about inventory. Once police power enters the public story, the strongest next evidence is primary law-enforcement footage and records.",
+    sources: [
+      {
+        label: "Police response video",
+        href: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+        kind: "video"
+      },
+      {
+        label: "Probable cause statement",
+        href: "https://bamsucks.com/American-Fork-Police-26AF02033-Probable-Cause-Statement.pdf",
+        kind: "document"
+      },
+      {
+        label: "Search warrant",
+        href: "https://bamsucks.com/American-Fork-Police-Warrant-3352981-Search-Warrant.pdf",
+        kind: "document"
+      }
+    ]
+  },
+  {
+    id: "spine-social",
+    dateLabel: "Public chatter",
+    headline: "Social posts widen picture",
+    dek: "Reddit and community posts surface leads, questions, and public reaction.",
+    type: "social-signal",
+    status: "needs-review",
+    confidence: "low",
+    tags: ["public conversation", "lead", "not verified"],
+    known:
+      "Public social posts discuss uploads, takedown claims, bodycam cuts, and community interpretations.",
+    disputed:
+      "Social posts are not treated as verified facts unless backed by primary records or archived source material.",
+    detail:
+      "This node exists so the tracker can show the full public picture without laundering community claims into facts. It is useful for leads, not findings.",
+    sources: [
+      {
+        label: "Patreon/takedown discussion",
+        href: "https://www.reddit.com/r/videos/comments/1tv6wwv/patron_ceo_take_down_notification_reckless_bens/",
+        kind: "social"
+      },
+      {
+        label: "Bodycam public discussion",
+        href: "https://www.reddit.com/r/bodycambase/comments/1tt9ac6/afpd_reckless_ben_vs_bricks_minifigs_full_cut/",
+        kind: "social"
+      }
+    ]
+  },
+  {
+    id: "spine-lawsuit",
+    dateLabel: "Now",
+    headline: "Utah lawsuit is live",
+    dek: "The viral dispute becomes a civil docket with filings, orders, and future dates.",
+    type: "court-record",
+    status: "alleged",
+    confidence: "high",
+    tags: ["lawsuit", "docket", "current"],
+    known:
+      "The complaint, TRO materials, docket images, and related coverage are public tracker sources.",
+    disputed:
+      "A complaint records allegations and requested relief; it is not a final finding against any party.",
+    detail:
+      "This is the current center of gravity. New docket entries, hearing dates, orders, answers, and motions should outrank rumor as the story develops.",
+    sources: [
+      {
+        label: "Verified complaint",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+        kind: "document"
+      },
+      {
+        label: "Temporary restraining order",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf",
+        kind: "document"
+      },
+      {
+        label: "Dexerto lawsuit coverage",
+        href: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
+        kind: "coverage"
+      }
+    ]
+  },
+  {
+    id: "spine-source-watch",
+    dateLabel: "Every 6h",
+    headline: "Sources get checked",
+    dek: "Trusted pages are watched for changes, but social claims stay in review.",
+    type: "source-watch",
+    status: "context",
+    confidence: "high",
+    tags: ["automation", "moderation", "provenance"],
+    known:
+      "The deployed watcher checks official, court-record, and trusted archive sources on a schedule.",
+    disputed:
+      "A changed page is only a review lead until a human confirms what changed and how it should be labeled.",
+    detail:
+      "This keeps the timeline useful as the dispute moves. The automation can surface changes, while moderation prevents social leads or private-person claims from auto-publishing.",
+    sources: [
+      {
+        label: "Live tracker status",
+        href: "/api/status",
+        kind: "site"
+      },
+      {
+        label: "Submit a correction",
+        href: "/submit",
+        kind: "site"
       }
     ]
   }
