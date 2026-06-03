@@ -1122,6 +1122,68 @@ tr:last-child td {
   min-height: 260px;
 }
 
+.watchdog-band {
+  background: #eef2f4;
+}
+
+.watchdog-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.watchdog-summary > div,
+.watchdog-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: 14px;
+}
+
+.watchdog-summary span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.watchdog-summary strong {
+  display: block;
+  margin-top: 5px;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1.05;
+}
+
+.watchdog-summary p {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.watchdog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.watchdog-card {
+  min-height: 154px;
+  text-decoration: none;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.watchdog-card.changed {
+  border-color: #d8b253;
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+.watchdog-card > span:not(.meta),
+.watchdog-card small {
+  color: var(--muted);
+}
+
 .action-band {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -1161,9 +1223,14 @@ tr:last-child td {
 
   .stat-strip,
   .receipt-grid,
+  .watchdog-grid,
   .video-grid,
   .decoder-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .watchdog-summary {
+    grid-template-columns: 1fr;
   }
 
   .evidence-grid {
@@ -1195,6 +1262,7 @@ tr:last-child td {
 
   .stat-strip,
   .receipt-grid,
+  .watchdog-grid,
   .video-grid,
   .decoder-grid,
   .evidence-tools {

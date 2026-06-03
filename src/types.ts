@@ -142,6 +142,20 @@ export type IngestionRun = {
   error?: string;
 };
 
+export type SourceCheck = {
+  sourceId: string;
+  url: string;
+  title: string;
+  checkedAt: string;
+  lastChangedAt?: string;
+  httpStatus?: number;
+  ok: boolean;
+  contentHash?: string;
+  contentLength: number;
+  changed: boolean;
+  error?: string;
+};
+
 export type TrackerData = {
   sources: Source[];
   events: TimelineEvent[];
@@ -151,4 +165,5 @@ export type TrackerData = {
   claims: ClaimRecord[];
   submissions: SubmissionRecord[];
   ingestionRuns: IngestionRun[];
+  sourceChecks: SourceCheck[];
 };

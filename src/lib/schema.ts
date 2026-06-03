@@ -144,6 +144,20 @@ export const ingestionRunSchema = z.object({
   error: z.string().optional()
 });
 
+export const sourceCheckSchema = z.object({
+  sourceId: z.string().min(3),
+  url: z.string().url(),
+  title: z.string().min(4),
+  checkedAt: z.string().datetime(),
+  lastChangedAt: z.string().datetime().optional(),
+  httpStatus: z.number().int().optional(),
+  ok: z.boolean(),
+  contentHash: z.string().optional(),
+  contentLength: z.number().int().nonnegative(),
+  changed: z.boolean(),
+  error: z.string().optional()
+});
+
 export const trackerDataSchema = z.object({
   sources: z.array(sourceSchema),
   events: z.array(timelineEventSchema),
@@ -152,7 +166,8 @@ export const trackerDataSchema = z.object({
   clips: z.array(clipRecordSchema),
   claims: z.array(claimRecordSchema),
   submissions: z.array(submissionSchema),
-  ingestionRuns: z.array(ingestionRunSchema)
+  ingestionRuns: z.array(ingestionRunSchema),
+  sourceChecks: z.array(sourceCheckSchema)
 });
 
 export const publicSubmissionInputSchema = z.object({

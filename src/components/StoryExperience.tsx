@@ -14,12 +14,15 @@ import {
 import { useMemo, useState } from "react";
 import type { EvidenceThread, StoryAct, VideoNode, VisualExhibit } from "../data/story";
 import { decoderCards, evidenceThreads, storyActs, storyStats, videoNodes, visualExhibits } from "../data/story";
-import type { DocumentRecord, TimelineEvent } from "../types";
+import { formatDateTime } from "../lib/format";
+import type { DocumentRecord, IngestionRun, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
 
 type Props = {
   documents: DocumentRecord[];
   events: TimelineEvent[];
+  ingestionRuns: IngestionRun[];
+  sourceChecks: SourceCheck[];
   donationUrl?: string;
 };
 
@@ -71,7 +74,7 @@ function VideoCard({ video }: { video: VideoNode }) {
   );
 }
 
-export default function StoryExperience({ documents, events, donationUrl }: Props) {
+export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
@@ -99,6 +102,9 @@ export default function StoryExperience({ documents, events, donationUrl }: Prop
   }, [threadMode, threadQuery]);
 
   const latestEvents = events.slice(0, 5);
+  const latestRun = ingestionRuns[0];
+  const visibleChecks = sourceChecks.slice(0, 6);
+  const changedChecks = sourceChecks.filter((check) => check.changed).length;
   const homepageReceipts = useMemo(() => {
     const byId = new Map(documents.map((doc) => [doc.id, doc]));
     return receiptIds.map((id) => byId.get(id)).filter((doc): doc is DocumentRecord => Boolean(doc));
@@ -399,6 +405,48 @@ export default function StoryExperience({ documents, events, donationUrl }: Prop
               <p>{event.summary}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="section-band watchdog-band" id="watchdog">
+        <div className="section-heading">
+          <span className="eyebrow">Source Watchdog</span>
+          <h2>The tracker checks trusted sources every six hours.</h2>
+          <p>
+            Official statements, court/archive pages, and trusted public records get hash-checked.
+            A change creates a moderation lead; it does not auto-publish social claims.
+          </p>
+        </div>
+        <div className="watchdog-summary">
+          <div>
+            <span>Last run</span>
+            <strong>{latestRun ? formatDateTime(latestRun.finishedAt ?? latestRun.startedAt) : "Pending"}</strong>
+            <p>{latestRun ? `${latestRun.status}; ${latestRun.needsReview} item(s) need review.` : "Waiting for the first deployed cron run."}</p>
+          </div>
+          <div>
+            <span>Sources checked</span>
+            <strong>{sourceChecks.length}</strong>
+            <p>{changedChecks} watched source(s) currently flagged as changed since baseline.</p>
+          </div>
+          <div>
+            <span>Auto-publish rule</span>
+            <strong>low-risk only</strong>
+            <p>Court/official records can publish; allegations and private-person claims wait for review.</p>
+          </div>
+        </div>
+        <div className="watchdog-grid">
+          {visibleChecks.map((check) => (
+            <a className={check.changed ? "watchdog-card changed" : "watchdog-card"} href={check.url} rel="noreferrer" target="_blank" key={check.sourceId}>
+              <span className="meta">
+                <Badge value={check.ok ? "checked" : "needs-review"} />
+                {check.changed && <Badge value="changed" />}
+              </span>
+              <strong>{check.title}</strong>
+              <span>{formatDateTime(check.checkedAt)}</span>
+              <small>{check.ok ? `${check.contentLength.toLocaleString()} chars indexed` : check.error ?? "Check failed"}</small>
+            </a>
+          ))}
+          {visibleChecks.length === 0 && <div className="empty">No deployed source checks yet. The cron will populate this after it runs.</div>}
         </div>
       </section>
 

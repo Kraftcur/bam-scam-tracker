@@ -5,6 +5,7 @@ import { trackerDataSchema } from "../../src/lib/schema";
 describe("seed data", () => {
   it("matches the public tracker schema", () => {
     expect(() => trackerDataSchema.parse(seedData)).not.toThrow();
+    expect(seedData.sourceChecks).toEqual([]);
   });
 
   it("keeps every event tied to at least one known source", () => {

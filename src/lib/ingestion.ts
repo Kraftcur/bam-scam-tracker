@@ -12,6 +12,69 @@ function stripHtml(html: string) {
     .trim();
 }
 
+async function sha256Hex(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function getPreviousSourceHash(env: AppEnv, sourceId: string) {
+  if (!env.DB) return undefined;
+  const row = await env.DB.prepare("select content_hash from source_checks where source_id = ?")
+    .bind(sourceId)
+    .first<{ content_hash?: string }>();
+  return row?.content_hash || undefined;
+}
+
+async function upsertSourceCheck(
+  env: AppEnv,
+  input: {
+    sourceId: string;
+    url: string;
+    title: string;
+    checkedAt: string;
+    httpStatus?: number;
+    ok: boolean;
+    contentHash?: string;
+    contentLength: number;
+    changed: boolean;
+    error?: string;
+  }
+) {
+  if (!env.DB) return;
+  const previous = await env.DB.prepare("select last_changed_at from source_checks where source_id = ?")
+    .bind(input.sourceId)
+    .first<{ last_changed_at?: string }>();
+  const lastChangedAt = input.changed ? input.checkedAt : previous?.last_changed_at ?? null;
+
+  await env.DB.prepare(
+    `insert or replace into source_checks (
+      source_id, url, title, checked_at, last_changed_at, http_status, ok,
+      content_hash, content_length, changed, error
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  )
+    .bind(
+      input.sourceId,
+      input.url,
+      input.title,
+      input.checkedAt,
+      lastChangedAt,
+      input.httpStatus ?? null,
+      input.ok ? 1 : 0,
+      input.contentHash ?? null,
+      input.contentLength,
+      input.changed ? 1 : 0,
+      input.error ?? null
+    )
+    .run();
+
+  await env.DB.prepare("update sources set last_checked = ? where id = ?")
+    .bind(input.checkedAt, input.sourceId)
+    .run();
+}
+
 async function insertRun(
   env: AppEnv,
   input: {
@@ -50,6 +113,7 @@ async function insertRun(
 async function insertReviewSubmission(
   env: AppEnv,
   input: {
+    id?: string;
     title: string;
     summary: string;
     suggestedCategory: string;
@@ -58,13 +122,13 @@ async function insertReviewSubmission(
 ) {
   if (!env.DB) return;
   await env.DB.prepare(
-    `insert into submissions (
+    `insert or ignore into submissions (
       id, submitter_name, submitter_contact, url, title, summary, suggested_category,
       moderation_status, created_at, reviewer_note
     ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
-      `ai-${crypto.randomUUID()}`,
+      input.id ?? `ai-${crypto.randomUUID()}`,
       "Automated ingestion",
       null,
       input.url,
@@ -73,7 +137,7 @@ async function insertReviewSubmission(
       input.suggestedCategory,
       "new",
       new Date().toISOString(),
-      "AI candidate. Verify sources, redactions, and status before publishing."
+      "Automated watcher candidate. Verify sources, redactions, and status before publishing."
     )
     .run();
 }
@@ -101,14 +165,73 @@ export async function runScheduledIngestion(env: AppEnv) {
     );
 
     for (const source of watchedSources) {
-      const response = await fetch(source.url, {
-        headers: { "user-agent": "BAM Scam Tracker source watcher" }
-      });
-      if (!response.ok) continue;
+      const checkedAt = new Date().toISOString();
+      let response: Response;
+      try {
+        response = await fetch(source.url, {
+          headers: { "user-agent": "BAM Scam Tracker source watcher" }
+        });
+      } catch (error) {
+        await upsertSourceCheck(env, {
+          sourceId: source.id,
+          url: source.url,
+          title: source.title,
+          checkedAt,
+          ok: false,
+          contentLength: 0,
+          changed: false,
+          error: error instanceof Error ? error.message : String(error)
+        });
+        continue;
+      }
+
+      if (!response.ok) {
+        await upsertSourceCheck(env, {
+          sourceId: source.id,
+          url: source.url,
+          title: source.title,
+          checkedAt,
+          httpStatus: response.status,
+          ok: false,
+          contentLength: 0,
+          changed: false,
+          error: `HTTP ${response.status}`
+        });
+        continue;
+      }
 
       const contentType = response.headers.get("content-type") ?? "";
       const body = contentType.includes("text") || contentType.includes("html") ? await response.text() : "";
       const sourceText = stripHtml(body).slice(0, 12000);
+      const contentHash = await sha256Hex(sourceText);
+      const previousHash = await getPreviousSourceHash(env, source.id);
+      const changed = Boolean(previousHash && previousHash !== contentHash);
+
+      await upsertSourceCheck(env, {
+        sourceId: source.id,
+        url: source.url,
+        title: source.title,
+        checkedAt,
+        httpStatus: response.status,
+        ok: true,
+        contentHash,
+        contentLength: sourceText.length,
+        changed
+      });
+
+      if (changed) {
+        candidatesFound += 1;
+        await insertReviewSubmission(env, {
+          id: `watch-${source.id}-${contentHash.slice(0, 16)}`,
+          title: `Watched source changed: ${source.title}`,
+          summary:
+            "The scheduled watcher detected a content-hash change on a trusted source. Review the source manually before adding timeline, claim, or document updates.",
+          suggestedCategory: "source-change",
+          url: source.url
+        });
+        needsReview += 1;
+      }
+
       const extraction = await extractCandidatesWithAi({
         apiKey: env.OPENAI_API_KEY,
         model: env.OPENAI_MODEL,

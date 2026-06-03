@@ -762,5 +762,6 @@ export const seedData: TrackerData = {
       autoPublished: 13,
       needsReview: 4
     }
-  ]
+  ],
+  sourceChecks: []
 };

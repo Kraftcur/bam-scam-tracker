@@ -5,6 +5,7 @@ import {
   clipRecordSchema,
   documentRecordSchema,
   ingestionRunSchema,
+  sourceCheckSchema,
   sourceSchema,
   submissionSchema,
   timelineEventSchema,
@@ -17,6 +18,7 @@ import type {
   DocumentRecord,
   IngestionRun,
   Source,
+  SourceCheck,
   SubmissionRecord,
   TimelineEvent,
   TrackerData
@@ -164,6 +166,21 @@ const ingestionRunFromRow = (row: JsonRow): IngestionRun =>
     error: nullableString(row.error)
   });
 
+const sourceCheckFromRow = (row: JsonRow): SourceCheck =>
+  sourceCheckSchema.parse({
+    sourceId: row.source_id,
+    url: row.url,
+    title: row.title,
+    checkedAt: row.checked_at,
+    lastChangedAt: nullableString(row.last_changed_at),
+    httpStatus: row.http_status === null || row.http_status === undefined ? undefined : Number(row.http_status),
+    ok: Boolean(row.ok),
+    contentHash: nullableString(row.content_hash),
+    contentLength: Number(row.content_length ?? 0),
+    changed: Boolean(row.changed),
+    error: nullableString(row.error)
+  });
+
 async function queryAll<T>(
   db: D1Database,
   sql: string,
@@ -185,7 +202,8 @@ export function sortTrackerData(data: TrackerData): TrackerData {
       (b.datePublished ?? "").localeCompare(a.datePublished ?? "")
     ),
     submissions: [...data.submissions].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    ingestionRuns: [...data.ingestionRuns].sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+    ingestionRuns: [...data.ingestionRuns].sort((a, b) => b.startedAt.localeCompare(a.startedAt)),
+    sourceChecks: [...data.sourceChecks].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt))
   };
 }
 
@@ -193,7 +211,7 @@ export async function getTrackerData(env?: AppEnv): Promise<TrackerData> {
   if (!env?.DB) return validateSeedData();
 
   try {
-    const [sources, events, cases, documents, clips, claims, submissions, ingestionRuns] =
+    const [sources, events, cases, documents, clips, claims, submissions, ingestionRuns, sourceChecks] =
       await Promise.all([
         queryAll(env.DB, "select * from sources order by date_found desc", sourceFromRow),
         queryAll(env.DB, "select * from events order by occurred_at desc", eventFromRow),
@@ -202,11 +220,12 @@ export async function getTrackerData(env?: AppEnv): Promise<TrackerData> {
         queryAll(env.DB, "select * from clips order by id asc", clipFromRow),
         queryAll(env.DB, "select * from claims order by id asc", claimFromRow),
         queryAll(env.DB, "select * from submissions order by created_at desc", submissionFromRow),
-        queryAll(env.DB, "select * from ingestion_runs order by started_at desc limit 20", ingestionRunFromRow)
+        queryAll(env.DB, "select * from ingestion_runs order by started_at desc limit 20", ingestionRunFromRow),
+        queryAll(env.DB, "select * from source_checks order by checked_at desc", sourceCheckFromRow)
       ]);
 
     if (sources.length === 0 && events.length === 0) return validateSeedData();
-    return sortTrackerData({ sources, events, cases, documents, clips, claims, submissions, ingestionRuns });
+    return sortTrackerData({ sources, events, cases, documents, clips, claims, submissions, ingestionRuns, sourceChecks });
   } catch (error) {
     if (!(error instanceof Error) || !error.message.includes("no such table")) {
       console.warn("Falling back to seed data because D1 query failed.", error);
