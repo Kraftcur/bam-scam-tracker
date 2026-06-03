@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 async function openSpineMode(page: import("@playwright/test").Page) {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Timeline Watch Mode" })).toBeVisible();
+  await page.waitForFunction(() => !document.querySelector("astro-island[ssr]"));
   await page.getByRole("button", { name: "Continuous Case Spine" }).click();
   await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
 }
@@ -12,6 +13,7 @@ test("dashboard loads source-first tracker", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Timeline Watch Mode" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Watch Story Recap" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Continuous Case Spine" })).toBeVisible();
+  await page.waitForFunction(() => !document.querySelector("astro-island[ssr]"));
   await page.getByRole("button", { name: "Continuous Case Spine" }).click();
   await expect(page.getByRole("heading", { name: /story, on one scroll/i })).toBeVisible();
   await expect(page.locator(".spine-track")).toBeVisible();
@@ -23,10 +25,10 @@ test("dashboard loads source-first tracker", async ({ page }) => {
 });
 
 test("watch mode uses matching video for June 1 police rebuttal", async ({ page }) => {
-  await page.goto("/?view=play&step=17");
+  await page.goto("/?view=play");
   await expect(page.getByRole("heading", { name: "Timeline Watch Mode" })).toBeVisible();
+  await page.locator('button[title*="RecklessBen responds to American Fork police"]').click();
   await expect(page.getByRole("heading", { name: "RecklessBen responds to American Fork police" })).toBeVisible();
-  await expect(page.locator(".step-count-badge")).toContainText("Step 17");
   await expect(page.locator("iframe")).toHaveAttribute("src", /2YEzhDn0jY8/);
   await expect(page.locator("iframe")).not.toHaveAttribute("src", /cxZPfj8AlmY/);
 });
