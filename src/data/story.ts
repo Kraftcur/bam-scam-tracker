@@ -70,6 +70,25 @@ export type EvidenceScene = {
   }>;
 };
 
+export type StoryPlayer = {
+  id: string;
+  name: string;
+  shortName: string;
+  lane: "ben-side" | "bam-side" | "operators" | "records" | "community";
+  role: string;
+  tagline: string;
+  whyTheyMatter: string;
+  evidencePull: string;
+  pressureOnThem: string;
+  carefulRead: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  connections: Array<{
+    label: string;
+    target: string;
+  }>;
+};
+
 export type VerificationLead = {
   id: string;
   title: string;
@@ -532,6 +551,171 @@ export const evidenceScenes: EvidenceScene[] = [
         href: "https://youtu.be/nny2ojTqW3A",
         kind: "video"
       }
+    ]
+  }
+];
+
+export const storyPlayers: StoryPlayer[] = [
+  {
+    id: "player-ben",
+    name: "Benjamin Schneider / RecklessBen",
+    shortName: "Ben",
+    lane: "ben-side",
+    role: "Creator-investigator and main lawsuit defendant",
+    tagline: "The public-pressure engine.",
+    whyTheyMatter:
+      "Ben is the reason the dispute escaped private emails and became inspectable. His videos made the inventory question, police response, and corporate pushback impossible to ignore.",
+    evidencePull:
+      "Primary video evidence, timestamped stunts, store visits, police encounters, and the statements BAM now cites in court.",
+    pressureOnThem:
+      "BAM's lawsuit and TRO target Ben's publications, tactics, platform revenue, alleged collaborators, and future conduct.",
+    carefulRead:
+      "The tracker leans toward Ben's accountability framing, but creator footage still needs source matching because the most viral moments are also lawsuit exhibits.",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+    sourceLabel: "Origin episode",
+    connections: [
+      { label: "amplifies", target: "Mansell claim" },
+      { label: "sued by", target: "BAM plaintiffs" },
+      { label: "scrutinized by", target: "police / courts" }
+    ]
+  },
+  {
+    id: "player-mansell",
+    name: "Bryan Mansell / Mansell family",
+    shortName: "Mansell",
+    lane: "ben-side",
+    role: "Collection claimant",
+    tagline: "The missing-inventory question.",
+    whyTheyMatter:
+      "The entire story begins with the claim that a large Star Wars LEGO collection was consigned, partly sold, and not fully returned or accounted for after the store takeover.",
+    evidencePull:
+      "Consignment framing, claimed inventory/value, family-side accounts, video appearances, and the demand for item-by-item reconciliation.",
+    pressureOnThem:
+      "BAM disputes parts of the consignment/value story and argues it had no contract duty under the alleged private arrangement.",
+    carefulRead:
+      "Sympathy for the family is not the same as proof of every item, value, or responsible party. The inventory trail has to do that work.",
+    sourceUrl: "https://salembricktrials.com/bam-timeline",
+    sourceLabel: "Salem Brick Trials timeline",
+    connections: [
+      { label: "supported by", target: "Ben videos" },
+      { label: "disputed by", target: "BAM statement" },
+      { label: "needs", target: "inventory reconciliation" }
+    ]
+  },
+  {
+    id: "player-bam",
+    name: "BAM Franchising / Bricks & Minifigs leadership",
+    shortName: "BAM",
+    lane: "bam-side",
+    role: "Franchisor, official speaker, plaintiff",
+    tagline: "The corporate defense and counterattack.",
+    whyTheyMatter:
+      "BAM controls the official corporate explanation, says the consignment was unauthorized, and brought the Utah lawsuit against Ben, Mansell, and others.",
+    evidencePull:
+      "Official statements, GlobeNewswire release, verified complaint, TRO request, franchise-contract story, and declarations BAM wants from the court.",
+    pressureOnThem:
+      "Public viewers keep asking why the inventory trail is not clean and why the people demanding answers became the emergency.",
+    carefulRead:
+      "BAM's statements are official positions, not independent findings. The lawsuit is a claim map until the court decides contested facts.",
+    sourceUrl: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+    sourceLabel: "BAM May 28 statement",
+    connections: [
+      { label: "sues", target: "Ben / Mansell" },
+      { label: "disputes", target: "collection value" },
+      { label: "seeks", target: "TRO / declarations" }
+    ]
+  },
+  {
+    id: "player-baker",
+    name: "Baker Bricks / Josh Johnson / Brandon Best",
+    shortName: "Baker",
+    lane: "operators",
+    role: "Replacement Salem operators and plaintiffs",
+    tagline: "Where the inventory trail gets personal.",
+    whyTheyMatter:
+      "Baker-side people are central to the store takeover aftermath, the alleged remaining sets, Ben's confrontations, and the police/TRO narrative around stores and homes.",
+    evidencePull:
+      "Complaint allegations, TRO restrictions, public archive documents, partial-return discussions, and police records tied to residential/store encounters.",
+    pressureOnThem:
+      "They are pulled between BAM's franchise defense, the Mansell family's missing-property claim, and Ben's public pressure campaign.",
+    carefulRead:
+      "The tracker should not turn public anger into personal targeting. It should stick to business roles, court records, and redacted public materials.",
+    sourceUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+    sourceLabel: "Verified complaint",
+    connections: [
+      { label: "operates after", target: "takeover" },
+      { label: "targeted in", target: "Ben campaign allegations" },
+      { label: "linked to", target: "partial-return dispute" }
+    ]
+  },
+  {
+    id: "player-gormans",
+    name: "Chrystal Law/Gorman and Benjamin Gorman",
+    shortName: "Gormans",
+    lane: "operators",
+    role: "Former Salem operators",
+    tagline: "The bridge between consignment and repossession.",
+    whyTheyMatter:
+      "Their version challenges BAM's takeover story and says the remaining consigned inventory was identifiable when corporate control began.",
+    evidencePull:
+      "Law/Gorman complaint materials, termination exhibits, alleged tags/stickers, franchise-transfer disputes, and competing accounts of records access.",
+    pressureOnThem:
+      "BAM blames unauthorized local consignment and missing documentation; Mansell-side accounts rely heavily on what the former operators say existed.",
+    carefulRead:
+      "Their lawsuit and account are important, but still contested. Treat former-operator claims separately from court findings.",
+    sourceUrl: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf",
+    sourceLabel: "Law/Gorman complaint",
+    connections: [
+      { label: "allegedly signed", target: "consignment" },
+      { label: "disputes", target: "BAM termination" },
+      { label: "supports", target: "inventory-tag theory" }
+    ]
+  },
+  {
+    id: "player-police",
+    name: "American Fork / local police records",
+    shortName: "Police",
+    lane: "records",
+    role: "Escalation and official-record lane",
+    tagline: "The second scandal.",
+    whyTheyMatter:
+      "Police encounters turned a missing-LEGO dispute into a public-power story involving stops, trespass notices, searches, warrants, arrests, and official explanations.",
+    evidencePull:
+      "Police response video, incident reports, probable-cause statement, search warrant, booking sheet, and bodycam/dashcam leads still needing primary release.",
+    pressureOnThem:
+      "The big public question is whether enforcement was proportionate and even-handed, or whether Ben's crew became the focus while the original inventory claim stayed unresolved.",
+    carefulRead:
+      "Police reports and creator footage are both partial. Bodycam, dashcam, dispatch logs, and warrant affidavits are the missing layer.",
+    sourceUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+    sourceLabel: "Police response video",
+    connections: [
+      { label: "responds to", target: "Ben tactics" },
+      { label: "creates", target: "warrant / arrest records" },
+      { label: "needs", target: "bodycam context" }
+    ]
+  },
+  {
+    id: "player-archives",
+    name: "Public archives / community researchers",
+    shortName: "Archives",
+    lane: "community",
+    role: "Receipts and verification layer",
+    tagline: "The anti-rumor machinery.",
+    whyTheyMatter:
+      "Archive pages, court screenshots, news coverage, Reddit leads, and community summaries are how the public keeps up while the official docket moves slowly.",
+    evidencePull:
+      "bamsucks court archive, Salem Brick Trials timeline, news coverage, Reddit leads, source checks, and the tracker moderation queue.",
+    pressureOnThem:
+      "They can surface receipts faster than institutions, but they also risk laundering rumor into fact if labels get sloppy.",
+    carefulRead:
+      "Archive material is useful, but official court status still needs Utah Xchange verification before being treated as authoritative.",
+    sourceUrl: "https://bamsucks.com/",
+    sourceLabel: "Public document archive",
+    connections: [
+      { label: "indexes", target: "court / police docs" },
+      { label: "queues", target: "hot leads" },
+      { label: "checks", target: "source changes" }
     ]
   }
 ];

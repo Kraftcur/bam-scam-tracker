@@ -7,6 +7,7 @@ test("dashboard loads source-first tracker", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /BAM's lawsuit is the live center/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Watch the story like a case board/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /filing, translated into what BAM has to prove/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Who is pulling on the story/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Fast leads go here/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Move through what happened/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Screenshots you can actually orient around/i })).toBeVisible();

@@ -1389,6 +1389,193 @@ tr:last-child td {
   font-weight: 850;
 }
 
+.player-map-band {
+  background:
+    linear-gradient(180deg, #eef5f2, #fffdf8),
+    repeating-linear-gradient(90deg, rgb(17 23 26 / 0.04) 0 1px, transparent 1px 20px);
+}
+
+.player-map-shell {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.34fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.player-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.player-button {
+  min-height: 132px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.player-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.player-button.active {
+  border-color: var(--teal);
+  box-shadow: inset 0 -5px 0 var(--teal), var(--shadow);
+}
+
+.player-button > span,
+.player-panel-head > span {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--charcoal);
+  color: var(--lego-yellow);
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.player-button strong {
+  font-size: 1.05rem;
+  line-height: 1.1;
+}
+
+.player-button small {
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.player-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: clamp(16px, 3vw, 24px);
+  display: grid;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  animation: pop-panel 220ms ease both;
+}
+
+.player-panel.ben-side {
+  box-shadow: inset 6px 0 0 var(--teal), var(--shadow);
+}
+
+.player-panel.bam-side {
+  box-shadow: inset 6px 0 0 var(--brick-red), var(--shadow);
+}
+
+.player-panel.operators {
+  box-shadow: inset 6px 0 0 var(--amber), var(--shadow);
+}
+
+.player-panel.records {
+  box-shadow: inset 6px 0 0 var(--blue), var(--shadow);
+}
+
+.player-panel.community {
+  box-shadow: inset 6px 0 0 var(--purple), var(--shadow);
+}
+
+.player-panel-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.player-panel-head h3 {
+  margin-top: 8px;
+  font-size: clamp(1.6rem, 3.4vw, 2.8rem);
+  line-height: 1.02;
+}
+
+.player-panel-head p,
+.player-grid p {
+  color: var(--muted);
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.player-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf0;
+  padding: 12px;
+  display: grid;
+  gap: 7px;
+}
+
+.player-grid > div:nth-child(1) {
+  box-shadow: inset 4px 0 0 var(--teal);
+}
+
+.player-grid > div:nth-child(2) {
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+.player-grid > div:nth-child(3) {
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+
+.player-grid > div:nth-child(4) {
+  background: #fff1e7;
+  box-shadow: inset 4px 0 0 var(--brick-red);
+}
+
+.connection-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.connection-strip span {
+  min-height: 64px;
+  border: 1px dashed #c7bba8;
+  border-radius: 8px;
+  background: #f5eee0;
+  padding: 9px;
+  display: grid;
+  gap: 3px;
+  align-content: center;
+  color: var(--muted);
+}
+
+.connection-strip strong {
+  color: var(--brick-red);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.player-source-link {
+  width: fit-content;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--charcoal);
+  color: var(--lego-yellow);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  font-weight: 850;
+}
+
 .proof-band {
   background:
     linear-gradient(180deg, #fffdf8, #fbf7ed),
@@ -2405,6 +2592,7 @@ tr:last-child td {
   .exhibit-preview,
   .scene-panel,
   .lawsuit-shell,
+  .player-map-shell,
   .clip-lab-grid,
   .clip-moment-panel,
   .act-grid,
@@ -2430,6 +2618,7 @@ tr:last-child td {
   .now-grid,
   .scene-lanes,
   .lawsuit-lens-grid,
+  .player-grid,
   .side-grid {
     grid-template-columns: 1fr;
   }
@@ -2473,6 +2662,23 @@ tr:last-child td {
 
   .lawsuit-lens-button {
     scroll-snap-align: start;
+  }
+
+  .player-buttons {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(210px, 0.42fr);
+    grid-template-columns: none;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .player-button {
+    scroll-snap-align: start;
+  }
+
+  .connection-strip {
+    grid-template-columns: 1fr;
   }
 
   .clip-screen,
@@ -2548,6 +2754,10 @@ tr:last-child td {
 
   .lawsuit-lens-list {
     grid-auto-columns: minmax(210px, 0.82fr);
+  }
+
+  .player-buttons {
+    grid-auto-columns: minmax(190px, 0.8fr);
   }
 
   .clip-screen,

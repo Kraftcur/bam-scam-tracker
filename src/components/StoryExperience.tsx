@@ -19,6 +19,7 @@ import type {
   LawsuitLens,
   ProofLevel,
   StoryAct,
+  StoryPlayer,
   TimelineBeat,
   VerificationLead,
   VideoNode,
@@ -31,6 +32,7 @@ import {
   evidenceThreads,
   lawsuitLenses,
   proofLevels,
+  storyPlayers,
   storyActs,
   storyStats,
   timelineBeats,
@@ -410,6 +412,69 @@ function LawsuitLensPanel({ lens }: { lens: LawsuitLens }) {
   );
 }
 
+function PlayerButton({
+  active,
+  player,
+  onSelect
+}: {
+  active: boolean;
+  player: StoryPlayer;
+  onSelect: () => void;
+}) {
+  return (
+    <button className={active ? "player-button active" : "player-button"} onClick={onSelect} type="button">
+      <span>{player.shortName.slice(0, 2).toUpperCase()}</span>
+      <strong>{player.shortName}</strong>
+      <small>{player.tagline}</small>
+    </button>
+  );
+}
+
+function PlayerPanel({ player }: { player: StoryPlayer }) {
+  return (
+    <article className={`player-panel ${player.lane}`}>
+      <div className="player-panel-head">
+        <span>{player.shortName.slice(0, 2).toUpperCase()}</span>
+        <div>
+          <Badge value={player.lane} />
+          <h3>{player.name}</h3>
+          <p>{player.role}</p>
+        </div>
+      </div>
+      <div className="player-grid">
+        <div>
+          <strong>Why they matter</strong>
+          <p>{player.whyTheyMatter}</p>
+        </div>
+        <div>
+          <strong>Evidence pull</strong>
+          <p>{player.evidencePull}</p>
+        </div>
+        <div>
+          <strong>Pressure on them</strong>
+          <p>{player.pressureOnThem}</p>
+        </div>
+        <div>
+          <strong>Careful read</strong>
+          <p>{player.carefulRead}</p>
+        </div>
+      </div>
+      <div className="connection-strip" aria-label={`Connections for ${player.name}`}>
+        {player.connections.map((connection) => (
+          <span key={`${player.id}-${connection.label}-${connection.target}`}>
+            <strong>{connection.label}</strong>
+            {connection.target}
+          </span>
+        ))}
+      </div>
+      <a className="player-source-link" href={player.sourceUrl} rel="noreferrer" target="_blank">
+        {player.sourceLabel}
+        <ExternalLink size={14} aria-hidden="true" />
+      </a>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
@@ -418,6 +483,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const [activeSceneId, setActiveSceneId] = useState(evidenceScenes[0].id);
   const [activeClipId, setActiveClipId] = useState(clipMoments[0].id);
   const [activeLensId, setActiveLensId] = useState(lawsuitLenses[0].id);
+  const [activePlayerId, setActivePlayerId] = useState(storyPlayers[0].id);
   const [activeBeatId, setActiveBeatId] = useState(timelineBeats.find((beat) => beat.isCurrent)?.id ?? timelineBeats[0].id);
 
   const filteredThreads = useMemo(() => {
@@ -457,6 +523,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const activeScene = evidenceScenes.find((scene) => scene.id === activeSceneId) ?? evidenceScenes[0];
   const activeClip = clipMoments.find((clip) => clip.id === activeClipId) ?? clipMoments[0];
   const activeLens = lawsuitLenses.find((lens) => lens.id === activeLensId) ?? lawsuitLenses[0];
+  const activePlayer = storyPlayers.find((player) => player.id === activePlayerId) ?? storyPlayers[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
 
   return (
@@ -614,6 +681,30 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             ))}
           </div>
           <LawsuitLensPanel lens={activeLens} />
+        </div>
+      </section>
+
+      <section className="section-band player-map-band" id="pressure-map">
+        <div className="section-heading">
+          <span className="eyebrow">Pressure Map</span>
+          <h2>Who is pulling on the story, and what do they need to prove?</h2>
+          <p>
+            The scandal is easier once the cast stops blurring together. Pick a player to see
+            their lane, the evidence attached to them, and the assumption this tracker refuses to make.
+          </p>
+        </div>
+        <div className="player-map-shell">
+          <div className="player-buttons" aria-label="Story players">
+            {storyPlayers.map((player) => (
+              <PlayerButton
+                active={activePlayer.id === player.id}
+                key={player.id}
+                onSelect={() => setActivePlayerId(player.id)}
+                player={player}
+              />
+            ))}
+          </div>
+          <PlayerPanel player={activePlayer} />
         </div>
       </section>
 
