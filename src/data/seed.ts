@@ -274,7 +274,6 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "The Ben/Mansell framing is that corporate control swallowed customer property and nobody with power wanted to unwind it.",
       bamPerspective: "BAM frames the takeover as enforcement against a troubled franchise and says it did not knowingly take a verified six-figure customer collection.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
@@ -290,7 +289,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
       bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf"
     },
     {
@@ -306,7 +304,6 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate",
       benPerspective: "Ben argues law enforcement treated his crew as the emergency while the original property dispute remained unresolved.",
       bamPerspective: "BAM and police-side documents frame the encounters around trespass, stalking, harassment, residential picketing, and safety concerns.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png"
     },
     {
@@ -322,7 +319,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
       bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
@@ -418,7 +414,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
       bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
@@ -482,7 +477,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
       bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png"
     },
     {
@@ -498,7 +492,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
       bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
-      videoUrl: "",
       imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
     },
     {
@@ -514,7 +507,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's side views statements as PR deflection rather than answering the core question about what happened to the specific LEGO inventory.",
       bamPerspective: "BAM uses statements to draw a hard line against the creator campaign and frame the issue as a local franchise dispute.",
-      videoUrl: "",
       imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png"
     },
     {
@@ -530,7 +522,6 @@ export const seedData: TrackerData = {
       publicationRisk: "low",
       benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
       bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
-      videoUrl: "",
       imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
     }
   ],
