@@ -65,6 +65,8 @@ wrangler secret put TURNSTILE_SECRET_KEY
 wrangler secret put OPENAI_API_KEY -c wrangler.ingest.toml
 ```
 
+AI extraction is off by default. If `ENABLE_AI_INGESTION=true`, the scheduled watcher only sends changed watched sources to OpenAI, capped by `AI_MAX_SOURCES_PER_RUN` and `AI_SOURCE_CHAR_LIMIT`. ChatGPT subscriptions do not cover API usage; OpenAI API billing is separate from ChatGPT billing.
+
 4. Build and deploy:
 
 ```bash

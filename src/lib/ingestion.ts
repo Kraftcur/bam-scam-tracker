@@ -7,6 +7,12 @@ export function isAiIngestionEnabled(env: Pick<AppEnv, "ENABLE_AI_INGESTION" | "
   return Boolean(env?.OPENAI_API_KEY && env.ENABLE_AI_INGESTION === "true");
 }
 
+function parsePositiveInt(value: string | undefined, fallback: number, max: number) {
+  const parsed = Number.parseInt(value ?? "", 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return fallback;
+  return Math.min(parsed, max);
+}
+
 function stripHtml(html: string) {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
@@ -162,6 +168,9 @@ export async function runScheduledIngestion(env: AppEnv) {
   let candidatesFound = 0;
   let autoPublished = 0;
   let needsReview = 0;
+  let aiExtractionsUsed = 0;
+  const aiMaxSources = parsePositiveInt(env.AI_MAX_SOURCES_PER_RUN, 2, 5);
+  const aiSourceCharLimit = parsePositiveInt(env.AI_SOURCE_CHAR_LIMIT, 4000, 12000);
 
   try {
     const watchedSources = seedData.sources.filter((source) =>
@@ -236,13 +245,16 @@ export async function runScheduledIngestion(env: AppEnv) {
         needsReview += 1;
       }
 
-      const extraction = isAiIngestionEnabled(env)
+      const shouldExtractWithAi = isAiIngestionEnabled(env) && changed && aiExtractionsUsed < aiMaxSources;
+      if (shouldExtractWithAi) aiExtractionsUsed += 1;
+
+      const extraction = shouldExtractWithAi
         ? await extractCandidatesWithAi({
             apiKey: env.OPENAI_API_KEY,
             model: env.OPENAI_MODEL,
             sourceTitle: source.title,
             sourceUrl: source.url,
-            sourceText
+            sourceText: sourceText.slice(0, aiSourceCharLimit)
           })
         : {
             timelineCandidates: [],

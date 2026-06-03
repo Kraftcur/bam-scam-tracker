@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
   readonly ADMIN_TOKEN?: string;
   readonly ENABLE_AI_INGESTION?: string;
+  readonly AI_MAX_SOURCES_PER_RUN?: string;
+  readonly AI_SOURCE_CHAR_LIMIT?: string;
   readonly OPENAI_API_KEY?: string;
   readonly OPENAI_MODEL?: string;
   readonly TURNSTILE_SECRET_KEY?: string;

@@ -5,6 +5,7 @@ import { getEnv } from "../lib/runtime";
 
 const env = getEnv(Astro.locals);
 const donationUrl = getDonationUrl(env);
+const supportUrl = donationUrl || "https://buymeacoffee.com/bam.scam.tracker";
 ---
 
 <BaseLayout title="About | BAM Scam Tracker" donationUrl={donationUrl}>
@@ -38,7 +39,13 @@ const donationUrl = getDonationUrl(env);
         <div class="panel-header"><h2>Support</h2></div>
         <div class="panel-body stack">
           <p>Donations support hosting, court-record access, document storage, and review time. Donations do not buy editorial treatment.</p>
-          {donationUrl ? <a class="button warn" href={donationUrl} target="_blank" rel="noreferrer">Support the Tracker</a> : <p class="notice">Set PUBLIC_DONATION_URL to enable the support button.</p>}
+          <a class="support-qr" href={supportUrl} target="_blank" rel="noreferrer">
+            <img src="/buy-me-a-coffee-qr.png" alt="QR code for buymeacoffee.com/bam.scam.tracker" loading="lazy" />
+            <span>
+              <small>buymeacoffee.com/bam.scam.tracker</small>
+              <strong>Buy me a coffee</strong>
+            </span>
+          </a>
         </div>
       </section>
 

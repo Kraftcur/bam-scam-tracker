@@ -29,6 +29,8 @@ export type AppEnv = {
   ARCHIVE_BUCKET?: R2Bucket;
   ADMIN_TOKEN?: string;
   ENABLE_AI_INGESTION?: string;
+  AI_MAX_SOURCES_PER_RUN?: string;
+  AI_SOURCE_CHAR_LIMIT?: string;
   OPENAI_API_KEY?: string;
   OPENAI_MODEL?: string;
   PUBLIC_DONATION_URL?: string;

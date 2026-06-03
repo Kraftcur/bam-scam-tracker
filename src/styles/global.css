@@ -476,6 +476,52 @@ tr:last-child td {
   color: #51412b;
 }
 
+.support-qr {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff7d6;
+  color: var(--amber-ink);
+  text-decoration: none;
+}
+
+.support-qr:hover,
+.support-qr:focus-visible {
+  border-color: #dba133;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.support-qr img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 2px solid var(--lego-yellow);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.support-qr span {
+  display: grid;
+  gap: 4px;
+}
+
+.support-qr small {
+  overflow-wrap: anywhere;
+  color: #6e5319;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.support-qr strong {
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
 .footer {
   border-top: 1px solid var(--line);
   padding: 22px 20px;
@@ -2744,11 +2790,65 @@ tr:last-child td {
   color: #f0e7d8;
 }
 
+.action-panel {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
 .action-buttons {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.coffee-card {
+  width: min(100%, 360px);
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid rgb(255 253 248 / 0.22);
+  border-radius: 8px;
+  background: rgb(255 253 248 / 0.1);
+  color: var(--surface);
+  text-decoration: none;
+}
+
+.coffee-card:hover,
+.coffee-card:focus-visible {
+  border-color: var(--lego-yellow);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.coffee-card img {
+  width: 82px;
+  height: 82px;
+  object-fit: cover;
+  border: 2px solid var(--lego-yellow);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.coffee-card span {
+  display: grid;
+  gap: 2px;
+}
+
+.coffee-card small {
+  color: #f0e7d8;
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.coffee-card strong {
+  font-size: 1.12rem;
 }
 
 @media (max-width: 1020px) {
@@ -2974,12 +3074,18 @@ tr:last-child td {
     min-height: auto;
   }
 
+  .action-panel,
   .action-buttons {
     justify-content: stretch;
+    justify-items: stretch;
   }
 
   .action-buttons .button,
   .hero-actions .button {
+    width: 100%;
+  }
+
+  .coffee-card {
     width: 100%;
   }
 }

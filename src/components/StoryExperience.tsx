@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   BookOpen,
+  Coffee,
   ExternalLink,
   Filter,
   Flame,
@@ -541,6 +542,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   const activeLens = lawsuitLenses.find((lens) => lens.id === activeLensId) ?? lawsuitLenses[0];
   const activePlayer = storyPlayers.find((player) => player.id === activePlayerId) ?? storyPlayers[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
+  const supportUrl = donationUrl || "https://buymeacoffee.com/bam.scam.tracker";
 
   return (
     <div className="story-page">
@@ -1099,18 +1101,28 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             claim is tied to a source and every source is labeled honestly.
           </p>
         </div>
-        <div className="action-buttons">
-          <a className="button primary" href="/submit">
-            Submit Evidence
-            <Sparkles size={17} aria-hidden="true" />
-          </a>
-          <a className="button" href="/timeline">
-            Open Data Archive
-            <BookOpen size={17} aria-hidden="true" />
-          </a>
-          <a className="button" href="/about">
-            Editorial Policy
-            <ShieldAlert size={17} aria-hidden="true" />
+        <div className="action-panel">
+          <div className="action-buttons">
+            <a className="button primary" href="/submit">
+              Submit Evidence
+              <Sparkles size={17} aria-hidden="true" />
+            </a>
+            <a className="button" href="/timeline">
+              Open Data Archive
+              <BookOpen size={17} aria-hidden="true" />
+            </a>
+            <a className="button" href="/about">
+              Editorial Policy
+              <ShieldAlert size={17} aria-hidden="true" />
+            </a>
+          </div>
+          <a className="coffee-card" href={supportUrl} rel="noreferrer" target="_blank">
+            <img src="/buy-me-a-coffee-qr.png" alt="QR code for buymeacoffee.com/bam.scam.tracker" loading="lazy" />
+            <span>
+              <small>Keep the receipts flowing</small>
+              <strong>Buy me a coffee</strong>
+            </span>
+            <Coffee size={18} aria-hidden="true" />
           </a>
         </div>
       </section>
