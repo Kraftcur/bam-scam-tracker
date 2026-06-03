@@ -12,9 +12,10 @@ import {
   Sparkles
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { EvidenceThread, ProofLevel, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
+import type { EvidenceScene, EvidenceThread, ProofLevel, StoryAct, TimelineBeat, VerificationLead, VideoNode, VisualExhibit } from "../data/story";
 import {
   decoderCards,
+  evidenceScenes,
   evidenceThreads,
   proofLevels,
   storyActs,
@@ -209,11 +210,86 @@ function ProofLevelCard({ proof }: { proof: ProofLevel }) {
   );
 }
 
+function EvidenceSceneButton({
+  active,
+  scene,
+  onSelect
+}: {
+  active: boolean;
+  scene: EvidenceScene;
+  onSelect: () => void;
+}) {
+  return (
+    <button className={active ? "scene-button active" : "scene-button"} onClick={onSelect} type="button">
+      <img src={scene.imageUrl} alt="" loading="lazy" />
+      <span>
+        <small>{scene.label}</small>
+        <strong>{scene.headline}</strong>
+      </span>
+    </button>
+  );
+}
+
+function EvidenceScenePanel({ scene }: { scene: EvidenceScene }) {
+  return (
+    <article className={`scene-panel ${scene.tone}`}>
+      <a className="scene-frame" href={scene.sourceUrl} rel="noreferrer" target="_blank">
+        <img src={scene.imageUrl} alt="" loading="lazy" />
+        <span>
+          {scene.sourceLabel}
+          <ExternalLink size={14} aria-hidden="true" />
+        </span>
+      </a>
+      <div className="scene-copy">
+        <div className="scene-kicker">
+          <span>{scene.timeWindow}</span>
+          <Badge value={scene.proofLevel} />
+        </div>
+        <h3>{scene.headline}</h3>
+        <p>{scene.whatHappened}</p>
+        <div className="scene-lanes">
+          <div>
+            <span>Ben-side signal</span>
+            <p>{scene.benSignal}</p>
+          </div>
+          <div>
+            <span>Pushback / record</span>
+            <p>{scene.counterSignal}</p>
+          </div>
+        </div>
+        <div className="scene-translation">
+          <strong>Plain read</strong>
+          <p>{scene.easyRead}</p>
+        </div>
+        <div className="scene-translation settle">
+          <strong>What would settle it</strong>
+          <p>{scene.settleIt}</p>
+        </div>
+        <div className="scene-receipts" aria-label={`Scene receipts for ${scene.headline}`}>
+          {scene.receipts.map((receipt) => (
+            <a
+              href={receipt.href}
+              key={`${scene.id}-${receipt.label}`}
+              rel={receipt.href.startsWith("#") ? undefined : "noreferrer"}
+              target={receipt.href.startsWith("#") ? undefined : "_blank"}
+            >
+              <Badge value={receipt.kind} />
+              <span>{receipt.label}</span>
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export default function StoryExperience({ documents, events, ingestionRuns, sourceChecks, donationUrl }: Props) {
   const [threadQuery, setThreadQuery] = useState("");
   const [threadMode, setThreadMode] = useState("all");
   const [activeAct, setActiveAct] = useState<StoryAct>(storyActs[0]);
   const [activeExhibit, setActiveExhibit] = useState<VisualExhibit>(visualExhibits[0]);
+  const [activeSceneId, setActiveSceneId] = useState(evidenceScenes[0].id);
   const [activeBeatId, setActiveBeatId] = useState(timelineBeats.find((beat) => beat.isCurrent)?.id ?? timelineBeats[0].id);
 
   const filteredThreads = useMemo(() => {
@@ -250,6 +326,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
     /police|warrant|probable cause|booking/i.test(`${doc.title} ${doc.documentType}`)
   ).length;
   const currentSignal = latestEvents[0];
+  const activeScene = evidenceScenes.find((scene) => scene.id === activeSceneId) ?? evidenceScenes[0];
   const activeBeat = timelineBeats.find((beat) => beat.id === activeBeatId) ?? timelineBeats[0];
 
   return (
@@ -362,6 +439,28 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="section-band scene-band" id="evidence-console">
+        <div className="section-heading">
+          <span className="eyebrow">Evidence Console</span>
+          <h2>Watch the story like a case board, not a filing cabinet.</h2>
+          <p>
+            Each scene says what happened, what Ben's side makes visible, what the pushback says,
+            and which receipt would move the argument from viral to settled.
+          </p>
+        </div>
+        <div className="scene-rail" aria-label="Evidence scenes">
+          {evidenceScenes.map((scene) => (
+            <EvidenceSceneButton
+              active={activeScene.id === scene.id}
+              key={scene.id}
+              onSelect={() => setActiveSceneId(scene.id)}
+              scene={scene}
+            />
+          ))}
+        </div>
+        <EvidenceScenePanel scene={activeScene} />
       </section>
 
       <section className="section-band lead-queue-band" id="lead-queue">

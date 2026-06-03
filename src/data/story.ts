@@ -48,6 +48,28 @@ export type TimelineBeat = {
   }>;
 };
 
+export type EvidenceScene = {
+  id: string;
+  label: string;
+  timeWindow: string;
+  headline: string;
+  proofLevel: "creator evidence" | "public record" | "official statement" | "court record" | "hot lead";
+  tone: "video" | "inventory" | "police" | "court" | "statement";
+  imageUrl: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  whatHappened: string;
+  benSignal: string;
+  counterSignal: string;
+  easyRead: string;
+  settleIt: string;
+  receipts: Array<{
+    label: string;
+    href: string;
+    kind: "video" | "document" | "statement" | "coverage" | "archive";
+  }>;
+};
+
 export type VerificationLead = {
   id: string;
   title: string;
@@ -285,6 +307,201 @@ export const evidenceThreads: EvidenceThread[] = [
     sourceUrl: "https://bamsucks.com/",
     sourceLabel: "Public court archive",
     heat: 4
+  }
+];
+
+export const evidenceScenes: EvidenceScene[] = [
+  {
+    id: "scene-origin",
+    label: "Scene 01",
+    timeWindow: "May 21, 2026",
+    headline: "Ben turns the missing-collection story into something viewers can inspect.",
+    proofLevel: "creator evidence",
+    tone: "video",
+    imageUrl: "https://i.ytimg.com/vi/wscQpkcwgNU/hqdefault.jpg",
+    sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+    sourceLabel: "RecklessBen origin episode",
+    whatHappened:
+      "The first viral episode frames the Mansell collection as a traceable property problem: who had the sets, who controlled the store, and what inventory proof exists?",
+    benSignal:
+      "The video gives the public a concrete story to follow: people, locations, claims, attempted answers, and visible pressure instead of an abstract civil dispute.",
+    counterSignal:
+      "BAM says the consignment was unauthorized, that corporate did not knowingly take a verified six-figure collection, and that most proof still needs documentation.",
+    easyRead:
+      "This is not yet a verdict. It is the public-pressure ignition point and the reason the inventory trail becomes the core receipt.",
+    settleIt:
+      "Signed consignment paperwork, tag photos, POS exports, stored-inventory records, and a full before/after item list.",
+    receipts: [
+      {
+        label: "Origin video",
+        href: "https://www.youtube.com/watch?v=wscQpkcwgNU",
+        kind: "video"
+      },
+      {
+        label: "Salem timeline",
+        href: "https://salembricktrials.com/bam-timeline",
+        kind: "archive"
+      },
+      {
+        label: "BAM statement",
+        href: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+        kind: "statement"
+      }
+    ]
+  },
+  {
+    id: "scene-inventory",
+    label: "Scene 02",
+    timeWindow: "Nov 2024 -> May 2026",
+    headline: "The whole case keeps snapping back to one boring-but-deadly question: where are the logs?",
+    proofLevel: "public record",
+    tone: "inventory",
+    imageUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Case-History.png",
+    sourceUrl: "https://bamsucks.com/",
+    sourceLabel: "Public document archive",
+    whatHappened:
+      "BAM's repossession story, the former operator dispute, and the Mansell collection claim all depend on inventory custody: what was in-store, what was offsite, and what was sold before takeover.",
+    benSignal:
+      "Ben's strongest lane is the demand for an inspectable chain of custody. Viewers side with him because the missing logs are easier to understand than the legal posture.",
+    counterSignal:
+      "BAM says records it reviewed point away from corporate possession of the claimed collection and toward unauthorized local consignment/offsite storage.",
+    easyRead:
+      "If the records are clean, show the trail. If the trail is broken, that is the story.",
+    settleIt:
+      "A public inventory reconciliation tying each claimed set to sale, return, storage, loss, or current possession.",
+    receipts: [
+      {
+        label: "Law/Gorman complaint",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf",
+        kind: "document"
+      },
+      {
+        label: "Termination exhibit",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Exhibit-D-Termination-Letter.pdf",
+        kind: "document"
+      },
+      {
+        label: "GlobeNewswire statement",
+        href: "https://www.globenewswire.com/news-release/2026/06/01/3304463/0/en/bricks-minifigs-issues-comprehensive-public-statement-on-salem-oregon-dispute-reaffirms-offer-to-help-mansell-family.html",
+        kind: "statement"
+      }
+    ]
+  },
+  {
+    id: "scene-police",
+    label: "Scene 03",
+    timeWindow: "Mar -> Jun 2026",
+    headline: "The police arc becomes its own scandal because the enforcement pattern looks louder than the original theft question.",
+    proofLevel: "public record",
+    tone: "police",
+    imageUrl: "https://i.ytimg.com/vi/cxZPfj8AlmY/hqdefault.jpg",
+    sourceUrl: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+    sourceLabel: "RecklessBen arrest episode",
+    whatHappened:
+      "The story moves through stops, trespass warnings, searches, a warrant, arrest paperwork, and competing explanations about stalking, picketing, and safety.",
+    benSignal:
+      "Ben's footage and narration make the police response feel disproportionate: the people asking for LEGO records appear to become the urgent target.",
+    counterSignal:
+      "Police/BAM-side records frame the conduct as trespass, harassment, stalking, residential picketing, and safety risk rather than protected investigation.",
+    easyRead:
+      "The tracker should treat the police arc like a split-screen: visible footage on one side, incident reports and warrant language on the other.",
+    settleIt:
+      "Full bodycam, dashcam, dispatch logs, warrant affidavits, redaction logs, and exact timeline matching against video cuts.",
+    receipts: [
+      {
+        label: "Arrest episode",
+        href: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
+        kind: "video"
+      },
+      {
+        label: "Probable cause",
+        href: "https://bamsucks.com/American-Fork-Police-26AF02033-Probable-Cause-Statement.pdf",
+        kind: "document"
+      },
+      {
+        label: "Police response",
+        href: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+        kind: "video"
+      }
+    ]
+  },
+  {
+    id: "scene-lawsuit",
+    label: "Scene 04",
+    timeWindow: "May 27 -> now",
+    headline: "BAM moves the fight into court, which means allegations now need docket discipline.",
+    proofLevel: "court record",
+    tone: "court",
+    imageUrl:
+      "https://bamsucks.com/Bricks-and-Minifigs-v-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Docket-Events.png",
+    sourceUrl: "https://bamsucks.com/",
+    sourceLabel: "Utah case archive",
+    whatHappened:
+      "A Utah civil case packages the viral campaign, signs, service attempts, videos, merchandise, and harassment claims into formal allegations and requested relief.",
+    benSignal:
+      "The accountability-first read is that suing the creator risks looking like punishment for public pressure while the inventory trail is still unresolved.",
+    counterSignal:
+      "BAM says the campaign caused harm and asks the court to restrict alleged defamation, harassment, trespass, impersonation, doxxing, signage, and related conduct.",
+    easyRead:
+      "A complaint is one side's attack map. Orders and docket entries are the scoreboard.",
+    settleIt:
+      "Answers, motions, hearing results, injunction terms, dismissal orders, and any actual factual findings.",
+    receipts: [
+      {
+        label: "Verified complaint",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Bryan-Mansell-Utah-Case-260402353-Verified-Complaint.pdf",
+        kind: "document"
+      },
+      {
+        label: "TRO",
+        href: "https://bamsucks.com/Bricks-and-Minifigs-v-Benjamin-Paul-Schneider-Reckless-Ben-Utah-Case-260402353-Temporary-Restraining-Order-TRO.pdf",
+        kind: "document"
+      },
+      {
+        label: "Dexerto lawsuit report",
+        href: "https://www.dexerto.com/youtube/bricks-minifigs-sues-reckless-ben-over-viral-200k-lego-star-wars-investigation-3370801/",
+        kind: "coverage"
+      }
+    ]
+  },
+  {
+    id: "scene-platform",
+    label: "Scene 05",
+    timeWindow: "Jun 2026 watch",
+    headline: "The newest hot lead is platform pressure, but it stays quarantined until a primary record lands.",
+    proofLevel: "hot lead",
+    tone: "statement",
+    imageUrl: "https://i.ytimg.com/vi/nny2ojTqW3A/hqdefault.jpg",
+    sourceUrl: "https://www.reddit.com/r/videos/comments/1tv6wwv/patron_ceo_take_down_notification_reckless_bens/",
+    sourceLabel: "Reddit lead thread",
+    whatHappened:
+      "Multiple social posts discuss a reported Patreon-related takedown attempt involving Ben's account. The tracker keeps this visible as a lead, not a verified event.",
+    benSignal:
+      "If primary records confirm it, the dispute expands from court pressure and public statements into creator-platform pressure.",
+    counterSignal:
+      "Without the actual notice, platform statement, or court order, the safest public label is still unverified lead.",
+    easyRead:
+      "Interesting? Yes. Timeline fact? Not until the original source is public.",
+    settleIt:
+      "Primary Patreon/CEO URL, the takedown request, sender identity, date, target content, and any court language.",
+    receipts: [
+      {
+        label: "Lead thread",
+        href: "https://www.reddit.com/r/videos/comments/1tv6wwv/patron_ceo_take_down_notification_reckless_bens/",
+        kind: "archive"
+      },
+      {
+        label: "Verification queue",
+        href: "#lead-queue",
+        kind: "archive"
+      },
+      {
+        label: "Leaked email episode",
+        href: "https://youtu.be/nny2ojTqW3A",
+        kind: "video"
+      }
+    ]
   }
 ];
 
