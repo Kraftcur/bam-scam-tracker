@@ -1156,6 +1156,122 @@ tr:last-child td {
   font-weight: 800;
 }
 
+/* Collapsible group that rolls up all auto-ingested footage leads into one node,
+   so the curated spine stays short no matter how many leaks arrive. Full width. */
+.spine-leads-group {
+  --spine-accent: var(--electric);
+  position: relative;
+  width: 100%;
+  justify-self: stretch;
+  padding-inline: 44px;
+}
+
+.spine-leads-group .spine-tick {
+  left: calc(50% - 9px);
+  background: var(--spine-accent);
+}
+
+.spine-leads-toggle {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  padding: 16px;
+  text-align: left;
+  border: 1px dashed color-mix(in srgb, var(--spine-accent) 55%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--spine-accent) 7%, var(--surface));
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.spine-leads-toggle:hover {
+  background: color-mix(in srgb, var(--spine-accent) 12%, var(--surface));
+  border-color: var(--spine-accent);
+}
+
+.spine-leads-caret {
+  margin-left: auto;
+  color: var(--spine-accent);
+  font-weight: 900;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spine-leads-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.spine-lead-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.spine-lead-row:hover {
+  border-color: var(--spine-accent);
+  transform: translateX(2px);
+}
+
+.spine-lead-date {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.spine-lead-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 750;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.spine-leads-more,
+.community-show-more {
+  justify-self: start;
+  margin-top: 2px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.spine-leads-more:hover,
+.community-show-more:hover {
+  border-color: var(--green);
+  background: color-mix(in srgb, var(--green) 8%, var(--surface));
+}
+
+.spine-leads-all {
+  margin-top: 4px;
+  color: var(--green);
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+
 .spine-support-node {
   position: relative;
   width: 50%;
@@ -3658,7 +3774,8 @@ tr:last-child td {
   .spine-node,
   .spine-node.right,
   .spine-node.left,
-  .spine-support-node {
+  .spine-support-node,
+  .spine-leads-group {
     width: 100%;
     justify-self: stretch;
     padding-inline: 46px 0;
@@ -3667,7 +3784,8 @@ tr:last-child td {
 
   .spine-node.left .spine-tick,
   .spine-node.right .spine-tick,
-  .spine-support-node .spine-tick {
+  .spine-support-node .spine-tick,
+  .spine-leads-group .spine-tick {
     left: 7px;
     right: auto;
   }
@@ -4997,6 +5115,70 @@ tr:last-child td {
 .community-feed-list {
   display: grid;
   gap: 12px;
+}
+
+/* Collapsible category groups keep the feed short no matter how many leads land. */
+.community-feed-groups {
+  display: grid;
+  gap: 12px;
+}
+
+.community-group {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.community-group-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--ink) 3%, var(--surface));
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.community-group-header:hover {
+  background: color-mix(in srgb, var(--green) 7%, var(--surface));
+}
+
+.community-group-title {
+  font-weight: 900;
+  font-size: 1.02rem;
+}
+
+.community-group-count {
+  min-width: 26px;
+  height: 24px;
+  padding: 0 8px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fffdf8;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.community-group-caret {
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform 180ms ease;
+}
+
+.community-group.open .community-group-caret {
+  transform: rotate(180deg);
+}
+
+.community-group-body {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--line);
 }
 
 .community-feed-card {

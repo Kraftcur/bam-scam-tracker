@@ -44,6 +44,82 @@ function isExternalUrl(href: string) {
   return /^https?:\/\//i.test(href);
 }
 
+// Auto-ingested leads (community submissions + auto-imported uploads) use these id
+// prefixes. We keep them OUT of the curated spine nodes and the Watch Recap so the
+// hand-built story never bloats as bodycam/footage leaks pile up — they get rolled
+// into a single collapsible "Evidence drops" group instead.
+function isAutoLead(event: TimelineEvent) {
+  return event.id.startsWith("evt-community-") || event.id.startsWith("evt-yt-");
+}
+
+type SpineLead = {
+  id: string;
+  dateLabel: string;
+  headline: string;
+  category: string;
+  href: string;
+};
+
+function SpineLeadsGroup({ leads }: { leads: SpineLead[] }) {
+  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(8);
+  if (leads.length === 0) return null;
+  const shown = leads.slice(0, visible);
+  return (
+    <article className={`spine-node spine-leads-group ${open ? "open" : ""}`}>
+      <div className="spine-tick" aria-hidden="true">
+        <span />
+      </div>
+      <button
+        aria-expanded={open}
+        className="spine-leads-toggle"
+        onClick={() => setOpen((value) => !value)}
+        type="button"
+      >
+        <span className="spine-date">Auto-ingested</span>
+        <span className="spine-headline">Evidence drops &amp; footage leads</span>
+        <span className="spine-dek">
+          {leads.length} community-submitted and auto-imported clip{leads.length === 1 ? "" : "s"} (bodycam,
+          video, and other footage), grouped here so the main story stays readable.
+        </span>
+        <span className="spine-meta-row">
+          <Badge value="needs-review" />
+          <span className="spine-source-count">
+            {leads.length} lead{leads.length === 1 ? "" : "s"}
+          </span>
+          <span className="spine-leads-caret">{open ? "Hide" : "Show"}</span>
+        </span>
+      </button>
+      {open && (
+        <div className="spine-leads-list">
+          {shown.map((lead) => (
+            <a
+              className="spine-lead-row"
+              href={lead.href}
+              key={lead.id}
+              rel={isExternalUrl(lead.href) ? "noreferrer" : undefined}
+              target={isExternalUrl(lead.href) ? "_blank" : undefined}
+            >
+              <span className="spine-lead-date">{lead.dateLabel}</span>
+              <span className="spine-lead-title">{lead.headline}</span>
+              <Badge value={lead.category} />
+              {isExternalUrl(lead.href) && <ExternalLink size={13} aria-hidden="true" />}
+            </a>
+          ))}
+          {visible < leads.length && (
+            <button className="spine-leads-more" onClick={() => setVisible((value) => value + 12)} type="button">
+              Show {Math.min(12, leads.length - visible)} more
+            </button>
+          )}
+          <a className="spine-leads-all" href="/community">
+            Open full community feed →
+          </a>
+        </div>
+      )}
+    </article>
+  );
+}
+
 function SpineLegend() {
   return (
     <aside className="spine-legend" aria-label="Timeline source legend">
@@ -217,6 +293,7 @@ function FloatingPeopleDrawer({
 
 function TimelineSpine({
   nodes,
+  leads,
   players,
   courtRecordCount,
   policeRecordCount,
@@ -226,6 +303,7 @@ function TimelineSpine({
   supportUrl
 }: {
   nodes: StorySpineNode[];
+  leads: SpineLead[];
   players: StoryPlayer[];
   courtRecordCount: number;
   policeRecordCount: number;
@@ -296,6 +374,7 @@ function TimelineSpine({
             onToggle={() => toggleNode(node.id)}
           />
         ))}
+        <SpineLeadsGroup leads={leads} />
         <article className="spine-support-node">
           <div className="spine-tick" aria-hidden="true">
             <span />
@@ -378,8 +457,27 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   
   const supportUrl = donationUrl || "https://buymeacoffee.com/bam.scam.tracker";
 
+  // Split the curated story from auto-ingested footage leads so neither the Spine
+  // nodes nor the Watch Recap bloat as bodycam/video leaks accumulate.
+  const curatedEvents = useMemo(() => events.filter((event) => !isAutoLead(event)), [events]);
+  const spineLeads = useMemo<SpineLead[]>(
+    () =>
+      events
+        .filter(isAutoLead)
+        .slice()
+        .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
+        .map((event) => ({
+          id: event.id,
+          dateLabel: formatDateTime(event.occurredAt).slice(0, 10),
+          headline: event.title,
+          category: event.category,
+          href: event.videoUrl || event.imageUrl || "/community"
+        })),
+    [events]
+  );
+
   const spineNodes = useMemo<StorySpineNode[]>(() => {
-    return events.map((event) => {
+    return curatedEvents.map((event) => {
       let type: StorySpineNode["type"] = "context";
       if (event.category === "court") type = "court-record";
       else if (event.category === "statement") type = "official-statement";
@@ -411,7 +509,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
         sources: []
       };
     });
-  }, [events]);
+  }, [curatedEvents]);
 
   return (
     <div className="experience-container">
@@ -439,7 +537,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
       </nav>
 
       {viewMode === "play" && (
-        <StoryPlayback events={events} sources={sources} />
+        <StoryPlayback events={curatedEvents} sources={sources} />
       )}
 
       {viewMode === "spine" && (
@@ -447,6 +545,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
           changedChecks={changedChecks}
           courtRecordCount={courtRecordCount}
           latestRun={latestRun}
+          leads={spineLeads}
           nodes={spineNodes}
           players={storyPlayers}
           policeRecordCount={policeRecordCount}
