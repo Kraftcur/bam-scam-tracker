@@ -86,6 +86,15 @@ function getYouTubeEmbedUrl(url: string, autoplay: boolean) {
   }
 }
 
+function isYouTubeUrl(url: string) {
+  try {
+    const hostname = new URL(url).hostname;
+    return hostname.includes("youtube.com") || hostname.includes("youtu.be");
+  } catch (e) {
+    return false;
+  }
+}
+
 function receiptKind(sourceType: SourceType): PlaybackStep["receipts"][number]["kind"] {
   if (sourceType === "video") return "video";
   if (sourceType === "audio") return "video";
@@ -249,7 +258,8 @@ export function StoryPlayback({ events, sources }: Props) {
     setIsPlaying(true);
   };
 
-  const youtubeEmbedUrl = step.videoUrl ? getYouTubeEmbedUrl(step.videoUrl, isPlaying) : "";
+  const isYouTubeVideo = step.videoUrl ? isYouTubeUrl(step.videoUrl) : false;
+  const youtubeEmbedUrl = step.videoUrl && isYouTubeVideo ? getYouTubeEmbedUrl(step.videoUrl, isPlaying) : "";
 
   return (
     <div className="playback-shell">
@@ -348,6 +358,19 @@ export function StoryPlayback({ events, sources }: Props) {
               ></iframe>
               <span className="video-badge">
                 <Youtube size={14} className="youtube-icon" /> Video Clip
+              </span>
+            </div>
+          ) : step.videoUrl ? (
+            <div className="video-embed-wrapper">
+              <video
+                autoPlay={isPlaying}
+                controls
+                muted={isPlaying}
+                playsInline
+                src={step.videoUrl}
+              />
+              <span className="video-badge">
+                <Film size={14} /> Video Clip
               </span>
             </div>
           ) : (

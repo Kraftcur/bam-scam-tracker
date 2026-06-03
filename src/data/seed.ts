@@ -2,6 +2,7 @@ import type { TrackerData } from "../types";
 
 const now = "2026-06-03T00:00:00.000Z";
 const archiveRoot = "https://bamsucks.com";
+const mcneffPoliceCallUrl = "https://video.twimg.com/amplify_video/2062282560475197440/vid/avc1/1276x720/voA3U2BPFfkL48BV.mp4?tag=27";
 
 export const seedData: TrackerData = {
   sources: [
@@ -56,6 +57,17 @@ export const seedData: TrackerData = {
       dateFound: now,
       reliabilityTier: "official",
       lastChecked: now
+    },
+    {
+      id: "src-twitter-mcneff-police-call",
+      url: mcneffPoliceCallUrl,
+      title: "X/Twitter video clip: Ammon McNeff speaking with police",
+      publisher: "X/Twitter video",
+      sourceType: "video",
+      dateFound: "2026-06-03T21:20:09.000Z",
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Direct MP4 clip. Local Whisper transcript created June 3, 2026; treat transcript text as machine-generated and verify exact wording before quoting."
     },
     {
       id: "src-brickfanatics-may29",
@@ -523,6 +535,21 @@ export const seedData: TrackerData = {
       benPerspective: "Ben's supporters view coverage as proof that the accountability campaign is working to force public answers.",
       bamPerspective: "BAM likely sees the coverage as repeating creator-driven narratives without awaiting the civil court process.",
       imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
+    },
+    {
+      id: "evt-mcneff-police-call-clip",
+      occurredAt: "2026-06-03T21:20:09.000Z",
+      title: "Ammon McNeff police-call clip surfaces",
+      summary: "A 4:45 X/Twitter video clip appears to show BAM CEO Ammon McNeff giving police the BAM-side account: unauthorized consignment, alleged creator harassment/extortion, alleged fake documents, alleged store vandalism, and lawsuit-status claims. The clip is indexed as a primary video source, but its claims need comparison against court records and other public evidence.",
+      category: "statement",
+      involvedParties: ["Ammon McNeff", "BAM Franchising", "Bricks & Minifigs", "RecklessBen", "Bryan Mansell", "Police"],
+      sourceIds: ["src-twitter-mcneff-police-call", "src-bamsucks-archive", "src-utah-xchange"],
+      confidence: "medium",
+      status: "needs-review",
+      publicationRisk: "high",
+      benPerspective: "Ben-side viewers are likely to treat this as a key compare-against-the-record clip, especially where it describes Ben, Mansell, lawsuits, vandalism, fake documents, and extortion.",
+      bamPerspective: "McNeff presents BAM's side to police: the consignment was invalid/unauthorized, the former franchisee was responsible, and Ben/Mansell were allegedly using pressure tactics to extract money.",
+      videoUrl: mcneffPoliceCallUrl
     }
   ],
   cases: [
@@ -959,6 +986,45 @@ export const seedData: TrackerData = {
       relatedEventIds: ["evt-police-response-critiques"],
       status: "official-statement",
       publicationRisk: "moderate"
+    },
+    {
+      id: "clip-mcneff-call-consignment-account",
+      title: "McNeff call: invalid consignment and former-franchisee account",
+      platform: "X/Twitter video",
+      sourceUrl: `${mcneffPoliceCallUrl}#t=42`,
+      sourceId: "src-twitter-mcneff-police-call",
+      startsAt: "00:00:42",
+      endsAt: "00:01:32",
+      transcriptExcerpt: "Machine-transcript lead: McNeff tells police the consignment was invalid, tied to a former franchisee, and that BAM had been trying to help the Oregon-side owner.",
+      relatedEventIds: ["evt-mcneff-police-call-clip", "evt-bam-statement-may28", "evt-consignment-2023"],
+      status: "needs-review",
+      publicationRisk: "high"
+    },
+    {
+      id: "clip-mcneff-call-extortion-fraud-allegations",
+      title: "McNeff call: extortion, fake-document, and threat allegations",
+      platform: "X/Twitter video",
+      sourceUrl: `${mcneffPoliceCallUrl}#t=123`,
+      sourceId: "src-twitter-mcneff-police-call",
+      startsAt: "00:02:03",
+      endsAt: "00:02:33",
+      transcriptExcerpt: "Machine-transcript lead: McNeff alleges fraudulent documents, a forged manager signature, a threat, hidden filming, and an additional extortion attempt.",
+      relatedEventIds: ["evt-mcneff-police-call-clip", "evt-police-response-critiques", "evt-utah-civil-case-260402353"],
+      status: "alleged",
+      publicationRisk: "high"
+    },
+    {
+      id: "clip-mcneff-call-lawsuit-status",
+      title: "McNeff call: lawsuit-status claims and planned BAM lawsuit",
+      platform: "X/Twitter video",
+      sourceUrl: `${mcneffPoliceCallUrl}#t=200`,
+      sourceId: "src-twitter-mcneff-police-call",
+      startsAt: "00:03:20",
+      endsAt: "00:04:37",
+      transcriptExcerpt: "Machine-transcript lead: McNeff says small-claims filings used separate or fictitious entities, says no lawsuits had been filed against BAM/Josh at that point, and says BAM was preparing its own lawsuit.",
+      relatedEventIds: ["evt-mcneff-police-call-clip", "evt-utah-civil-case-260402353", "evt-law-gorman-case"],
+      status: "disputed",
+      publicationRisk: "high"
     }
   ],
   claims: [
@@ -1049,6 +1115,28 @@ export const seedData: TrackerData = {
       confidence: "medium",
       publicationRisk: "moderate",
       editorNote: "This is the core inventory/legal-duty fight. Treat it as unsettled unless the court issues a declaratory ruling."
+    },
+    {
+      id: "claim-mcneff-call-vandalism",
+      claimant: "Ammon McNeff / BAM-side phone-call clip",
+      claimText: "In the X/Twitter police-call clip, McNeff appears to tell police that Ben and Mansell vandalized the store over a weekend.",
+      relatedEvidenceIds: [],
+      relatedSourceIds: ["src-twitter-mcneff-police-call"],
+      status: "alleged",
+      confidence: "medium",
+      publicationRisk: "high",
+      editorNote: "High-risk accusation. Requires comparison against police reports, video footage, repair records, and any court filing before being treated as more than a recorded allegation."
+    },
+    {
+      id: "claim-mcneff-call-lawsuit-status",
+      claimant: "Ammon McNeff / BAM-side phone-call clip",
+      claimText: "In the X/Twitter police-call clip, McNeff appears to say no lawsuits had been filed against BAM, Josh, Josh's entity, or the parties Ben was claiming against, while BAM was preparing its own lawsuit.",
+      relatedEvidenceIds: ["doc-law-gorman-complaint", "doc-bam-verified-complaint"],
+      relatedSourceIds: ["src-twitter-mcneff-police-call", "src-bamsucks-archive", "src-utah-xchange"],
+      status: "disputed",
+      confidence: "medium",
+      publicationRisk: "high",
+      editorNote: "Timestamp and call date matter. Compare this statement against Oregon/Utah small-claims records, Law/Gorman filings, and the later BAM v. Schneider complaint before characterizing it."
     }
   ],
   submissions: [],
