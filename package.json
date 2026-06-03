@@ -19,7 +19,8 @@
     "db:seed:local": "tsx scripts/seed-d1.ts --local",
     "db:seed:remote": "tsx scripts/seed-d1.ts --remote",
     "r2:upload": "node scripts/upload-r2.mjs",
-    "pdf:extract": "node scripts/extract-public-pdf-text.mjs"
+    "pdf:extract": "node scripts/extract-public-pdf-text.mjs",
+    "youtube:recklessben": "node scripts/extract-recklessben-youtube.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.6.1",

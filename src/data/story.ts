@@ -1302,6 +1302,76 @@ export const storySpineNodes: StorySpineNode[] = [
     ]
   },
   {
+    id: "spine-police-rebuttal",
+    dateLabel: "Jun 1, 2026",
+    headline: "Police video gets rebuttal",
+    dek: "Ben's latest core upload turns the official police response into a timestamp-by-timestamp dispute.",
+    type: "creator-video",
+    status: "disputed",
+    confidence: "high",
+    tags: ["latest video", "police", "bodycam"],
+    known:
+      "YouTube's public feed lists \"My response to the Police\" as a June 1 RecklessBen upload, after the arrest episode and police-response video.",
+    disputed:
+      "The upload argues about warrant language, bodycam redactions, stop-sign footage, and arrest context; those points need comparison against primary police records.",
+    detail:
+      "For a live breakdown, this is the cleanest current video lane: play Ben's rebuttal, then jump to the matching official video, warrant PDF, and bodycam/redaction questions.",
+    sources: [
+      {
+        label: "My response to the Police",
+        href: "https://www.youtube.com/watch?v=2YEzhDn0jY8",
+        kind: "video"
+      },
+      {
+        label: "RecklessBen YouTube feed",
+        href: "https://www.youtube.com/feeds/videos.xml?channel_id=UC_UE7maDDe8OqqC8-TtXaKg",
+        kind: "site"
+      },
+      {
+        label: "Police official response",
+        href: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+        kind: "video"
+      }
+    ],
+    videoSnippets: [
+      {
+        label: "Official reply setup",
+        timestamp: "0:02",
+        snippet: "Ben opens by saying American Fork Police responded to his earlier video.",
+        href: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=2s",
+        thumbnail: "https://i.ytimg.com/vi/2YEzhDn0jY8/hqdefault.jpg"
+      },
+      {
+        label: "Warrant language",
+        timestamp: "2:02",
+        snippet: "Useful jump point for comparing LEGO seizure language to the warrant PDF.",
+        href: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=122s",
+        thumbnail: "https://i.ytimg.com/vi/2YEzhDn0jY8/hqdefault.jpg"
+      },
+      {
+        label: "Stop-sign dispute",
+        timestamp: "6:24",
+        snippet: "Ben contests the traffic-stop explanation and points viewers back to visible footage.",
+        href: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=384s",
+        thumbnail: "https://i.ytimg.com/vi/2YEzhDn0jY8/hqdefault.jpg"
+      },
+      {
+        label: "Bodycam redactions",
+        timestamp: "8:03",
+        snippet: "A clean cue for the bodycam/redaction question that keeps coming up.",
+        href: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=483s",
+        thumbnail: "https://i.ytimg.com/vi/2YEzhDn0jY8/hqdefault.jpg"
+      },
+      {
+        label: "CEO question setup",
+        timestamp: "0:22",
+        snippet: "Earlier May 30 upload frames the CEO-answer promise and three-question thread.",
+        href: "https://www.youtube.com/watch?v=NAh9eh3KjrU&t=22s",
+        thumbnail: "https://i.ytimg.com/vi/NAh9eh3KjrU/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     id: "spine-social",
     dateLabel: "Public chatter",
     headline: "Social posts widen picture",

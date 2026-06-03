@@ -120,6 +120,17 @@ export const seedData: TrackerData = {
       lastChecked: now
     },
     {
+      id: "src-recklessben-channel",
+      url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC_UE7maDDe8OqqC8-TtXaKg",
+      title: "Reckless Ben YouTube upload feed",
+      publisher: "Reckless Ben / YouTube RSS",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Public YouTube RSS feed used for upload order, publish dates, titles, thumbnails, and view-count leads. Video claims still require separate review."
+    },
+    {
       id: "src-recklessben-part1",
       url: "https://www.youtube.com/watch?v=wscQpkcwgNU",
       title: "I tracked down the thief who stole $200,000 of LEGO",
@@ -134,6 +145,16 @@ export const seedData: TrackerData = {
       id: "src-recklessben-arrest",
       url: "https://www.youtube.com/watch?v=cxZPfj8AlmY",
       title: "I got arrested because of legos",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now
+    },
+    {
+      id: "src-recklessben-ceo-questions",
+      url: "https://www.youtube.com/watch?v=NAh9eh3KjrU",
+      title: "Bricks and Minifigs CEO promises to answer all my questions",
       publisher: "RecklessBen",
       sourceType: "video",
       dateFound: now,
@@ -159,6 +180,17 @@ export const seedData: TrackerData = {
       dateFound: now,
       reliabilityTier: "primary-video",
       lastChecked: now
+    },
+    {
+      id: "src-recklessben-police-response",
+      url: "https://www.youtube.com/watch?v=2YEzhDn0jY8",
+      title: "My response to the Police",
+      publisher: "RecklessBen",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Creator response to American Fork Police's public video. Treat as creator-video evidence and compare against police records/bodycam."
     },
     {
       id: "src-police-response-video",
@@ -322,6 +354,18 @@ export const seedData: TrackerData = {
       publicationRisk: "moderate"
     },
     {
+      id: "evt-recklessben-ceo-questions-video",
+      occurredAt: "2026-05-30T03:13:54.000Z",
+      title: "RecklessBen posts CEO-questions livestream",
+      summary: "The upload frames a promised CEO Q&A as a key public accountability moment and previews the questions viewers should compare against later statements and records.",
+      category: "video",
+      involvedParties: ["RecklessBen", "BAM Franchising", "Bricks & Minifigs leadership"],
+      sourceIds: ["src-recklessben-ceo-questions", "src-recklessben-channel"],
+      confidence: "high",
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
       id: "evt-bam-statement-may28",
       occurredAt: "2026-05-28T12:00:00.000Z",
       title: "BAM publishes detailed official statement",
@@ -354,6 +398,18 @@ export const seedData: TrackerData = {
       involvedParties: ["American Fork Police", "RecklessBen", "Public commentators"],
       sourceIds: ["src-police-response-video", "src-culture-police-release", "src-kotaku-jun1"],
       confidence: "medium",
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-recklessben-police-response-jun1",
+      occurredAt: "2026-06-01T15:00:30.000Z",
+      title: "RecklessBen responds to American Fork police",
+      summary: "Ben's June 1 upload responds to the American Fork Police public video and focuses on warrant language, bodycam redactions, stop-sign footage, arrest-force claims, and competing explanations for the police response.",
+      category: "video",
+      involvedParties: ["RecklessBen", "American Fork Police", "Josh Johnson"],
+      sourceIds: ["src-recklessben-police-response", "src-police-response-video", "src-recklessben-channel"],
+      confidence: "high",
       status: "disputed",
       publicationRisk: "moderate"
     },
@@ -768,6 +824,66 @@ export const seedData: TrackerData = {
       transcriptExcerpt: "Index lead: Ben details police encounters and argues that law enforcement treated his crew as the problem while the original property dispute remained unresolved.",
       relatedEventIds: ["evt-recklessben-arrest-video", "evt-police-response-critiques"],
       status: "alleged",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-ceo-questions-open",
+      title: "CEO-questions upload: promised answers frame",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=NAh9eh3KjrU&t=22s",
+      sourceId: "src-recklessben-ceo-questions",
+      startsAt: "00:00:22",
+      transcriptExcerpt: "Transcript lead: Ben says the Bricks & Minifigs CEO promised to answer his questions, setting up a compare-the-answers thread for later statements.",
+      relatedEventIds: ["evt-recklessben-ceo-questions-video", "evt-bam-statement-may28"],
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-police-response-open",
+      title: "Police-response upload: Ben opens with official reply",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=2s",
+      sourceId: "src-recklessben-police-response",
+      startsAt: "00:00:02",
+      transcriptExcerpt: "Transcript lead: Ben opens by saying American Fork Police responded to his earlier video, then cuts into the chief's public statement.",
+      relatedEventIds: ["evt-recklessben-police-response-jun1", "evt-police-response-critiques"],
+      status: "verified",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-police-warrant",
+      title: "Police-response upload: warrant and LEGO seizure language",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=122s",
+      sourceId: "src-recklessben-police-response",
+      startsAt: "00:02:02",
+      transcriptExcerpt: "Transcript lead: Ben highlights search-warrant language about possible stolen property including LEGO, a key compare point against the warrant PDF.",
+      relatedEventIds: ["evt-recklessben-police-response-jun1", "evt-police-response-critiques"],
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-police-stop-sign",
+      title: "Police-response upload: stop-sign footage dispute",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=384s",
+      sourceId: "src-recklessben-police-response",
+      startsAt: "00:06:24",
+      transcriptExcerpt: "Transcript lead: Ben disputes the stop-sign justification and points viewers back to dashcam/visible footage.",
+      relatedEventIds: ["evt-recklessben-police-response-jun1", "evt-police-response-critiques"],
+      status: "disputed",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "clip-recklessben-police-bodycam",
+      title: "Police-response upload: bodycam redaction question",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8&t=483s",
+      sourceId: "src-recklessben-police-response",
+      startsAt: "00:08:03",
+      transcriptExcerpt: "Transcript lead: Ben says the answers are in bodycam footage and argues redactions keep the public from comparing accounts.",
+      relatedEventIds: ["evt-recklessben-police-response-jun1", "evt-police-response-critiques"],
+      status: "disputed",
       publicationRisk: "moderate"
     },
     {

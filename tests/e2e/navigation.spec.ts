@@ -42,6 +42,17 @@ test("expanded spine nodes show compact video snippets", async ({ page }) => {
   await expect(videoPanel.locator(".spine-video-snippets img")).toHaveCount(3);
 });
 
+test("homepage includes latest RecklessBen police-response clips", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();
+  await page.getByRole("button", { name: /Police video gets rebuttal/i }).click();
+  const rebuttalPanel = page.locator("#spine-panel-spine-police-rebuttal");
+  await expect(rebuttalPanel).toBeVisible();
+  await expect(rebuttalPanel.getByRole("link", { name: /Warrant language/i })).toBeVisible();
+  await expect(rebuttalPanel.getByRole("link", { name: /Stop-sign dispute/i })).toBeVisible();
+  await expect(rebuttalPanel.getByRole("link", { name: /Bodycam redactions/i })).toBeVisible();
+});
+
 test("floating people drawers show story roles", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('.spine-shell[data-spine-ready="true"]')).toBeVisible();

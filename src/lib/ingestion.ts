@@ -22,6 +22,47 @@ function stripHtml(html: string) {
     .trim();
 }
 
+function decodeXml(value = "") {
+  return value
+    .replace(/<!\[CDATA\[|\]\]>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .trim();
+}
+
+function xmlTag(block: string, name: string) {
+  return decodeXml(block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`))?.[1] ?? "");
+}
+
+function xmlAttr(block: string, tagName: string, attrName: string) {
+  return decodeXml(block.match(new RegExp(`<${tagName}[^>]*${attrName}="([^"]+)"`))?.[1] ?? "");
+}
+
+function parseYouTubeFeedEntries(xml: string) {
+  return [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)]
+    .map((match) => {
+      const entry = match[1];
+      const videoId = xmlTag(entry, "yt:videoId");
+      return {
+        videoId,
+        title: xmlTag(entry, "title"),
+        published: xmlTag(entry, "published"),
+        updated: xmlTag(entry, "updated"),
+        url: `https://www.youtube.com/watch?v=${videoId}`,
+        thumbnail: xmlAttr(entry, "media:thumbnail", "url") || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+        views: Number.parseInt(xmlAttr(entry, "media:statistics", "views") || "0", 10),
+        description: xmlTag(entry, "media:description")
+      };
+    })
+    .filter((entry) => {
+      const searchable = `${entry.title} ${entry.description}`;
+      return entry.videoId && /\b(lego|legos|brick|bricks|minifigs|bam|police|arrest|ceo)\b/i.test(searchable);
+    });
+}
+
 async function sha256Hex(value: string) {
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
@@ -174,7 +215,7 @@ export async function runScheduledIngestion(env: AppEnv) {
 
   try {
     const watchedSources = seedData.sources.filter((source) =>
-      ["official", "court-record", "trusted-archive"].includes(source.reliabilityTier)
+      ["official", "court-record", "trusted-archive", "primary-video"].includes(source.reliabilityTier)
     );
 
     for (const source of watchedSources) {
@@ -214,7 +255,14 @@ export async function runScheduledIngestion(env: AppEnv) {
       }
 
       const contentType = response.headers.get("content-type") ?? "";
-      const body = contentType.includes("text") || contentType.includes("html") ? await response.text() : "";
+      const body =
+        contentType.includes("text") ||
+        contentType.includes("html") ||
+        contentType.includes("xml") ||
+        contentType.includes("atom") ||
+        contentType.includes("application")
+          ? await response.text()
+          : "";
       const sourceText = stripHtml(body).slice(0, 12000);
       const contentHash = await sha256Hex(sourceText);
       const previousHash = await getPreviousSourceHash(env, source.id);
@@ -245,7 +293,25 @@ export async function runScheduledIngestion(env: AppEnv) {
         needsReview += 1;
       }
 
-      const shouldExtractWithAi = isAiIngestionEnabled(env) && changed && aiExtractionsUsed < aiMaxSources;
+      if (source.id === "src-recklessben-channel" && (!previousHash || changed)) {
+        for (const video of parseYouTubeFeedEntries(body).slice(0, 8)) {
+          await insertReviewSubmission(env, {
+            id: `youtube-${video.videoId}`,
+            title: `RecklessBen upload: ${video.title}`,
+            summary:
+              `Published ${video.published || "unknown date"}. Views in RSS: ${video.views || "unknown"}. ` +
+              "Review this creator-video lead, add timestamped clips if relevant, and label underlying claims separately from what the video itself proves.",
+            suggestedCategory: "video",
+            url: video.url
+          });
+          candidatesFound += 1;
+          needsReview += 1;
+        }
+      }
+
+      const allowsAiExtraction = ["official", "court-record", "trusted-archive"].includes(source.reliabilityTier);
+      const shouldExtractWithAi =
+        allowsAiExtraction && isAiIngestionEnabled(env) && changed && aiExtractionsUsed < aiMaxSources;
       if (shouldExtractWithAi) aiExtractionsUsed += 1;
 
       const extraction = shouldExtractWithAi
