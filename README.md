@@ -36,11 +36,26 @@ The app falls back to `src/data/seed.ts` when no D1 binding is available.
 
 ## Cloudflare Setup
 
-1. Create a D1 database named `bam_scam_tracker`.
-2. Replace `REPLACE_WITH_D1_DATABASE_ID` in `wrangler.toml` and `wrangler.ingest.toml`.
-3. Create an R2 bucket named `bam-scam-tracker-archive`.
-4. Create a KV namespace for Astro sessions and replace `REPLACE_WITH_KV_NAMESPACE_ID` in the Wrangler configs.
-5. Set secrets:
+### Local Wrangler Path
+
+1. Authenticate Wrangler:
+
+```bash
+npx wrangler login
+```
+
+2. Provision Cloudflare resources. This creates or reuses:
+   - D1 database `bam_scam_tracker`
+   - R2 bucket `bam-scam-tracker-archive`
+   - KV namespace `SESSION`
+   - patched D1/KV IDs in `wrangler.toml` and `wrangler.ingest.toml`
+   - remote D1 migrations and seed data
+
+```bash
+npm run cf:provision
+```
+
+3. Set secrets:
 
 ```bash
 wrangler pages secret put ADMIN_TOKEN
@@ -49,19 +64,44 @@ wrangler pages secret put TURNSTILE_SECRET_KEY
 wrangler secret put OPENAI_API_KEY -c wrangler.ingest.toml
 ```
 
-6. Apply and seed D1:
+4. Build and deploy:
+
+```bash
+npm run cf:deploy:all
+```
+
+### GitHub Actions Path
+
+The workflow at `.github/workflows/cloudflare.yml` verifies every push to `codex/evidence-explorer`. It deploys only when run manually with `deploy=true`.
+
+Add these GitHub repository secrets before deploying from Actions:
+
+- `CLOUDFLARE_API_TOKEN` - token with Pages, Workers, D1, R2, and KV edit permissions.
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CF_D1_DATABASE_ID`
+- `CF_KV_NAMESPACE_ID`
+
+The workflow patches the Wrangler configs at runtime, builds, applies migrations, seeds D1, deploys Pages, and deploys the scheduled ingest Worker.
+
+### Manual Resource Setup
+
+If you do not want to use `npm run cf:provision`, create the resources manually:
+
+1. Create a D1 database named `bam_scam_tracker`.
+2. Replace `REPLACE_WITH_D1_DATABASE_ID` in `wrangler.toml` and `wrangler.ingest.toml`.
+3. Create an R2 bucket named `bam-scam-tracker-archive`.
+4. Create a KV namespace for Astro sessions and replace `REPLACE_WITH_KV_NAMESPACE_ID` in both Wrangler configs.
+5. Apply and seed D1:
 
 ```bash
 npm run db:migrate:remote
 npm run db:seed:remote
 ```
 
-7. Build and deploy:
+6. Build and deploy:
 
 ```bash
-npm run build
-npm run cf:deploy
-npm run cf:deploy:ingest
+npm run cf:deploy:all
 ```
 
 ## Editorial Rules
@@ -79,6 +119,8 @@ npm run cf:deploy:ingest
 ```bash
 npm run db:migrate:local
 npm run db:seed:local
+npm run cf:provision
+npm run cf:deploy:all
 npm run r2:upload -- /absolute/path/to/public-redacted.pdf documents/file.pdf
 npm run pdf:extract -- /absolute/path/to/public-redacted.pdf
 ```
