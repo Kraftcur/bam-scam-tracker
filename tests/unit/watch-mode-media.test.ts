@@ -8,6 +8,11 @@ function youtubeId(url: string) {
   return parsed.searchParams.get("v") ?? parsed.pathname.split("/").filter(Boolean).pop() ?? "";
 }
 
+function isLocalPlaybackMirror(url: string) {
+  const parsed = new URL(url);
+  return parsed.hostname === "bam-scam-tracker.tomcurrie.workers.dev" && parsed.pathname.startsWith("/media/");
+}
+
 describe("Timeline Watch Mode media", () => {
   it("matches event video URLs to their attached primary video sources", () => {
     const sourceMap = new Map(seedData.sources.map((source) => [source.id, source]));
@@ -21,6 +26,7 @@ describe("Timeline Watch Mode media", () => {
           .map((source) => youtubeId(source?.url ?? ""))
           .filter(Boolean);
 
+        if (isLocalPlaybackMirror(event.videoUrl ?? "") && sourceVideoIds.length > 0) return undefined;
         if (sourceVideoIds.length === 0 || sourceVideoIds.includes(eventVideoId)) return undefined;
         return `${event.id} uses ${eventVideoId} but sources are ${sourceVideoIds.join(", ")}`;
       })

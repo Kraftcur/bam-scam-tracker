@@ -3,6 +3,7 @@ import type { TrackerData } from "../types";
 const now = "2026-06-03T00:00:00.000Z";
 const archiveRoot = "https://bamsucks.com";
 const mcneffPoliceCallUrl = "https://video.twimg.com/amplify_video/2062282560475197440/vid/avc1/1276x720/voA3U2BPFfkL48BV.mp4?tag=27";
+const mcneffPoliceCallPlayableUrl = "https://bam-scam-tracker.tomcurrie.workers.dev/media/mcneff-police-call.mp4";
 const mcneffPoliceCallPosterUrl = "https://bam-scam-tracker.tomcurrie.workers.dev/media/mcneff-police-call-poster.jpg";
 
 export const seedData: TrackerData = {
@@ -551,7 +552,7 @@ export const seedData: TrackerData = {
       benPerspective: "Ben-side viewers are likely to treat this as a key compare-against-the-record bodycam clip, especially where it describes Ben, Mansell, lawsuits, vandalism, fake documents, and extortion.",
       bamPerspective: "McNeff presents BAM's side to police: the consignment was invalid/unauthorized, the former franchisee was responsible, and Ben/Mansell were allegedly using pressure tactics to extract money.",
       imageUrl: mcneffPoliceCallPosterUrl,
-      videoUrl: mcneffPoliceCallUrl
+      videoUrl: mcneffPoliceCallPlayableUrl
     }
   ],
   cases: [
