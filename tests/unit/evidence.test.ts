@@ -105,7 +105,53 @@ describe("buildEvidence", () => {
     expect(kindOf("evt-yt-abc")).toBe("recklessben");
     // Ben's own video about police stays under RecklessBen, not bodycam
     expect(kindOf("evt-recklessben-police")).toBe("recklessben");
-    expect(kindOf("evt-community-fox5")).toBe("news-interview");
-    expect(kindOf("evt-dexerto")).toBe("news-interview");
+    // interviews are split out from general news coverage
+    expect(kindOf("evt-community-fox5")).toBe("interview");
+    expect(kindOf("evt-dexerto")).toBe("news");
+  });
+
+  it("nests timestamped clips as key moments under their parent video", () => {
+    const parent = event({
+      id: "evt-recklessben-part1",
+      title: "RecklessBen publishes first major LEGO investigation",
+      sourceIds: ["src-recklessben-part1"],
+      videoUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU"
+    });
+    const clip = {
+      id: "clip-part1-a",
+      title: "Part 1: ownership and takeover",
+      platform: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=wscQpkcwgNU&t=81s",
+      sourceId: "src-recklessben-part1",
+      startsAt: "00:01:21",
+      endsAt: "00:14:46",
+      transcriptExcerpt: "ownership framing",
+      relatedEventIds: ["evt-recklessben-part1"],
+      status: "verified" as const,
+      publicationRisk: "moderate" as const
+    };
+    const items = buildEvidence([parent], [clip]);
+    // the clip should NOT be a standalone card; it nests under the parent
+    expect(items).toHaveLength(1);
+    expect(items[0].id).toBe("evt-recklessben-part1");
+    expect(items[0].moments).toHaveLength(1);
+    expect(items[0].moments?.[0].timestamp).toBe("00:01:21–00:14:46");
+  });
+
+  it("surfaces court documents in their own section", () => {
+    const doc = {
+      id: "doc-1",
+      title: "Law/Gorman complaint",
+      sourceId: "src-utah-xchange",
+      documentType: "Complaint",
+      fileType: "pdf" as const,
+      externalUrl: "https://example.com/complaint.pdf",
+      redactionStatus: "public" as const,
+      status: "court-record" as const
+    };
+    const items = buildEvidence([], [], [doc]);
+    expect(items).toHaveLength(1);
+    expect(items[0].kind).toBe("court-doc");
+    expect(items[0].inTimeline).toBe(true);
   });
 });

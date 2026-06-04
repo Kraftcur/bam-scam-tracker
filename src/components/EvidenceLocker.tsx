@@ -1,32 +1,42 @@
-import { ExternalLink, Film, MessageSquare, Newspaper, Search, Shield } from "lucide-react";
+import { ChevronDown, ExternalLink, Film, MessageSquare, Mic, Newspaper, Scale, Search, Shield } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { ClipRecord, TimelineEvent } from "../types";
-import { buildEvidence, evidenceKindLabels, type EvidenceItem, type EvidenceKind } from "../lib/evidence";
+import type { ClipRecord, DocumentRecord, TimelineEvent } from "../types";
+import {
+  buildEvidence,
+  evidenceKindLabels,
+  evidenceKindOrder,
+  type EvidenceItem,
+  type EvidenceKind
+} from "../lib/evidence";
 import { formatDateTime } from "../lib/format";
 import { Badge } from "./Badge";
 
 type Props = {
   events: TimelineEvent[];
   clips: ClipRecord[];
+  documents: DocumentRecord[];
 };
 
-const KIND_ORDER: EvidenceKind[] = ["recklessben", "bodycam", "news-interview", "commentary"];
+const PAGE_SIZE = 6;
 
 function KindIcon({ kind }: { kind: EvidenceKind }) {
   if (kind === "bodycam") return <Shield size={14} aria-hidden="true" />;
-  if (kind === "news-interview") return <Newspaper size={14} aria-hidden="true" />;
+  if (kind === "interview") return <Mic size={14} aria-hidden="true" />;
+  if (kind === "news") return <Newspaper size={14} aria-hidden="true" />;
+  if (kind === "court-doc") return <Scale size={14} aria-hidden="true" />;
   if (kind === "commentary") return <MessageSquare size={14} aria-hidden="true" />;
   return <Film size={14} aria-hidden="true" />;
 }
 
-export default function EvidenceLocker({ events, clips }: Props) {
-  const allItems = useMemo(() => buildEvidence(events, clips), [events, clips]);
+export default function EvidenceLocker({ events, clips, documents }: Props) {
+  const allItems = useMemo(() => buildEvidence(events, clips, documents), [events, clips, documents]);
   const [kind, setKind] = useState<"all" | EvidenceKind>("all");
   const [query, setQuery] = useState("");
+  const [visibleByKind, setVisibleByKind] = useState<Record<string, number>>({});
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: allItems.length };
-    for (const k of KIND_ORDER) map[k] = allItems.filter((item) => item.kind === k).length;
+    for (const k of evidenceKindOrder) map[k] = allItems.filter((item) => item.kind === k).length;
     return map;
   }, [allItems]);
 
@@ -35,22 +45,27 @@ export default function EvidenceLocker({ events, clips }: Props) {
     return allItems.filter((item) => {
       if (kind !== "all" && item.kind !== kind) return false;
       if (!needle) return true;
-      return `${item.title} ${item.summary ?? ""}`.toLowerCase().includes(needle);
+      const haystack = `${item.title} ${item.summary ?? ""} ${(item.moments ?? []).map((m) => m.title).join(" ")}`;
+      return haystack.toLowerCase().includes(needle);
     });
   }, [allItems, kind, query]);
 
   const sections = useMemo(
     () =>
-      KIND_ORDER.map((k) => ({ kind: k, items: filtered.filter((item) => item.kind === k) })).filter(
-        (section) => section.items.length > 0
-      ),
+      evidenceKindOrder
+        .map((k) => ({ kind: k, items: filtered.filter((item) => item.kind === k) }))
+        .filter((section) => section.items.length > 0),
     [filtered]
   );
+
+  const visibleFor = (k: string) => visibleByKind[k] ?? PAGE_SIZE;
+  const showMore = (k: string) =>
+    setVisibleByKind((current) => ({ ...current, [k]: visibleFor(k) + PAGE_SIZE }));
 
   return (
     <div className="evidence-shell">
       <div className="evidence-toolbar">
-        <div className="evidence-chips" role="tablist" aria-label="Filter footage by type">
+        <div className="evidence-chips" role="tablist" aria-label="Filter evidence by type">
           <button
             aria-selected={kind === "all"}
             className={`evidence-chip ${kind === "all" ? "active" : ""}`}
@@ -58,51 +73,62 @@ export default function EvidenceLocker({ events, clips }: Props) {
             role="tab"
             type="button"
           >
-            All footage <span className="evidence-chip-count">{counts.all}</span>
+            All evidence <span className="evidence-chip-count">{counts.all}</span>
           </button>
-          {KIND_ORDER.filter((k) => counts[k] > 0).map((k) => (
-            <button
-              aria-selected={kind === k}
-              className={`evidence-chip ${kind === k ? "active" : ""}`}
-              key={k}
-              onClick={() => setKind(k)}
-              role="tab"
-              type="button"
-            >
-              <KindIcon kind={k} />
-              {evidenceKindLabels[k]} <span className="evidence-chip-count">{counts[k]}</span>
-            </button>
-          ))}
+          {evidenceKindOrder
+            .filter((k) => counts[k] > 0)
+            .map((k) => (
+              <button
+                aria-selected={kind === k}
+                className={`evidence-chip ${kind === k ? "active" : ""}`}
+                key={k}
+                onClick={() => setKind(k)}
+                role="tab"
+                type="button"
+              >
+                <KindIcon kind={k} />
+                {evidenceKindLabels[k]} <span className="evidence-chip-count">{counts[k]}</span>
+              </button>
+            ))}
         </div>
         <label className="evidence-search">
           <Search size={15} aria-hidden="true" />
           <input
             className="input"
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search footage by title or detail"
+            placeholder="Search evidence by title or detail"
             value={query}
           />
         </label>
       </div>
 
       {sections.length === 0 ? (
-        <div className="empty">No footage matches this filter yet.</div>
+        <div className="empty">No evidence matches this filter yet.</div>
       ) : (
         <div aria-live="polite">
-          {sections.map((section) => (
-            <section className="evidence-section" key={section.kind}>
-              <h2 className="evidence-section-title">
-                <KindIcon kind={section.kind} />
-                {evidenceKindLabels[section.kind]}
-                <span className="evidence-section-count">{section.items.length}</span>
-              </h2>
-              <div className="evidence-grid">
-                {section.items.map((item) => (
-                  <EvidenceCard item={item} key={`${item.source}-${item.id}`} />
-                ))}
-              </div>
-            </section>
-          ))}
+          {sections.map((section) => {
+            const visible = visibleFor(section.kind);
+            const shown = section.items.slice(0, visible);
+            return (
+              <section className="evidence-section" key={section.kind}>
+                <h2 className="evidence-section-title">
+                  <KindIcon kind={section.kind} />
+                  {evidenceKindLabels[section.kind]}
+                  <span className="evidence-section-count">{section.items.length}</span>
+                </h2>
+                <div className="evidence-grid">
+                  {shown.map((item) => (
+                    <EvidenceCard item={item} key={`${item.source}-${item.id}`} />
+                  ))}
+                </div>
+                {visible < section.items.length && (
+                  <button className="community-show-more" onClick={() => showMore(section.kind)} type="button">
+                    Show {Math.min(PAGE_SIZE, section.items.length - visible)} more
+                  </button>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
     </div>
@@ -110,38 +136,67 @@ export default function EvidenceLocker({ events, clips }: Props) {
 }
 
 function EvidenceCard({ item }: { item: EvidenceItem }) {
+  const [open, setOpen] = useState(false);
+  const moments = item.moments ?? [];
   return (
-    <a className={`evidence-card ${item.kind}`} href={item.href} rel="noreferrer" target="_blank">
-      <span className="evidence-thumb">
-        {item.thumb ? (
-          <img src={item.thumb} alt="" loading="lazy" />
-        ) : (
-          <span className="evidence-thumb-fallback">
-            <KindIcon kind={item.kind} />
-          </span>
-        )}
-        <span className="evidence-kind-tag">
-          <KindIcon kind={item.kind} />
-          {evidenceKindLabels[item.kind]}
-        </span>
-      </span>
-      <span className="evidence-body">
-        {item.date && <span className="evidence-date">{formatDateTime(item.date).slice(0, 10)}</span>}
-        <strong className="evidence-title">{item.title}</strong>
-        {item.summary && <span className="evidence-summary">{item.summary}</span>}
-        <span className="evidence-badges">
-          <Badge value={item.status} />
-          {item.inTimeline ? (
-            <span className="evidence-flag in-timeline">In timeline</span>
+    <article className={`evidence-card ${item.kind}`}>
+      <a className="evidence-card-main" href={item.href} rel="noreferrer" target="_blank">
+        <span className="evidence-thumb">
+          {item.thumb ? (
+            <img src={item.thumb} alt="" loading="lazy" />
           ) : (
-            <span className="evidence-flag lead">Needs review</span>
+            <span className="evidence-thumb-fallback">
+              <KindIcon kind={item.kind} />
+            </span>
           )}
-          {item.source === "clip" && <span className="evidence-flag">Key moment</span>}
-          <span className="evidence-open">
-            Open <ExternalLink size={12} aria-hidden="true" />
+          <span className="evidence-kind-tag">
+            <KindIcon kind={item.kind} />
+            {evidenceKindLabels[item.kind]}
           </span>
         </span>
-      </span>
-    </a>
+        <span className="evidence-body">
+          {item.date && <span className="evidence-date">{formatDateTime(item.date).slice(0, 10)}</span>}
+          <strong className="evidence-title">{item.title}</strong>
+          {item.summary && <span className="evidence-summary">{item.summary}</span>}
+          <span className="evidence-badges">
+            <Badge value={item.status} />
+            {item.inTimeline ? (
+              <span className="evidence-flag in-timeline">In timeline</span>
+            ) : (
+              <span className="evidence-flag lead">Auto-imported</span>
+            )}
+            <span className="evidence-open">
+              Open <ExternalLink size={12} aria-hidden="true" />
+            </span>
+          </span>
+        </span>
+      </a>
+      {moments.length > 0 && (
+        <div className="evidence-moments">
+          <button
+            aria-expanded={open}
+            className="evidence-moments-toggle"
+            onClick={() => setOpen((value) => !value)}
+            type="button"
+          >
+            <ChevronDown className={`evidence-moments-caret ${open ? "open" : ""}`} size={15} aria-hidden="true" />
+            {moments.length} key moment{moments.length === 1 ? "" : "s"}
+          </button>
+          {open && (
+            <ul className="evidence-moments-list">
+              {moments.map((moment) => (
+                <li key={`${item.id}-${moment.title}`}>
+                  <a href={moment.href} rel="noreferrer" target="_blank">
+                    {moment.timestamp && <span className="evidence-moment-time">{moment.timestamp}</span>}
+                    <span className="evidence-moment-title">{moment.title}</span>
+                    <ExternalLink size={11} aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </article>
   );
 }

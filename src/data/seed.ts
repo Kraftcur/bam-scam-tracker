@@ -156,6 +156,17 @@ export const seedData: TrackerData = {
       notes: "Public YouTube channel (@bamsucks2026) posting American Fork PD bodycam and police-call footage for this case. Every upload is auto-imported as needs-review bodycam footage; verify identities, dates, and redactions before promoting."
     },
     {
+      id: "src-gofundme-lawgorman",
+      url: "https://www.gofundme.com/f/help-us-fight-back-against-unfair-business-practices",
+      title: "Law/Gorman legal-defense fundraiser (GoFundMe)",
+      publisher: "GoFundMe / Law-Gorman side",
+      sourceType: "community",
+      dateFound: now,
+      reliabilityTier: "community",
+      lastChecked: now,
+      notes: "Fundraiser from the former Salem Bricks & Minifigs operators (Law/Gorman) — the previous owners who initially set up the consignment arrangement. Related side story and a primary statement from their side; a fundraiser, not independently verified fact."
+    },
+    {
       id: "src-recklessben-part1",
       url: "https://www.youtube.com/watch?v=wscQpkcwgNU",
       title: "I tracked down the thief who stole $200,000 of LEGO",
@@ -278,17 +289,6 @@ export const seedData: TrackerData = {
       reliabilityTier: "primary-video",
       lastChecked: "2026-06-03T22:42:49.228Z",
       notes: "First-hand video interview."
-    },
-    {
-      id: "src-sub-bodycam-johnson-amfork",
-      url: "https://youtu.be/QfmWZ0Bkduw",
-      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
-      publisher: "Community submission",
-      sourceType: "community",
-      dateFound: now,
-      reliabilityTier: "community",
-      lastChecked: now,
-      notes: "Community-submitted lead. Useful for public context, not verified fact."
     }
   ],
   events: [
@@ -601,18 +601,17 @@ export const seedData: TrackerData = {
       videoUrl: "https://www.youtube.com/watch?v=ifte8245dBU"
     },
     {
-      id: "evt-community-sub-bodycam-johnson-amfork",
-      occurredAt: "2026-03-10T12:00:00.000Z",
-      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
+      id: "evt-sidestory-lawgorman-gofundme",
+      occurredAt: "2026-06-01T12:00:00.000Z",
+      title: "Side story: former Salem operators (Law/Gorman) launch legal-defense fundraiser",
       summary:
-        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it connects to the wider Bricks & Minifigs dispute before any claims are labeled.",
-      category: "police",
-      involvedParties: [],
-      sourceIds: ["src-sub-bodycam-johnson-amfork"],
-      confidence: "medium",
-      status: "needs-review",
-      publicationRisk: "high",
-      videoUrl: "https://youtu.be/QfmWZ0Bkduw"
+        "The previous Salem Bricks & Minifigs operators — Chrystal Law and Benjamin Gorman, who initially set up the consignment arrangement with the Mansell family — launched a GoFundMe to fund their legal fight, framing it as pushback against unfair business practices. Related side story; the fundraiser is a primary statement from their side, not independently verified.",
+      category: "franchise",
+      involvedParties: ["Chrystal Law/Gorman", "Benjamin Gorman", "Mansell family"],
+      sourceIds: ["src-gofundme-lawgorman"],
+      confidence: "low",
+      status: "community",
+      publicationRisk: "moderate"
     }
   ],
   cases: [
@@ -1202,30 +1201,7 @@ export const seedData: TrackerData = {
       editorNote: "Timestamp and call date matter. Compare this statement against Oregon/Utah small-claims records, Law/Gorman filings, and the later BAM v. Schneider complaint before characterizing it."
     }
   ],
-  submissions: [
-    {
-      id: "sub-bodycam-johnson-amfork",
-      url: "https://youtu.be/QfmWZ0Bkduw",
-      title: "Bodycam footage — Joshua Johnson & American Fork PD (3/10)",
-      summary:
-        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it connects to the wider Bricks & Minifigs dispute before any claims are labeled.",
-      suggestedCategory: "clip",
-      moderationStatus: "triaged",
-      createdAt: now,
-      reviewerNote:
-        "Auto-scored 72/100; action: timeline review; cluster: clip-police-bodycam-bodycam-footage; reasons: has-source-url, detailed-summary, media-evidence-lead, named-source-context.",
-      videoUrl: "https://youtu.be/QfmWZ0Bkduw",
-      communityEventId: "evt-community-sub-bodycam-johnson-amfork",
-      aiScore: 72,
-      aiScoreReasons: ["has-source-url", "detailed-summary", "media-evidence-lead", "named-source-context"],
-      clusterKey: "clip-police-bodycam-bodycam-footage",
-      duplicateKey: "youtu.be/QfmWZ0Bkduw",
-      suggestedAction: "timeline-review",
-      aiSummary:
-        "Police bodycam footage published to YouTube showing an American Fork PD interaction involving Joshua Johnson on March 10. Community member flagged it as relevant primary footage for the case timeline; needs review to confirm the date, identities, and how it...",
-      processedAt: now
-    }
-  ],
+  submissions: [],
   ingestionRuns: [
     {
       id: "run-seed-20260603",

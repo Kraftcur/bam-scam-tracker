@@ -16,12 +16,12 @@ const donationUrl = getDonationUrl(env);
 >
   <section class="page-heading">
     <span class="eyebrow">Evidence Locker</span>
-    <h1>Every clip in one place.</h1>
+    <h1>Every clip and filing in one place.</h1>
     <p class="lede">
-      Creator videos, bodycam and police footage, and news segments — auto-imported and
-      community-submitted — organized by type, deduplicated, and labeled by whether they are
-      already part of the verified timeline or still awaiting review.
+      Creator videos, bodycam and police footage, interviews, news coverage, and court documents —
+      auto-imported and community-submitted — organized by type, deduplicated, with timestamped key
+      moments nested under their parent video.
     </p>
   </section>
-  <EvidenceLocker client:load clips={data.clips} events={data.events} />
+  <EvidenceLocker client:load clips={data.clips} documents={data.documents} events={data.events} />
 </BaseLayout>

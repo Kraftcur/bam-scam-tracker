@@ -1,4 +1,4 @@
-import type { ClipRecord, RecordStatus, TimelineEvent } from "../types";
+import type { ClipRecord, DocumentRecord, RecordStatus, TimelineEvent } from "../types";
 
 export function youTubeId(url?: string): string {
   if (!url) return "";
@@ -30,21 +30,31 @@ const CURATED_STATUSES: RecordStatus[] = ["court-record", "official-statement", 
 
 // A full Spine node is: anything hand-curated, OR an auto-ingested item that has been
 // reviewed up to a verified/official/court status. Raw needs-review/community leads
-// are NOT nodes — they live in the Evidence Locker until reviewed. This is what keeps
-// a verified item (e.g. the Fox 5 interview) visible instead of buried with raw leaks.
+// are NOT nodes — they live in the Evidence Locker until reviewed.
 export function isCuratedNode(event: TimelineEvent): boolean {
   if (!isAutoIngested(event)) return true;
   return CURATED_STATUSES.includes(event.status);
 }
 
-export type EvidenceKind = "recklessben" | "bodycam" | "news-interview" | "commentary";
+export type EvidenceKind = "recklessben" | "bodycam" | "interview" | "news" | "court-doc" | "commentary";
 
 export const evidenceKindLabels: Record<EvidenceKind, string> = {
   recklessben: "RecklessBen",
   bodycam: "Bodycam & police",
-  "news-interview": "News & interviews",
+  interview: "Interviews",
+  news: "News coverage",
+  "court-doc": "Court & documents",
   commentary: "Commentary & other"
 };
+
+export const evidenceKindOrder: EvidenceKind[] = [
+  "recklessben",
+  "bodycam",
+  "interview",
+  "news",
+  "court-doc",
+  "commentary"
+];
 
 // Classify footage into browsable sections. Source ids are the reliable signal:
 // every RecklessBen video (including auto-imported uploads from his channel) carries
@@ -64,11 +74,20 @@ export function evidenceKind(input: {
   if (category === "police" || /police|mcneff|bodycam|dashcam/.test(ids) || (platform.includes("twitter") && /mcneff|police/.test(ids))) {
     return "bodycam";
   }
-  if (category === "media" || /\binterview\b/.test(title) || /dexerto|kotaku|tribune|globenewswire|brickfanatic|fox/.test(ids)) {
-    return "news-interview";
+  if (/\binterview\b/.test(title) || /clutch|\bfox\b/.test(ids) || /clutch power|fox 5/.test(title)) {
+    return "interview";
+  }
+  if (category === "media" || /dexerto|kotaku|tribune|globenewswire|brickfanatic|news/.test(ids)) {
+    return "news";
   }
   return "commentary";
 }
+
+export type EvidenceMoment = {
+  title: string;
+  href: string;
+  timestamp?: string;
+};
 
 export type EvidenceItem = {
   id: string;
@@ -79,14 +98,31 @@ export type EvidenceItem = {
   href: string;
   thumb?: string;
   summary?: string;
-  source: "event" | "clip";
+  source: "event" | "document";
   inTimeline: boolean;
+  // internal matchers for nesting clips
+  eventId?: string;
+  sourceIds?: string[];
+  videoId?: string;
+  moments?: EvidenceMoment[];
 };
 
-// Build the unified, de-duplicated footage list for the Evidence Locker.
-// De-dup rule: the same YouTube video can arrive as both a curated node and an
-// auto-imported upload — collapse them into one item, preferring the curated one.
-export function buildEvidence(events: TimelineEvent[], clips: ClipRecord[] = []): EvidenceItem[] {
+function timeRange(clip: ClipRecord): string | undefined {
+  if (clip.startsAt && clip.endsAt) return `${clip.startsAt}–${clip.endsAt}`;
+  return clip.startsAt || clip.endsAt || undefined;
+}
+
+// Build the unified, de-duplicated evidence list for the Evidence Locker.
+// - footage events become cards (same video from two sources collapses into one,
+//   preferring the curated representation so timing/analysis is kept)
+// - documents become "Court & documents" cards
+// - clips (timestamped "key moments") nest UNDER their parent video instead of
+//   appearing as separate near-duplicate cards
+export function buildEvidence(
+  events: TimelineEvent[],
+  clips: ClipRecord[] = [],
+  documents: DocumentRecord[] = []
+): EvidenceItem[] {
   const footageEvents = events.filter(
     (event) => Boolean(event.videoUrl) || ["video", "police", "audio"].includes(event.category)
   );
@@ -105,9 +141,13 @@ export function buildEvidence(events: TimelineEvent[], clips: ClipRecord[] = [])
       thumb: youTubeThumb(event.videoUrl) || event.imageUrl,
       summary: event.summary,
       source: "event",
-      inTimeline: isCuratedNode(event)
+      inTimeline: isCuratedNode(event),
+      eventId: event.id,
+      sourceIds: event.sourceIds,
+      videoId: youTubeId(event.videoUrl) || undefined,
+      moments: []
     };
-    const videoId = youTubeId(event.videoUrl);
+    const videoId = item.videoId;
     if (!videoId) {
       items.push(item);
       continue;
@@ -121,19 +161,54 @@ export function buildEvidence(events: TimelineEvent[], clips: ClipRecord[] = [])
     }
   }
 
-  for (const clip of clips) {
+  // Documents → Court & documents cards.
+  for (const doc of documents) {
     items.push({
-      id: clip.id,
-      title: clip.title,
-      date: "",
-      kind: evidenceKind({ title: clip.title, sourceIds: [clip.sourceId], platform: clip.platform }),
-      status: clip.status,
-      href: clip.sourceUrl,
-      thumb: youTubeThumb(clip.sourceUrl),
-      summary: clip.transcriptExcerpt,
-      source: "clip",
-      inTimeline: clip.relatedEventIds.length > 0
+      id: doc.id,
+      title: doc.title,
+      date: doc.datePublished || "",
+      kind: "court-doc",
+      status: doc.status,
+      href: doc.externalUrl,
+      summary: doc.documentType,
+      source: "document",
+      inTimeline: true,
+      moments: []
     });
+  }
+
+  // Nest clips as timestamped moments under their parent video.
+  for (const clip of clips) {
+    const clipVideoId = youTubeId(clip.sourceUrl);
+    const parent = items.find(
+      (item) =>
+        (clipVideoId && item.videoId === clipVideoId) ||
+        (clip.relatedEventIds || []).some((id) => id === item.eventId) ||
+        (item.sourceIds || []).includes(clip.sourceId)
+    );
+    const moment: EvidenceMoment = {
+      title: clip.title,
+      href: clip.sourceUrl,
+      timestamp: timeRange(clip)
+    };
+    if (parent) {
+      (parent.moments ??= []).push(moment);
+    } else {
+      // No parent video on the board — surface the clip as its own card.
+      items.push({
+        id: clip.id,
+        title: clip.title,
+        date: "",
+        kind: evidenceKind({ title: clip.title, sourceIds: [clip.sourceId], platform: clip.platform }),
+        status: clip.status,
+        href: clip.sourceUrl,
+        thumb: youTubeThumb(clip.sourceUrl),
+        summary: clip.transcriptExcerpt,
+        source: "event",
+        inTimeline: clip.relatedEventIds.length > 0,
+        moments: []
+      });
+    }
   }
 
   return items.sort((a, b) => {

@@ -70,16 +70,16 @@ function SpineLeadsGroup({ leads }: { leads: SpineLead[] }) {
         type="button"
       >
         <span className="spine-date">Auto-ingested</span>
-        <span className="spine-headline">Footage awaiting review</span>
+        <span className="spine-headline">Latest auto-imported footage</span>
         <span className="spine-dek">
           {leads.length} community-submitted and auto-imported clip{leads.length === 1 ? "" : "s"} (bodycam,
-          creator video, and news footage) not yet promoted to the verified timeline. Browse them all in the
-          Evidence Locker.
+          creator video, and news footage) kept out of the curated story. Browse them all, organized by type,
+          in the Evidence Locker.
         </span>
         <span className="spine-meta-row">
-          <Badge value="needs-review" />
+          <Badge value="auto-imported" />
           <span className="spine-source-count">
-            {leads.length} lead{leads.length === 1 ? "" : "s"}
+            {leads.length} clip{leads.length === 1 ? "" : "s"}
           </span>
           <span className="spine-leads-caret">{open ? "Hide" : "Show"}</span>
         </span>
