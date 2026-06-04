@@ -36,15 +36,15 @@ export const sourceSchema = z.object({
   publisher: z.string().min(2),
   sourceType: sourceTypeSchema,
   archiveUrl: z.string().url().optional(),
-  dateFound: z.string().datetime(),
+  dateFound: z.string().datetime({ offset: true }),
   reliabilityTier: reliabilityTierSchema,
-  lastChecked: z.string().datetime(),
+  lastChecked: z.string().datetime({ offset: true }),
   notes: z.string().optional()
 });
 
 export const timelineEventSchema = z.object({
   id: z.string().min(3),
-  occurredAt: z.string().datetime(),
+  occurredAt: z.string().datetime({ offset: true }),
   title: z.string().min(4),
   summary: z.string().min(10),
   category: z.enum([
@@ -77,10 +77,10 @@ export const caseRecordSchema = z.object({
   parties: z.array(z.string().min(2)),
   judge: z.string().optional(),
   status: z.string().min(2),
-  nextHearingAt: z.string().datetime().optional(),
+  nextHearingAt: z.string().datetime({ offset: true }).optional(),
   sourceIds: z.array(z.string().min(3)).min(1),
   summary: z.string().min(10),
-  lastChecked: z.string().datetime()
+  lastChecked: z.string().datetime({ offset: true })
 });
 
 export const documentRecordSchema = z.object({
@@ -90,7 +90,7 @@ export const documentRecordSchema = z.object({
   caseId: z.string().optional(),
   documentType: z.string().min(2),
   fileType: z.enum(["pdf", "png", "html", "audio", "video", "other"]),
-  datePublished: z.string().datetime().optional(),
+  datePublished: z.string().datetime({ offset: true }).optional(),
   r2Key: z.string().optional(),
   externalUrl: z.string().url(),
   redactionStatus: z.enum(["public-redacted", "public", "unknown", "needs-review"]),
@@ -133,7 +133,7 @@ export const submissionSchema = z.object({
   summary: z.string().min(20),
   suggestedCategory: z.string().min(2),
   moderationStatus: z.enum(["new", "triaged", "approved", "rejected"]),
-  createdAt: z.string().datetime(),
+  createdAt: z.string().datetime({ offset: true }),
   reviewerNote: z.string().optional(),
   imageUrl: z.string().url().optional(),
   videoUrl: z.string().url().optional(),
@@ -146,14 +146,14 @@ export const submissionSchema = z.object({
   duplicateKey: z.string().optional(),
   suggestedAction: z.enum(["feed", "timeline-review", "duplicate", "needs-human", "reject"]).optional(),
   aiSummary: z.string().optional(),
-  processedAt: z.string().datetime().optional()
+  processedAt: z.string().datetime({ offset: true }).optional()
 });
 
 export const ingestionRunSchema = z.object({
   id: z.string().min(3),
   sourceName: z.string().min(2),
-  startedAt: z.string().datetime(),
-  finishedAt: z.string().datetime().optional(),
+  startedAt: z.string().datetime({ offset: true }),
+  finishedAt: z.string().datetime({ offset: true }).optional(),
   status: z.enum(["queued", "running", "completed", "failed"]),
   candidatesFound: z.number().int().nonnegative(),
   autoPublished: z.number().int().nonnegative(),
@@ -165,8 +165,8 @@ export const sourceCheckSchema = z.object({
   sourceId: z.string().min(3),
   url: z.string().url(),
   title: z.string().min(4),
-  checkedAt: z.string().datetime(),
-  lastChangedAt: z.string().datetime().optional(),
+  checkedAt: z.string().datetime({ offset: true }),
+  lastChangedAt: z.string().datetime({ offset: true }).optional(),
   httpStatus: z.number().int().optional(),
   ok: z.boolean(),
   contentHash: z.string().optional(),

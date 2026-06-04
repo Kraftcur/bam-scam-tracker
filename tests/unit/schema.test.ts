@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { seedData } from "../../src/data/seed";
-import { trackerDataSchema } from "../../src/lib/schema";
+import { timelineEventSchema, trackerDataSchema } from "../../src/lib/schema";
 
 describe("seed data", () => {
   it("matches the public tracker schema", () => {
@@ -24,6 +24,26 @@ describe("seed data", () => {
         expect(claim.status).not.toBe("verified");
       }
     }
+  });
+
+  it("accepts auto-ingested event dates with a +00:00 offset (YouTube feed format)", () => {
+    // The YouTube RSS feed publishes dates like 2026-06-01T15:00:30+00:00. If the
+    // schema rejects the offset, every auto-imported event is silently dropped and
+    // the live site falls back to seed-only data.
+    const parsed = timelineEventSchema.safeParse({
+      id: "evt-yt-2YEzhDn0jY8",
+      occurredAt: "2026-06-01T15:00:30+00:00",
+      title: "RecklessBen upload: a real title",
+      summary: "A summary long enough to satisfy the event schema.",
+      category: "video",
+      involvedParties: [],
+      sourceIds: ["src-recklessben-channel"],
+      confidence: "low",
+      status: "needs-review",
+      publicationRisk: "low",
+      videoUrl: "https://www.youtube.com/watch?v=2YEzhDn0jY8"
+    });
+    expect(parsed.success).toBe(true);
   });
 
   it("uses the visible bodycam timestamp for the McNeff police-call event", () => {

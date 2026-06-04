@@ -209,7 +209,23 @@ async function queryAll<T>(
   mapper: (row: JsonRow) => T
 ): Promise<T[]> {
   const result = await db.prepare(sql).all<JsonRow>();
-  return (result.results ?? []).map(mapper);
+  const out: T[] = [];
+  for (const row of result.results ?? []) {
+    // Skip individual malformed rows (e.g. an AI-extracted record that doesn't match
+    // the schema) instead of letting one bad row throw and collapse the whole site
+    // back to seed data — which would hide every auto-ingested record.
+    try {
+      out.push(mapper(row));
+    } catch (error) {
+      console.warn(
+        "Skipping malformed row:",
+        sql,
+        (row as { id?: unknown }).id,
+        error instanceof Error ? error.message : error
+      );
+    }
+  }
+  return out;
 }
 
 export function validateSeedData(): TrackerData {
