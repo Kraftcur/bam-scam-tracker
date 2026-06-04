@@ -7,7 +7,7 @@ import type {
 import {
   storyPlayers,
 } from "../data/story";
-import { formatDateTime } from "../lib/format";
+import { formatDate, formatDateTime } from "../lib/format";
 import { isCuratedNode, latestAdditions } from "../lib/evidence";
 import type { DocumentRecord, IngestionRun, Source, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
@@ -465,7 +465,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
         .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
         .map((event) => ({
           id: event.id,
-          dateLabel: formatDateTime(event.occurredAt).slice(0, 10),
+          dateLabel: formatDate(event.occurredAt),
           headline: event.title,
           category: event.category,
           href: event.videoUrl || event.imageUrl || "/community"
@@ -493,7 +493,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
       
       return {
         id: event.id,
-        dateLabel: formatDateTime(event.occurredAt).slice(0, 10),
+        dateLabel: formatDate(event.occurredAt),
         headline: event.title,
         dek: event.summary,
         type,
@@ -548,7 +548,7 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
                   rel={isExternalUrl(href) ? "noreferrer" : undefined}
                   target={isExternalUrl(href) ? "_blank" : undefined}
                 >
-                  <span className="latest-chip-date">{formatDateTime(event.occurredAt).slice(0, 10)}</span>
+                  <span className="latest-chip-date">{formatDate(event.occurredAt)}</span>
                   <span className="latest-chip-title">{event.title}</span>
                   <Badge value={event.status} />
                 </a>

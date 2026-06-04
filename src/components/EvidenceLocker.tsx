@@ -8,7 +8,7 @@ import {
   type EvidenceItem,
   type EvidenceKind
 } from "../lib/evidence";
-import { formatDateTime } from "../lib/format";
+import { formatDate } from "../lib/format";
 import { Badge } from "./Badge";
 
 type Props = {
@@ -155,7 +155,7 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
           </span>
         </span>
         <span className="evidence-body">
-          {item.date && <span className="evidence-date">{formatDateTime(item.date).slice(0, 10)}</span>}
+          {item.date && <span className="evidence-date">{formatDate(item.date)}</span>}
           <strong className="evidence-title">{item.title}</strong>
           {item.summary && <span className="evidence-summary">{item.summary}</span>}
           <span className="evidence-badges">
