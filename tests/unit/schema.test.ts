@@ -60,4 +60,18 @@ describe("seed data", () => {
     expect(source?.notes).toContain("Bodycam overlay reads 2026-03-10 16:45:50 -0600");
     expect(source?.url).toContain("video.twimg.com");
   });
+
+  it("includes BAM's June 4 official Salem closure and parting-ways update", () => {
+    const event = seedData.events.find((item) => item.id === "evt-bam-jun4-part-ways-statement");
+    const source = seedData.sources.find((item) => item.id === "src-bam-jun4-part-ways");
+    const timelineSource = seedData.sources.find((item) => item.id === "src-bam-jun4-salem-timeline");
+
+    expect(event?.status).toBe("official-statement");
+    expect(event?.summary).toContain("permanently closed");
+    expect(event?.summary).toContain("mutual agreement to part ways");
+    expect(event?.sourceIds).toContain("src-bam-jun4-part-ways");
+    expect(event?.sourceIds).toContain("src-bam-jun4-salem-timeline");
+    expect(source?.url).toContain("bricks-and-minifigs-salem-joshua-johnson-brandon-best-resignation");
+    expect(timelineSource?.url).toContain("bricks-and-minifigs-salem-store-timeline");
+  });
 });

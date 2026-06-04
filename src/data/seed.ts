@@ -1,9 +1,9 @@
 import type { TrackerData } from "../types";
 
 const now = "2026-06-03T00:00:00.000Z";
+const jun4OfficialUpdate = "2026-06-04T17:00:00.000Z";
 const archiveRoot = "https://bamsucks.com";
 const mcneffPoliceCallUrl = "https://video.twimg.com/amplify_video/2062282560475197440/vid/avc1/1276x720/voA3U2BPFfkL48BV.mp4?tag=27";
-const mcneffPoliceCallPlayableUrl = "https://bam-scam-tracker.tomcurrie.workers.dev/media/mcneff-police-call.mp4";
 const mcneffPoliceCallPosterUrl = "https://bam-scam-tracker.tomcurrie.workers.dev/media/mcneff-police-call-poster.jpg";
 
 export const seedData: TrackerData = {
@@ -59,6 +59,28 @@ export const seedData: TrackerData = {
       dateFound: now,
       reliabilityTier: "official",
       lastChecked: now
+    },
+    {
+      id: "src-bam-jun4-part-ways",
+      url: "https://bricksandminifigs.com/blog/blog/2026/06/04/bricks-and-minifigs-salem-joshua-johnson-brandon-best-resignation/",
+      title: "Bricks & Minifigs Parts Ways with Salem, Oregon Franchise Owners Brandon Best and Joshua Johnson",
+      publisher: "Bricks & Minifigs",
+      sourceType: "official-statement",
+      dateFound: jun4OfficialUpdate,
+      reliabilityTier: "official",
+      lastChecked: jun4OfficialUpdate,
+      notes: "Official BAM statement. Track as BAM's position and announcement; embedded negligence, valuation, POS-data, and resolution claims require independent records before being treated as findings."
+    },
+    {
+      id: "src-bam-jun4-salem-timeline",
+      url: "https://bricksandminifigs.com/blog/blog/2026/06/04/bricks-and-minifigs-salem-store-timeline/",
+      title: "What We Presently Believe Actually Happened: A Summary Timeline of Bricks & Minifigs Salem Store",
+      publisher: "Bricks & Minifigs",
+      sourceType: "official-statement",
+      dateFound: jun4OfficialUpdate,
+      reliabilityTier: "official",
+      lastChecked: jun4OfficialUpdate,
+      notes: "Official BAM-published timeline of its current position. Useful as a structured counter-narrative and source map, not an independent court finding."
     },
     {
       id: "src-twitter-mcneff-police-call",
@@ -648,6 +670,21 @@ export const seedData: TrackerData = {
       imageUrl: "https://www.dexerto.com/cdn-image/wp-content/uploads/2026/06/02/bricks-and-minifigs-lawsuit.jpg"
     },
     {
+      id: "evt-bam-jun4-part-ways-statement",
+      occurredAt: jun4OfficialUpdate,
+      title: "BAM says Salem store closed and owners parted ways",
+      summary: "Bricks & Minifigs published a June 4 official statement saying the Salem, Oregon store is permanently closed and that BAM reached a mutual agreement to part ways with franchise owners Brandon Best and Joshua Johnson. BAM also published its own Salem timeline and said its current investigation found operational gaps, disputed the $200k valuation framing, cited POS-data issues, and renewed an offer to Bryan Mansell to review records and discuss resolution.",
+      category: "statement",
+      involvedParties: ["Bricks & Minifigs", "BAM Franchising", "Ammon McNeff", "Matt McNeff", "Bryan Mansell", "Chrystal Law/Gorman", "Brandon Best", "Joshua Johnson"],
+      sourceIds: ["src-bam-jun4-part-ways", "src-bam-jun4-salem-timeline"],
+      confidence: "high",
+      status: "official-statement",
+      publicationRisk: "moderate",
+      benPerspective: "Ben-side viewers may treat the announcement as evidence that public pressure forced a major reversal, while still disputing BAM's framing of value, responsibility, and blame.",
+      bamPerspective: "BAM frames the announcement as corporate action after new investigation findings, operational due diligence issues, and a renewed attempt to resolve the Mansell collection dispute.",
+      imageUrl: "https://bricksandminifigs.com/wp-content/uploads/2025/09/cropped-BAMLogo.png"
+    },
+    {
       id: "evt-mcneff-police-call-clip",
       occurredAt: "2026-03-10T22:45:50.000Z",
       title: "Bodycam records McNeff police call",
@@ -965,6 +1002,28 @@ export const seedData: TrackerData = {
       fileType: "html",
       datePublished: "2026-05-28T12:00:00.000Z",
       externalUrl: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
+      redactionStatus: "public",
+      status: "official-statement"
+    },
+    {
+      id: "doc-bam-jun4-part-ways",
+      title: "BAM June 4, 2026 Salem closure / franchise-owner separation statement",
+      sourceId: "src-bam-jun4-part-ways",
+      documentType: "Official statement",
+      fileType: "html",
+      datePublished: jun4OfficialUpdate,
+      externalUrl: "https://bricksandminifigs.com/blog/blog/2026/06/04/bricks-and-minifigs-salem-joshua-johnson-brandon-best-resignation/",
+      redactionStatus: "public",
+      status: "official-statement"
+    },
+    {
+      id: "doc-bam-jun4-salem-timeline",
+      title: "BAM June 4, 2026 official Salem store timeline",
+      sourceId: "src-bam-jun4-salem-timeline",
+      documentType: "Official timeline",
+      fileType: "html",
+      datePublished: jun4OfficialUpdate,
+      externalUrl: "https://bricksandminifigs.com/blog/blog/2026/06/04/bricks-and-minifigs-salem-store-timeline/",
       redactionStatus: "public",
       status: "official-statement"
     },
