@@ -344,6 +344,28 @@ export const seedData: TrackerData = {
       reliabilityTier: "community",
       lastChecked: now,
       notes: "Thread on RecklessBen's own subreddit acknowledging the small-claims dismissal. Community context, not verified fact; Reddit blocks automated reading, so contents not captured here."
+    },
+    {
+      id: "src-oregon-registry-salembaker",
+      url: "https://sos.oregon.gov/business/Pages/find.aspx",
+      title: "Oregon business registry — Salem-Baker Bricks Inc. (the store's actual operator)",
+      publisher: "Oregon Secretary of State, Corporation Division",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "court-record",
+      lastChecked: now,
+      notes: "Salem-Baker Bricks Inc. (registry 2332041-97), formed 11-15-2024, president Brandon Thomas Best, 3670 River Rd N Keizer — the entity actually operating the store during the dispute. It HAS a registered agent (United States Corporation Agents, Inc., Portland), the correct party to serve. Administratively dissolved 01-15-2026. Ben sued the defunct L2 Bricks LLC instead of this entity."
+    },
+    {
+      id: "src-ors-llc-service",
+      url: "https://oregon.public.law/statutes/ors_63.121",
+      title: "ORS 63.121 — Service of process on an Oregon LLC (registered agent / Secretary of State)",
+      publisher: "Oregon Revised Statutes",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "court-record",
+      lastChecked: now,
+      notes: "Oregon statute: an LLC is served through its registered agent, or the Secretary of State if it has no agent (including a dissolved LLC). Serving a store employee with no authority is not valid service — the legal basis for the court denying RecklessBen's default judgment in 25SC30722."
     }
   ],
   events: [
@@ -676,10 +698,10 @@ export const seedData: TrackerData = {
       occurredAt: "2026-01-21T12:27:22.000Z",
       title: "Small claims 25SC30722: RecklessBen's default judgment denied for improper service",
       summary:
-        "In Marion County, Oregon small claims case 25SC30722 (Benjamin Schneider v. L2 Bricks, LLC), the plaintiff's proposed default judgment of $10,104 ($10,000 award + $104 costs) was DENIED by Pro Tem Judge Michael Wu and struck through, with the note: \"Denied. Proof of service to someone called caledonia without any information as to their authority to accept service on behalf of defendant LLC.\" The sued entity's assumed-name registration ('Bricks and Minifigs Store 36,' registrant L2 Bricks, LLC) had lapsed for failure to renew in 2018 and was not the store's 2023-2025 operator. The case is Closed (per counter-analysis, dismissed April 7). This is the documented court record behind the dispute over whether RecklessBen 'won' the small-claims cases shown in his video — the record shows the default was denied, not granted.",
+        "In Marion County, Oregon small claims case 25SC30722 (Benjamin Schneider v. L2 Bricks, LLC), the plaintiff's proposed default judgment of $10,104 ($10,000 award + $104 costs) was DENIED by Pro Tem Judge Michael Wu and struck through, with the note: \"Denied. Proof of service to someone called caledonia without any information as to their authority to accept service on behalf of defendant LLC.\" Two compounding errors are documented: (1) wrong entity — Ben sued L2 Bricks, LLC, whose assumed name 'Bricks and Minifigs Store 36' had lapsed for failure to renew in 2018, instead of the store's actual operator, Salem-Baker Bricks Inc. (formed 2024, president Brandon Best), which has a registered agent (United States Corporation Agents, Inc.); and (2) improper service — under Oregon law an LLC is served via its registered agent or the Secretary of State, not a store employee. The case is Closed (per counter-analysis, dismissed April 7). This is the documented court record behind the dispute over whether RecklessBen 'won' the cases shown in his video — the record shows the default was denied, not granted.",
       category: "court",
-      involvedParties: ["Benjamin Schneider", "RecklessBen", "L2 Bricks, LLC", "Judge Michael Wu"],
-      sourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
+      involvedParties: ["Benjamin Schneider", "RecklessBen", "L2 Bricks, LLC", "Salem-Baker Bricks Inc.", "Judge Michael Wu"],
+      sourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-oregon-registry-salembaker", "src-ors-llc-service", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
       confidence: "high",
       status: "court-record",
       publicationRisk: "moderate"
@@ -951,9 +973,10 @@ export const seedData: TrackerData = {
       title: "Small Claim Judgment (DENIED) — 25SC30722 Schneider v. L2 Bricks, LLC",
       sourceId: "src-court-25sc30722",
       documentType: "Court judgment (default denied)",
-      fileType: "pdf",
+      fileType: "png",
       datePublished: "2026-01-21T12:27:22.000Z",
-      externalUrl: "https://publicaccess.courts.oregon.gov/",
+      r2Key: "court-25sc30722-judgment.png",
+      externalUrl: "https://bam-scam-tracker.tomcurrie.workers.dev/media/court-25sc30722-judgment.png",
       redactionStatus: "public-redacted",
       status: "court-record"
     },
@@ -962,10 +985,35 @@ export const seedData: TrackerData = {
       title: "Oregon business registry — Bricks and Minifigs Store 36 / L2 Bricks, LLC (lapsed 2018)",
       sourceId: "src-oregon-registry-l2bricks",
       documentType: "Business registry record",
-      fileType: "pdf",
+      fileType: "png",
       datePublished: "2018-09-13T12:00:00.000Z",
-      externalUrl: "https://sos.oregon.gov/business/Pages/find.aspx",
+      r2Key: "oregon-registry-l2bricks.png",
+      externalUrl: "https://bam-scam-tracker.tomcurrie.workers.dev/media/oregon-registry-l2bricks.png",
       redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-salem-baker-bricks-registry",
+      title: "Oregon business registry — Salem-Baker Bricks Inc. (real operator, has registered agent)",
+      sourceId: "src-oregon-registry-salembaker",
+      documentType: "Business registry record",
+      fileType: "png",
+      datePublished: "2024-11-15T12:00:00.000Z",
+      r2Key: "salem-baker-bricks-registry.png",
+      externalUrl: "https://bam-scam-tracker.tomcurrie.workers.dev/media/salem-baker-bricks-registry.png",
+      redactionStatus: "public",
+      status: "court-record"
+    },
+    {
+      id: "doc-ors-llc-service",
+      title: "ORS — service of process on an Oregon LLC (registered agent / Secretary of State)",
+      sourceId: "src-ors-llc-service",
+      documentType: "Statute (service of process)",
+      fileType: "png",
+      datePublished: "2026-06-03T12:00:00.000Z",
+      r2Key: "ors-llc-service.png",
+      externalUrl: "https://bam-scam-tracker.tomcurrie.workers.dev/media/ors-llc-service.png",
+      redactionStatus: "public",
       status: "court-record"
     }
   ],
@@ -1311,12 +1359,12 @@ export const seedData: TrackerData = {
       id: "claim-recklessben-small-claims-win",
       claimant: "RecklessBen (Benjamin Schneider)",
       claimText: "In his video, RecklessBen presents the small-claims cases against the Bricks & Minifigs store as won by default (the store never responded), framing the store's closure as an attempt to avoid paying him.",
-      relatedEvidenceIds: ["doc-25sc30722-judgment-denied", "doc-oregon-registry-l2bricks"],
-      relatedSourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
+      relatedEvidenceIds: ["doc-25sc30722-judgment-denied", "doc-oregon-registry-l2bricks", "doc-salem-baker-bricks-registry", "doc-ors-llc-service"],
+      relatedSourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-oregon-registry-salembaker", "src-ors-llc-service", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
       status: "disputed",
       confidence: "high",
       publicationRisk: "high",
-      editorNote: "Court record contradicts the 'won by default' framing: in 25SC30722 the default judgment was denied for improper service (served an employee with no authority) against L2 Bricks, LLC — an entity whose registration lapsed in 2018. The factual claim (no win) is well supported by primary records. Whether the misstatement was an intentional lie or a pro-se mistake is unresolved opinion — do NOT publish 'lied' as fact. Confirm the final disposition (per counter-analysis, dismissed April 7) and the other ~9 case numbers."
+      editorNote: "Court record contradicts the 'won by default' framing: in 25SC30722 the default judgment was denied for improper service against L2 Bricks, LLC — an entity whose registration lapsed in 2018, not the store's actual operator (Salem-Baker Bricks Inc., which has a registered agent). Under Oregon law an LLC is served via its registered agent or the Secretary of State, not a store employee. The factual claim (no win) is well supported by primary records. Whether the misstatement was an intentional lie or a pro-se mistake is unresolved opinion — do NOT publish 'lied' as fact. Confirm the final disposition (per counter-analysis, dismissed April 7) and the other ~9 case numbers."
     }
   ],
   submissions: [],
