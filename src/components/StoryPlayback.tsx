@@ -6,6 +6,7 @@ import {
   SkipBack,
   RotateCcw,
   Film,
+  FileText,
   Gavel,
   Shield,
   Youtube,
@@ -414,15 +415,19 @@ export function StoryPlayback({ events, sources }: Props) {
           ) : (
             <div className="image-exhibit-wrapper">
               {step.imageUrl ? (
-                <img src={step.imageUrl} alt={step.title} />
+                <>
+                  <img src={step.imageUrl} alt={step.title} />
+                  <div className="exhibit-overlay">
+                    <span className="image-badge">Exhibit Image</span>
+                  </div>
+                </>
               ) : (
-                <div className="placeholder-art">
-                  <Film size={48} className="placeholder-icon" />
+                <div className="exhibit-record-card">
+                  <FileText className="record-card-icon" size={40} aria-hidden="true" />
+                  <strong className="record-card-title">{step.title}</strong>
+                  <span className="record-card-note">{step.date} · record entry</span>
                 </div>
               )}
-              <div className="exhibit-overlay">
-                <span className="image-badge">Exhibit Image</span>
-              </div>
             </div>
           )}
         </div>

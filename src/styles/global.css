@@ -4581,6 +4581,43 @@ tr:last-child td {
   animation: pulse 2s infinite ease-in-out;
 }
 
+/* Clean title card for recap steps with no exhibit image/video (instead of an
+   empty film-icon placeholder). */
+.exhibit-record-card {
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 36px 28px;
+  background: linear-gradient(135deg, #1e2528 0%, #11171a 100%);
+  color: #f3ece0;
+}
+
+.record-card-icon {
+  color: var(--lego-yellow);
+  opacity: 0.9;
+}
+
+.record-card-title {
+  font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+  font-weight: 900;
+  line-height: 1.22;
+  max-width: 32ch;
+  text-wrap: balance;
+}
+
+.record-card-note {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 @keyframes pulse {
   0%, 100% { transform: scale(1); opacity: 0.3; }
   50% { transform: scale(1.05); opacity: 0.5; }
