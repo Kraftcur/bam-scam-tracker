@@ -168,6 +168,7 @@ export function StoryPlayback({ events, sources }: Props) {
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const nativeVideoRef = useRef<HTMLVideoElement | null>(null);
   const [nativeVideoErrored, setNativeVideoErrored] = useState(false);
+  const [imageErrored, setImageErrored] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleShare = () => {
@@ -218,6 +219,7 @@ export function StoryPlayback({ events, sources }: Props) {
     // Reset progress when step changes
     setProgress(0);
     setNativeVideoErrored(false);
+    setImageErrored(false);
   }, [currentStepIndex]);
 
   useEffect(() => {
@@ -414,9 +416,9 @@ export function StoryPlayback({ events, sources }: Props) {
             </div>
           ) : (
             <div className="image-exhibit-wrapper">
-              {step.imageUrl ? (
+              {step.imageUrl && !imageErrored ? (
                 <>
-                  <img src={step.imageUrl} alt={step.title} />
+                  <img src={step.imageUrl} alt={step.title} onError={() => setImageErrored(true)} />
                   <div className="exhibit-overlay">
                     <span className="image-badge">Exhibit Image</span>
                   </div>

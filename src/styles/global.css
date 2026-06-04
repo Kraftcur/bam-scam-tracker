@@ -90,7 +90,7 @@ button {
 }
 
 .topbar-inner {
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 14px 20px;
   display: grid;
@@ -188,7 +188,7 @@ button {
 
 .main {
   width: 100%;
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 26px 20px 54px;
   flex: 1;
@@ -573,7 +573,7 @@ tr:last-child td {
 }
 
 .footer-inner {
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -4185,8 +4185,7 @@ tr:last-child td {
 
 /* VIEW SWITCHER NAV TABS */
 .view-mode-nav {
-  position: sticky;
-  top: 74px;
+  position: relative;
   z-index: 15;
   margin-bottom: 24px;
   display: flex;

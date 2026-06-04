@@ -412,8 +412,7 @@ export const seedData: TrackerData = {
       status: "court-record",
       publicationRisk: "low",
       benPerspective: "Ben's side and supporters read the lawsuit as an attempt to punish public scrutiny and shift attention away from the missing-inventory question.",
-      bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct.",
-      imageUrl: "https://bamsucks.com/Bricks-and-Minifigs-Case-260200029-Complaint.pdf"
+      bamPerspective: "BAM says the campaign caused real harm and asks the court to address alleged defamation, harassment, trespass, interference, and related conduct."
     },
     {
       id: "evt-police-records-mar2026",
