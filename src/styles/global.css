@@ -5503,7 +5503,7 @@ tr:last-child td {
   gap: 14px;
 }
 
-.evidence-card {
+.locker-card {
   display: grid;
   align-content: start;
   border: 1px solid var(--line);
@@ -5514,7 +5514,7 @@ tr:last-child td {
   transition: transform 150ms ease, border-color 150ms ease;
 }
 
-.evidence-card:hover {
+.locker-card:hover {
   transform: translateY(-3px);
   border-color: var(--green);
 }

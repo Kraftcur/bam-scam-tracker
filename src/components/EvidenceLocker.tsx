@@ -139,7 +139,7 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
   const [open, setOpen] = useState(false);
   const moments = item.moments ?? [];
   return (
-    <article className={`evidence-card ${item.kind}`}>
+    <article className={`locker-card ${item.kind}`}>
       <a className="evidence-card-main" href={item.href} rel="noreferrer" target="_blank">
         <span className="evidence-thumb">
           {item.thumb ? (
