@@ -42,7 +42,38 @@ function xmlAttr(block: string, tagName: string, attrName: string) {
   return decodeXml(block.match(new RegExp(`<${tagName}[^>]*${attrName}="([^"]+)"`))?.[1] ?? "");
 }
 
-export function parseYouTubeFeedEntries(xml: string) {
+const YOUTUBE_KEYWORDS = /\b(lego|legos|brick|bricks|minifigs|bam|police|arrest|ceo|bodycam|mcneff|johnson)\b/i;
+
+// Per-channel auto-import config, keyed by the watched source id. Lets us watch
+// several YouTube channels with the right category and labeling for each — e.g.
+// RecklessBen's creator videos vs the BAM Sucks bodycam channel. `filterKeywords`
+// is off for dedicated single-case channels where every upload is relevant.
+type YouTubeChannelConfig = {
+  category: string;
+  titlePrefix: string;
+  filterKeywords: boolean;
+  summaryNote: string;
+};
+
+const YOUTUBE_CHANNELS: Record<string, YouTubeChannelConfig> = {
+  "src-recklessben-channel": {
+    category: "video",
+    titlePrefix: "RecklessBen upload: ",
+    filterKeywords: true,
+    summaryNote:
+      "Auto-imported from the YouTube feed; treat the upload as primary footage but label specific claims separately."
+  },
+  "src-bamsucks-bodycam-channel": {
+    category: "police",
+    titlePrefix: "",
+    filterKeywords: false,
+    summaryNote:
+      "Auto-imported American Fork PD bodycam / police-call footage; verify identities, dates, and redactions before promoting to the verified timeline."
+  }
+};
+
+export function parseYouTubeFeedEntries(xml: string, options: { filterKeywords?: boolean } = {}) {
+  const { filterKeywords = true } = options;
   return [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)]
     .map((match) => {
       const entry = match[1];
@@ -59,8 +90,9 @@ export function parseYouTubeFeedEntries(xml: string) {
       };
     })
     .filter((entry) => {
-      const searchable = `${entry.title} ${entry.description}`;
-      return entry.videoId && /\b(lego|legos|brick|bricks|minifigs|bam|police|arrest|ceo)\b/i.test(searchable);
+      if (!entry.videoId) return false;
+      if (!filterKeywords) return true;
+      return YOUTUBE_KEYWORDS.test(`${entry.title} ${entry.description}`);
     });
 }
 
@@ -548,14 +580,19 @@ export async function runScheduledIngestion(env: AppEnv) {
       }
       */
 
-      // Auto-import new RecklessBen uploads from the YouTube RSS feed. primary-video
-      // is a verified tier, so confirmed uploads publish straight to the timeline.
-      // They land as "needs-review" so the upload is recorded as primary footage
-      // while the specific claims inside the video still get labeled by a human.
-      // Deterministic ids (evt-yt-<videoId>) + `insert or ignore` keep re-runs idempotent.
-      if (source.id === "src-recklessben-channel" && (!previousHash || changed)) {
-        for (const video of parseYouTubeFeedEntries(body).slice(0, 8)) {
+      // Auto-import new uploads from watched YouTube channels (RecklessBen creator
+      // videos, BAM Sucks bodycam footage). primary-video is a verified tier, so
+      // uploads publish straight to the timeline as "needs-review" — recorded as
+      // primary footage while the claims inside still get labeled by a human. Each
+      // channel sets its own category (so bodycam uploads land in the bodycam section)
+      // and labeling. Deterministic ids (evt-yt-<videoId>) + `insert or ignore` keep
+      // re-runs idempotent.
+      const channelConfig = YOUTUBE_CHANNELS[source.id];
+      if (channelConfig && (!previousHash || changed)) {
+        const videos = parseYouTubeFeedEntries(body, { filterKeywords: channelConfig.filterKeywords }).slice(0, 12);
+        for (const video of videos) {
           candidatesFound += 1;
+          const title = `${channelConfig.titlePrefix}${video.title}`;
           const allowed = canAutoPublish({
             sourceType: source.sourceType,
             reliabilityTier: source.reliabilityTier
@@ -572,11 +609,11 @@ export async function runScheduledIngestion(env: AppEnv) {
               .bind(
                 `evt-yt-${video.videoId}`,
                 video.published || new Date().toISOString(),
-                `RecklessBen upload: ${video.title}`,
+                title,
                 `${publishedDate ? `Published ${publishedDate}. ` : ""}` +
-                  `${video.description ? `${video.description.slice(0, 280)} ` : "Primary creator footage. "}` +
-                  "Auto-imported from the YouTube feed; treat the upload as primary footage but label specific claims separately.",
-                "video",
+                  `${video.description ? `${video.description.slice(0, 280)} ` : ""}` +
+                  channelConfig.summaryNote,
+                channelConfig.category,
                 JSON.stringify([]),
                 JSON.stringify([source.id]),
                 "low",
@@ -594,11 +631,11 @@ export async function runScheduledIngestion(env: AppEnv) {
           } else {
             await insertReviewSubmission(env, {
               id: `youtube-${video.videoId}`,
-              title: `RecklessBen upload: ${video.title}`,
+              title,
               summary:
                 `Published ${video.published || "unknown date"}. Views in RSS: ${video.views || "unknown"}. ` +
-                "Review this creator-video lead, add timestamped clips if relevant, and label underlying claims separately from what the video itself proves.",
-              suggestedCategory: "video",
+                "Review this footage lead, add timestamped clips if relevant, and label underlying claims separately.",
+              suggestedCategory: channelConfig.category === "police" ? "clip" : "video",
               url: video.url
             });
             needsReview += 1;

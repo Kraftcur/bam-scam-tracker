@@ -145,6 +145,17 @@ export const seedData: TrackerData = {
       notes: "Public YouTube RSS feed used for upload order, publish dates, titles, thumbnails, and view-count leads. Video claims still require separate review."
     },
     {
+      id: "src-bamsucks-bodycam-channel",
+      url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC_EU4aWBPO_Rc85lCo2V-UA",
+      title: "BAM Sucks YouTube bodycam channel",
+      publisher: "BAM Sucks / YouTube (@bamsucks2026)",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Public YouTube channel (@bamsucks2026) posting American Fork PD bodycam and police-call footage for this case. Every upload is auto-imported as needs-review bodycam footage; verify identities, dates, and redactions before promoting."
+    },
+    {
       id: "src-recklessben-part1",
       url: "https://www.youtube.com/watch?v=wscQpkcwgNU",
       title: "I tracked down the thief who stole $200,000 of LEGO",
