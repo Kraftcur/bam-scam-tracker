@@ -300,6 +300,50 @@ export const seedData: TrackerData = {
       reliabilityTier: "primary-video",
       lastChecked: "2026-06-03T22:42:49.228Z",
       notes: "First-hand video interview."
+    },
+    {
+      id: "src-court-25sc30722",
+      url: "https://publicaccess.courts.oregon.gov/",
+      title: "Marion County Small Claims 25SC30722 — Schneider v. L2 Bricks, LLC",
+      publisher: "Oregon Judicial Department (OECI)",
+      sourceType: "court-record",
+      dateFound: now,
+      reliabilityTier: "court-record",
+      lastChecked: now,
+      notes: "Oregon eCourt small claims case 25SC30722, Marion County. Plaintiff Benjamin Schneider (RecklessBen) v. L2 Bricks, LLC; filed 11/21/2025; status Closed. Proposed default judgment of $10,104 ($10,000 + $104 costs) DENIED by Pro Tem Judge Michael Wu for improper service ('proof of service to caledonia without authority to accept service for the defendant LLC'). Look up by case number on the OJD Online Records Search; portal has no per-case permalink."
+    },
+    {
+      id: "src-oregon-registry-l2bricks",
+      url: "https://sos.oregon.gov/business/Pages/find.aspx",
+      title: "Oregon business registry — 'Bricks and Minifigs Store 36' / L2 Bricks, LLC",
+      publisher: "Oregon Secretary of State, Corporation Division",
+      sourceType: "public-archive",
+      dateFound: now,
+      reliabilityTier: "court-record",
+      lastChecked: now,
+      notes: "Assumed Business Name 'Bricks and Minifigs Store 36' (registry 1234227-92), registrant/authorized rep L2 Bricks, LLC (registry 1218441-95), Keizer OR 97303. Registered 07-19-2016; FAILURE TO RENEW / inactive 09-13-2018. The entity Ben sued had lapsed years before the 2023 consignment dispute. Search by registry number; portal has no permalink."
+    },
+    {
+      id: "src-shafer-truth-video",
+      url: "https://www.youtube.com/watch?v=k3E-K0bg4so",
+      title: "The TRUTH About Reckless Ben & The Lego Scandal (Scott Shafer)",
+      publisher: "Scott Shafer / YouTube",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "community",
+      lastChecked: now,
+      notes: "Critique video (published 2026-06-03) arguing RecklessBen's small-claims 'wins' were dismissals. Partisan commentary, but cites case 25SC30722 and the Oregon registry. The court-record facts it relies on are corroborated; its 'intentional lie' framing is the creator's opinion."
+    },
+    {
+      id: "src-reddit-recklessben-dismissed",
+      url: "https://www.reddit.com/r/RecklessBen/comments/1tu19vz/heres_why_bens_small_claims_case_got_dismissed/",
+      title: "r/RecklessBen: 'Here's why Ben's small claims case got dismissed'",
+      publisher: "Reddit / r/RecklessBen",
+      sourceType: "community",
+      dateFound: now,
+      reliabilityTier: "community",
+      lastChecked: now,
+      notes: "Thread on RecklessBen's own subreddit acknowledging the small-claims dismissal. Community context, not verified fact; Reddit blocks automated reading, so contents not captured here."
     }
   ],
   events: [
@@ -626,6 +670,33 @@ export const seedData: TrackerData = {
       confidence: "low",
       status: "community",
       publicationRisk: "moderate"
+    },
+    {
+      id: "evt-court-25sc30722-default-denied",
+      occurredAt: "2026-01-21T12:27:22.000Z",
+      title: "Small claims 25SC30722: RecklessBen's default judgment denied for improper service",
+      summary:
+        "In Marion County, Oregon small claims case 25SC30722 (Benjamin Schneider v. L2 Bricks, LLC), the plaintiff's proposed default judgment of $10,104 ($10,000 award + $104 costs) was DENIED by Pro Tem Judge Michael Wu and struck through, with the note: \"Denied. Proof of service to someone called caledonia without any information as to their authority to accept service on behalf of defendant LLC.\" The sued entity's assumed-name registration ('Bricks and Minifigs Store 36,' registrant L2 Bricks, LLC) had lapsed for failure to renew in 2018 and was not the store's 2023-2025 operator. The case is Closed (per counter-analysis, dismissed April 7). This is the documented court record behind the dispute over whether RecklessBen 'won' the small-claims cases shown in his video — the record shows the default was denied, not granted.",
+      category: "court",
+      involvedParties: ["Benjamin Schneider", "RecklessBen", "L2 Bricks, LLC", "Judge Michael Wu"],
+      sourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
+      confidence: "high",
+      status: "court-record",
+      publicationRisk: "moderate"
+    },
+    {
+      id: "evt-shafer-truth-video",
+      occurredAt: "2026-06-03T17:56:13.000Z",
+      title: "Scott Shafer: 'The TRUTH About Reckless Ben & The Lego Scandal'",
+      summary:
+        "Commentary video arguing RecklessBen's small-claims 'wins' were actually dismissals: Ben sued a defunct entity (L2 Bricks, LLC, lapsed 2018), served a store employee with no authority to accept service, and the default was therefore denied. The video cites case 25SC30722. The underlying court-record facts are corroborated by the court documents and Oregon registry; the 'intentional lie' characterization is the creator's opinion, not established fact.",
+      category: "video",
+      involvedParties: ["Scott Shafer", "RecklessBen", "Benjamin Schneider"],
+      sourceIds: ["src-shafer-truth-video", "src-court-25sc30722"],
+      confidence: "medium",
+      status: "community",
+      publicationRisk: "moderate",
+      videoUrl: "https://www.youtube.com/watch?v=k3E-K0bg4so"
     }
   ],
   cases: [
@@ -874,6 +945,28 @@ export const seedData: TrackerData = {
       externalUrl: "https://bricksandminifigs.com/blog/blog/2026/05/28/bricks-minifigs-salem-oregon-clarity-and-resolution/",
       redactionStatus: "public",
       status: "official-statement"
+    },
+    {
+      id: "doc-25sc30722-judgment-denied",
+      title: "Small Claim Judgment (DENIED) — 25SC30722 Schneider v. L2 Bricks, LLC",
+      sourceId: "src-court-25sc30722",
+      documentType: "Court judgment (default denied)",
+      fileType: "pdf",
+      datePublished: "2026-01-21T12:27:22.000Z",
+      externalUrl: "https://publicaccess.courts.oregon.gov/",
+      redactionStatus: "public-redacted",
+      status: "court-record"
+    },
+    {
+      id: "doc-oregon-registry-l2bricks",
+      title: "Oregon business registry — Bricks and Minifigs Store 36 / L2 Bricks, LLC (lapsed 2018)",
+      sourceId: "src-oregon-registry-l2bricks",
+      documentType: "Business registry record",
+      fileType: "pdf",
+      datePublished: "2018-09-13T12:00:00.000Z",
+      externalUrl: "https://sos.oregon.gov/business/Pages/find.aspx",
+      redactionStatus: "public-redacted",
+      status: "court-record"
     }
   ],
   clips: [
@@ -1213,6 +1306,17 @@ export const seedData: TrackerData = {
       confidence: "medium",
       publicationRisk: "high",
       editorNote: "Timestamp and call date matter. Compare this statement against Oregon/Utah small-claims records, Law/Gorman filings, and the later BAM v. Schneider complaint before characterizing it."
+    },
+    {
+      id: "claim-recklessben-small-claims-win",
+      claimant: "RecklessBen (Benjamin Schneider)",
+      claimText: "In his video, RecklessBen presents the small-claims cases against the Bricks & Minifigs store as won by default (the store never responded), framing the store's closure as an attempt to avoid paying him.",
+      relatedEvidenceIds: ["doc-25sc30722-judgment-denied", "doc-oregon-registry-l2bricks"],
+      relatedSourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
+      status: "disputed",
+      confidence: "high",
+      publicationRisk: "high",
+      editorNote: "Court record contradicts the 'won by default' framing: in 25SC30722 the default judgment was denied for improper service (served an employee with no authority) against L2 Bricks, LLC — an entity whose registration lapsed in 2018. The factual claim (no win) is well supported by primary records. Whether the misstatement was an intentional lie or a pro-se mistake is unresolved opinion — do NOT publish 'lied' as fact. Confirm the final disposition (per counter-analysis, dismissed April 7) and the other ~9 case numbers."
     }
   ],
   submissions: [],
