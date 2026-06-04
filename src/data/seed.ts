@@ -156,6 +156,17 @@ export const seedData: TrackerData = {
       notes: "Public YouTube channel (@bamsucks2026) posting American Fork PD bodycam and police-call footage for this case. Every upload is auto-imported as needs-review bodycam footage; verify identities, dates, and redactions before promoting."
     },
     {
+      id: "src-mcneff-bodycam-youtube",
+      url: "https://www.youtube.com/watch?v=4xrFRdeFAOI",
+      title: "American Fork PD call about Reckless Ben and Ammon McNeff (bodycam)",
+      publisher: "BAM Sucks / YouTube (@bamsucks2026)",
+      sourceType: "video",
+      dateFound: now,
+      reliabilityTier: "primary-video",
+      lastChecked: now,
+      notes: "Full American Fork PD bodycam of the McNeff police call on the BAM Sucks channel. The curated McNeff timeline event cites this version and keeps the bodycam-overlay timestamp (2026-03-10 16:45:50 -0600)."
+    },
+    {
       id: "src-gofundme-lawgorman",
       url: "https://www.gofundme.com/f/help-us-fight-back-against-unfair-business-practices",
       title: "Law/Gorman legal-defense fundraiser (GoFundMe)",
@@ -578,14 +589,17 @@ export const seedData: TrackerData = {
       summary: "The clip surfaced on June 3, but the bodycam overlay places the recorded interaction on March 10, 2026 at 4:45 PM CT. In the 4:45 clip, BAM CEO Ammon McNeff gives police the BAM-side account: unauthorized consignment, alleged creator harassment/extortion, alleged fake documents, alleged store vandalism, and lawsuit-status claims.",
       category: "police",
       involvedParties: ["Ammon McNeff", "BAM Franchising", "Bricks & Minifigs", "RecklessBen", "Bryan Mansell", "Police"],
-      sourceIds: ["src-twitter-mcneff-police-call", "src-bamsucks-archive", "src-utah-xchange"],
+      sourceIds: ["src-mcneff-bodycam-youtube", "src-twitter-mcneff-police-call", "src-bamsucks-archive", "src-utah-xchange"],
       confidence: "medium",
       status: "needs-review",
       publicationRisk: "high",
       benPerspective: "Ben-side viewers are likely to treat this as a key compare-against-the-record bodycam clip, especially where it describes Ben, Mansell, lawsuits, vandalism, fake documents, and extortion.",
       bamPerspective: "McNeff presents BAM's side to police: the consignment was invalid/unauthorized, the former franchisee was responsible, and Ben/Mansell were allegedly using pressure tactics to extract money.",
       imageUrl: mcneffPoliceCallPosterUrl,
-      videoUrl: mcneffPoliceCallPlayableUrl
+      // Point at the @bamsucks2026 YouTube bodycam of the same call so the Evidence
+      // Locker de-dups it with the auto-imported channel upload, while this curated
+      // event keeps the precise bodycam-overlay timestamp and analysis.
+      videoUrl: "https://www.youtube.com/watch?v=4xrFRdeFAOI"
     },
     {
       id: "evt-community-sub-c09c1b42-c4ba-4c21-9551-9c18546420c5",

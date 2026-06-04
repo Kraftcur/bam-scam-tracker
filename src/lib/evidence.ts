@@ -161,8 +161,11 @@ export function buildEvidence(
     }
   }
 
-  // Documents → Court & documents cards.
+  // Documents → Court & documents cards. Skip video/audio "documents" — those are
+  // footage that belongs in a video section, not filings (and are usually already
+  // represented as events).
   for (const doc of documents) {
+    if (doc.fileType === "video" || doc.fileType === "audio") continue;
     items.push({
       id: doc.id,
       title: doc.title,

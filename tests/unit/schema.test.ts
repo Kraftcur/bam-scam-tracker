@@ -53,7 +53,10 @@ describe("seed data", () => {
     expect(event?.occurredAt).toBe("2026-03-10T22:45:50.000Z");
     expect(event?.summary).toContain("surfaced on June 3");
     expect(event?.imageUrl).toContain("mcneff-police-call-poster.jpg");
-    expect(event?.videoUrl).toContain("mcneff-police-call.mp4");
+    // Points at the YouTube bodycam of the same call so the Evidence Locker de-dups
+    // it with the auto-imported channel upload (4xrFRdeFAOI).
+    expect(event?.videoUrl).toContain("4xrFRdeFAOI");
+    expect(event?.sourceIds).toContain("src-mcneff-bodycam-youtube");
     expect(source?.notes).toContain("Bodycam overlay reads 2026-03-10 16:45:50 -0600");
     expect(source?.url).toContain("video.twimg.com");
   });

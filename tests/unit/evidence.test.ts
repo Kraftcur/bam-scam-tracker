@@ -154,4 +154,19 @@ describe("buildEvidence", () => {
     expect(items[0].kind).toBe("court-doc");
     expect(items[0].inTimeline).toBe(true);
   });
+
+  it("excludes video/audio documents from the Court & documents section", () => {
+    const videoDoc = {
+      id: "doc-video",
+      title: "Police Official Response",
+      sourceId: "src-x",
+      documentType: "Video",
+      fileType: "video" as const,
+      externalUrl: "https://www.youtube.com/watch?v=IcVmSQpIPRY",
+      redactionStatus: "public" as const,
+      status: "official-statement" as const
+    };
+    const items = buildEvidence([], [], [videoDoc]);
+    expect(items).toHaveLength(0);
+  });
 });
