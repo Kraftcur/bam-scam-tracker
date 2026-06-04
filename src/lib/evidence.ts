@@ -37,22 +37,37 @@ export function isCuratedNode(event: TimelineEvent): boolean {
   return CURATED_STATUSES.includes(event.status);
 }
 
-export type EvidenceKind = "creator-video" | "bodycam" | "news-clip";
+export type EvidenceKind = "recklessben" | "bodycam" | "news-interview" | "commentary";
 
 export const evidenceKindLabels: Record<EvidenceKind, string> = {
-  "creator-video": "Creator video",
+  recklessben: "RecklessBen",
   bodycam: "Bodycam & police",
-  "news-clip": "News & clips"
+  "news-interview": "News & interviews",
+  commentary: "Commentary & other"
 };
 
-export function evidenceKind(input: { category?: string; platform?: string }): EvidenceKind {
+// Classify footage into browsable sections. Source ids are the reliable signal:
+// every RecklessBen video (including auto-imported uploads from his channel) carries
+// a "recklessben" source id, which separates his channel from police footage and news.
+export function evidenceKind(input: {
+  category?: string;
+  title?: string;
+  sourceIds?: string[];
+  platform?: string;
+}): EvidenceKind {
+  const ids = (input.sourceIds || []).join(" ").toLowerCase();
+  const title = (input.title || "").toLowerCase();
   const category = (input.category || "").toLowerCase();
-  if (category === "police") return "bodycam";
-  if (category === "media") return "news-clip";
-  if (category === "video") return "creator-video";
   const platform = (input.platform || "").toLowerCase();
-  if (platform.includes("youtube")) return "creator-video";
-  return "news-clip";
+
+  if (ids.includes("recklessben")) return "recklessben";
+  if (category === "police" || /police|mcneff|bodycam|dashcam/.test(ids) || (platform.includes("twitter") && /mcneff|police/.test(ids))) {
+    return "bodycam";
+  }
+  if (category === "media" || /\binterview\b/.test(title) || /dexerto|kotaku|tribune|globenewswire|brickfanatic|fox/.test(ids)) {
+    return "news-interview";
+  }
+  return "commentary";
 }
 
 export type EvidenceItem = {
@@ -84,7 +99,7 @@ export function buildEvidence(events: TimelineEvent[], clips: ClipRecord[] = [])
       id: event.id,
       title: event.title,
       date: event.occurredAt,
-      kind: evidenceKind({ category: event.category }),
+      kind: evidenceKind({ category: event.category, title: event.title, sourceIds: event.sourceIds }),
       status: event.status,
       href: event.videoUrl || event.imageUrl || "/community",
       thumb: youTubeThumb(event.videoUrl) || event.imageUrl,
@@ -111,7 +126,7 @@ export function buildEvidence(events: TimelineEvent[], clips: ClipRecord[] = [])
       id: clip.id,
       title: clip.title,
       date: "",
-      kind: evidenceKind({ platform: clip.platform }),
+      kind: evidenceKind({ title: clip.title, sourceIds: [clip.sourceId], platform: clip.platform }),
       status: clip.status,
       href: clip.sourceUrl,
       thumb: youTubeThumb(clip.sourceUrl),

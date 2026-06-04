@@ -72,4 +72,40 @@ describe("buildEvidence", () => {
     expect(items[0].kind).toBe("bodycam");
     expect(items[0].inTimeline).toBe(false);
   });
+
+  it("sorts footage into recklessben / bodycam / news-interview sections by source", () => {
+    const ben = event({
+      id: "evt-yt-abc",
+      title: "RecklessBen upload: arrested over legos",
+      sourceIds: ["src-recklessben-channel"],
+      videoUrl: "https://youtu.be/abc"
+    });
+    const benRespondsToPolice = event({
+      id: "evt-recklessben-police",
+      category: "police",
+      title: "RecklessBen responds to American Fork police",
+      sourceIds: ["src-recklessben-police-response", "src-recklessben-channel"],
+      videoUrl: "https://youtu.be/def"
+    });
+    const interview = event({
+      id: "evt-community-fox5",
+      title: "Fox 5 DC Interview With RecklessBen",
+      sourceIds: ["src-sub-fox5"],
+      videoUrl: "https://youtu.be/ghi"
+    });
+    const newsReport = event({
+      id: "evt-dexerto",
+      category: "media",
+      title: "National coverage of the dispute",
+      sourceIds: ["src-dexerto-may24"],
+      videoUrl: "https://youtu.be/jkl"
+    });
+    const items = buildEvidence([ben, benRespondsToPolice, interview, newsReport], []);
+    const kindOf = (id: string) => items.find((i) => i.id === id)?.kind;
+    expect(kindOf("evt-yt-abc")).toBe("recklessben");
+    // Ben's own video about police stays under RecklessBen, not bodycam
+    expect(kindOf("evt-recklessben-police")).toBe("recklessben");
+    expect(kindOf("evt-community-fox5")).toBe("news-interview");
+    expect(kindOf("evt-dexerto")).toBe("news-interview");
+  });
 });

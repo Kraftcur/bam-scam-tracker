@@ -1,4 +1,4 @@
-import { ExternalLink, Film, Search, Shield, Newspaper } from "lucide-react";
+import { ExternalLink, Film, MessageSquare, Newspaper, Search, Shield } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { ClipRecord, TimelineEvent } from "../types";
 import { buildEvidence, evidenceKindLabels, type EvidenceItem, type EvidenceKind } from "../lib/evidence";
@@ -10,11 +10,12 @@ type Props = {
   clips: ClipRecord[];
 };
 
-const KIND_ORDER: EvidenceKind[] = ["creator-video", "bodycam", "news-clip"];
+const KIND_ORDER: EvidenceKind[] = ["recklessben", "bodycam", "news-interview", "commentary"];
 
 function KindIcon({ kind }: { kind: EvidenceKind }) {
   if (kind === "bodycam") return <Shield size={14} aria-hidden="true" />;
-  if (kind === "news-clip") return <Newspaper size={14} aria-hidden="true" />;
+  if (kind === "news-interview") return <Newspaper size={14} aria-hidden="true" />;
+  if (kind === "commentary") return <MessageSquare size={14} aria-hidden="true" />;
   return <Film size={14} aria-hidden="true" />;
 }
 
@@ -38,6 +39,14 @@ export default function EvidenceLocker({ events, clips }: Props) {
     });
   }, [allItems, kind, query]);
 
+  const sections = useMemo(
+    () =>
+      KIND_ORDER.map((k) => ({ kind: k, items: filtered.filter((item) => item.kind === k) })).filter(
+        (section) => section.items.length > 0
+      ),
+    [filtered]
+  );
+
   return (
     <div className="evidence-shell">
       <div className="evidence-toolbar">
@@ -51,7 +60,7 @@ export default function EvidenceLocker({ events, clips }: Props) {
           >
             All footage <span className="evidence-chip-count">{counts.all}</span>
           </button>
-          {KIND_ORDER.map((k) => (
+          {KIND_ORDER.filter((k) => counts[k] > 0).map((k) => (
             <button
               aria-selected={kind === k}
               className={`evidence-chip ${kind === k ? "active" : ""}`}
@@ -76,12 +85,23 @@ export default function EvidenceLocker({ events, clips }: Props) {
         </label>
       </div>
 
-      {filtered.length === 0 ? (
+      {sections.length === 0 ? (
         <div className="empty">No footage matches this filter yet.</div>
       ) : (
-        <div className="evidence-grid" aria-live="polite">
-          {filtered.map((item) => (
-            <EvidenceCard item={item} key={`${item.source}-${item.id}`} />
+        <div aria-live="polite">
+          {sections.map((section) => (
+            <section className="evidence-section" key={section.kind}>
+              <h2 className="evidence-section-title">
+                <KindIcon kind={section.kind} />
+                {evidenceKindLabels[section.kind]}
+                <span className="evidence-section-count">{section.items.length}</span>
+              </h2>
+              <div className="evidence-grid">
+                {section.items.map((item) => (
+                  <EvidenceCard item={item} key={`${item.source}-${item.id}`} />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}
