@@ -704,7 +704,8 @@ export const seedData: TrackerData = {
       sourceIds: ["src-court-25sc30722", "src-oregon-registry-l2bricks", "src-oregon-registry-salembaker", "src-ors-llc-service", "src-shafer-truth-video", "src-reddit-recklessben-dismissed"],
       confidence: "high",
       status: "court-record",
-      publicationRisk: "moderate"
+      publicationRisk: "moderate",
+      imageUrl: "https://bam-scam-tracker.tomcurrie.workers.dev/media/court-25sc30722-judgment.png"
     },
     {
       id: "evt-shafer-truth-video",
