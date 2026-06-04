@@ -48,11 +48,11 @@ const {
             <span class="brand-mark">BAM</span>
             <span class="brand-text">BAM Scam Tracker</span>
           </a>
-          <div class="topbar-spacer"></div>
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <a href="/community" style="color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; white-space: nowrap;">Community Feed</a>
-            <DonationButton donationUrl={donationUrl} />
-          </div>
+          <nav class="topbar-nav" aria-label="Primary">
+            <a class="topbar-link" href="/evidence">Evidence Locker</a>
+            <a class="topbar-link" href="/community">Community Feed</a>
+          </nav>
+          <DonationButton donationUrl={donationUrl} />
         </div>
       </header>
       <main class="main">

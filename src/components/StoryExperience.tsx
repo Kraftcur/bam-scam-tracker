@@ -8,6 +8,7 @@ import {
   storyPlayers,
 } from "../data/story";
 import { formatDateTime } from "../lib/format";
+import { isCuratedNode, latestAdditions } from "../lib/evidence";
 import type { DocumentRecord, IngestionRun, Source, SourceCheck, TimelineEvent } from "../types";
 import { Badge } from "./Badge";
 import { StoryPlayback } from "./StoryPlayback";
@@ -44,14 +45,6 @@ function isExternalUrl(href: string) {
   return /^https?:\/\//i.test(href);
 }
 
-// Auto-ingested leads (community submissions + auto-imported uploads) use these id
-// prefixes. We keep them OUT of the curated spine nodes and the Watch Recap so the
-// hand-built story never bloats as bodycam/footage leaks pile up — they get rolled
-// into a single collapsible "Evidence drops" group instead.
-function isAutoLead(event: TimelineEvent) {
-  return event.id.startsWith("evt-community-") || event.id.startsWith("evt-yt-");
-}
-
 type SpineLead = {
   id: string;
   dateLabel: string;
@@ -77,10 +70,11 @@ function SpineLeadsGroup({ leads }: { leads: SpineLead[] }) {
         type="button"
       >
         <span className="spine-date">Auto-ingested</span>
-        <span className="spine-headline">Evidence drops &amp; footage leads</span>
+        <span className="spine-headline">Footage awaiting review</span>
         <span className="spine-dek">
           {leads.length} community-submitted and auto-imported clip{leads.length === 1 ? "" : "s"} (bodycam,
-          video, and other footage), grouped here so the main story stays readable.
+          creator video, and news footage) not yet promoted to the verified timeline. Browse them all in the
+          Evidence Locker.
         </span>
         <span className="spine-meta-row">
           <Badge value="needs-review" />
@@ -111,8 +105,8 @@ function SpineLeadsGroup({ leads }: { leads: SpineLead[] }) {
               Show {Math.min(12, leads.length - visible)} more
             </button>
           )}
-          <a className="spine-leads-all" href="/community">
-            Open full community feed →
+          <a className="spine-leads-all" href="/evidence">
+            Open Evidence Locker →
           </a>
         </div>
       )}
@@ -457,13 +451,16 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
   
   const supportUrl = donationUrl || "https://buymeacoffee.com/bam.scam.tracker";
 
-  // Split the curated story from auto-ingested footage leads so neither the Spine
-  // nodes nor the Watch Recap bloat as bodycam/video leaks accumulate.
-  const curatedEvents = useMemo(() => events.filter((event) => !isAutoLead(event)), [events]);
+  // Split the curated story from auto-ingested footage leads. An item is a curated
+  // node if it's hand-authored OR reviewed up to verified/official/court status (so the
+  // Fox 5 interview shows as a real node); raw needs-review leaks roll into one group
+  // and live in the Evidence Locker, keeping the Spine and Watch Recap uncluttered.
+  const curatedEvents = useMemo(() => events.filter(isCuratedNode), [events]);
+  const latest = useMemo(() => latestAdditions(events, 5), [events]);
   const spineLeads = useMemo<SpineLead[]>(
     () =>
       events
-        .filter(isAutoLead)
+        .filter((event) => !isCuratedNode(event))
         .slice()
         .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
         .map((event) => ({
@@ -535,6 +532,34 @@ export default function StoryExperience({ documents, events, ingestionRuns, sour
           </button>
         </div>
       </nav>
+
+      {latest.length > 0 && (
+        <aside className="latest-strip" aria-label="Latest additions">
+          <span className="latest-strip-label">Latest</span>
+          <div className="latest-strip-track">
+            {latest.map((event) => {
+              const curated = isCuratedNode(event);
+              const href = curated ? `/timeline#${event.id}` : event.videoUrl || "/evidence";
+              return (
+                <a
+                  className="latest-chip"
+                  href={href}
+                  key={event.id}
+                  rel={isExternalUrl(href) ? "noreferrer" : undefined}
+                  target={isExternalUrl(href) ? "_blank" : undefined}
+                >
+                  <span className="latest-chip-date">{formatDateTime(event.occurredAt).slice(0, 10)}</span>
+                  <span className="latest-chip-title">{event.title}</span>
+                  <Badge value={event.status} />
+                </a>
+              );
+            })}
+          </div>
+          <a className="latest-strip-all" href="/evidence">
+            Evidence Locker →
+          </a>
+        </aside>
+      )}
 
       {viewMode === "play" && (
         <StoryPlayback events={curatedEvents} sources={sources} />

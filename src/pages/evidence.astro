@@ -1,0 +1,27 @@
+---
+import EvidenceLocker from "../components/EvidenceLocker";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDonationUrl, getTrackerData } from "../lib/data";
+import { getEnv } from "../lib/runtime";
+
+const env = getEnv(Astro.locals);
+const data = await getTrackerData(env);
+const donationUrl = getDonationUrl(env);
+---
+
+<BaseLayout
+  title="Evidence Locker | BAM Scam Tracker"
+  description="Every video, bodycam clip, and news segment in the Bricks & Minifigs / RecklessBen controversy, organized by type and labeled by what it can prove."
+  donationUrl={donationUrl}
+>
+  <section class="page-heading">
+    <span class="eyebrow">Evidence Locker</span>
+    <h1>Every clip in one place.</h1>
+    <p class="lede">
+      Creator videos, bodycam and police footage, and news segments — auto-imported and
+      community-submitted — organized by type, deduplicated, and labeled by whether they are
+      already part of the verified timeline or still awaiting review.
+    </p>
+  </section>
+  <EvidenceLocker client:load clips={data.clips} events={data.events} />
+</BaseLayout>
